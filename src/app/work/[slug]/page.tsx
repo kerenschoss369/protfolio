@@ -10,6 +10,9 @@ type WorkProjectPageProps = {
   }>;
 };
 
+/** Only known project slugs are valid; unknown paths use the not-found page. */
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return getProjectSlugs().map((slug) => ({ slug }));
 }
@@ -24,7 +27,10 @@ export async function generateMetadata({ params }: WorkProjectPageProps) {
 
   return createPageMetadata({
     title: project.title,
-    description: project.shortDescription,
+    description:
+      project.slug === "clinical-follow-up-detector"
+        ? `${project.shortDescription} Demonstration only—not clinically validated, not for medical decision-making, not for real patient data, and not HIPAA compliant.`
+        : project.shortDescription,
     path: `/work/${project.slug}`,
   });
 }

@@ -396,6 +396,8 @@ Owner prompt:
 
 - `docs/agents/08-final-review.md`
 
+Status: **complete**
+
 Deliverables:
 
 - Full cross-route review
@@ -414,6 +416,17 @@ Exit criteria:
 - No secrets
 - No fake links
 - All required routes and states work
+
+Targeted fixes from the audit (no redesign):
+
+- Aligned About, Contact, and not-found with design-system primitives
+- Added route `error.tsx` and `loading.tsx` fallbacks
+- Clinical meta/OG description and work-index safety copy parity
+- Softened pending-verification contribution tone without changing attribution state
+- Project visual frames no longer default to `aria-hidden` for text-bearing previews
+- AcademEase English chrome scoped outside `lang="he"`
+- Overlay background inert for mobile nav and command menu
+- Command empty-state listbox role; external new-tab disclosure; `sm` button touch targets
 
 ---
 
@@ -486,6 +499,9 @@ Do not claim a command passed until it has actually been run.
 | 2026-08-04 | A11y / performance | JSON-LD Person + CreativeWork/SoftwareSourceCode from verified facts; clinical demo disclaimer | Avoid fake socials, medical-device claims, and proprietary open-source marking                                                              | `structured-data.ts`, `JsonLd.tsx`, case-study/work pages                                            |
 | 2026-08-04 | A11y / performance | TapTap live region announces phase/judgement only; visual ms stays non-live                    | Per-frame timing announcements violated polite live-region guidance                                                                         | `TapTapDemo.tsx`                                                                                     |
 | 2026-08-04 | A11y / performance | KS favicon + `/og` typographic cards; absolute `og:image` only when `siteUrl` is set           | Avoid Next file-convention localhost absolutes when metadataBase is unset; no fabricated photos                                             | `icon.tsx`, `apple-icon.tsx`, `src/app/og/**`, `metadata.ts`                                         |
+| 2026-08-05 | Final review       | Align About/Contact/404 to design tokens; add route error/loading fallbacks                    | Secondary routes looked unfinished vs homepage/work; audit found missing app-level fallbacks                                                | `about/page.tsx`, `contact/page.tsx`, `not-found.tsx`, `error.tsx`, `loading.tsx`                    |
+| 2026-08-05 | Final review       | Clinical page meta + work-index safety excerpt; soften pending-verification contribution copy  | Safety substance required beyond structured data / homepage; avoid sole-delivery tone without changing pending state                        | `work/[slug]/page.tsx`, `WorkProjectCard.tsx`, `projects.ts`                                         |
+| 2026-08-05 | Final review       | Visual-frame a11y default, AcademEase lang scoping, overlay inert, listbox empty, new-tab cue  | Evidence-backed a11y polish from Phase 8 audit only                                                                                         | `ProjectVisualFrame`, `AcademEaseDemo`, `focus-trap`, overlays, `TextLink`/`ButtonLink`              |
 
 ---
 
@@ -637,7 +653,6 @@ These should be resolved from repository evidence or later real data, not guesse
 - Hosting platform selection and production deployment
 - Safari / Firefox physical-device testing
 - Analytics
-- Phase 8 final editorial review
 
 ### 9.6 Phase 7 results (post-hardening)
 
@@ -651,6 +666,18 @@ These should be resolved from repository evidence or later real data, not guesse
 | Security            | No secrets found in tracked source; theme boot + JSON-LD are the only `dangerouslySetInnerHTML` uses; no analytics                          |
 | External links      | Remain null-gated; contact empty state clarified; e2e asserts no `#` / example.com                                                          |
 | Browser review      | Chromium Playwright + 320/375 viewports; Safari/Firefox physical devices deferred honestly                                                  |
-| Deferred            | Real contact/media URLs, hosting/domain, Phase 8 editorial review, analytics                                                                |
+| Deferred            | Real contact/media URLs, hosting/domain, analytics                                                                                          |
+
+### 9.7 Phase 8 final review results
+
+| Area                | Result                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Product quality     | Homepage/work/case studies remain editorial and cohesive; About/Contact/404 brought onto shared primitives                                 |
+| Facts / attribution | No invented metrics/links; pending-verification preserved for Clinical + Realtime CLI; team/professional/practice labels intact            |
+| Clinical safety     | Case study, demo, homepage, work index, structured data, and clinical meta/OG all communicate demonstration-only constraints               |
+| Confidentiality     | Abra / EL AL stays high-level with mandatory proprietary note; no repo/live URLs                                                           |
+| Accessibility       | Overlay inert landmarks; visual-frame AT access; AcademEase lang scoping; command empty option role; new-tab disclosure; touch-target `sm` |
+| Fallbacks           | Route `error.tsx` + `loading.tsx`; not-found uses design-system CTAs                                                                       |
+| Remaining           | External links, media, domain/hosting still unresolved by design                                                                           |
 
 ---

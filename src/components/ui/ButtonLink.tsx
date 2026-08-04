@@ -16,7 +16,7 @@ const buttonVariants = {
 } as const satisfies Record<ButtonVariant, string>;
 
 const buttonSizes = {
-  sm: "min-h-9 gap-1.5 px-3 text-[length:var(--text-sm)]",
+  sm: "min-h-[var(--touch-target)] gap-1.5 px-3 text-[length:var(--text-sm)]",
   md: "min-h-[var(--touch-target)] gap-2 px-4 text-[length:var(--text-body)]",
   lg: "min-h-12 gap-2 px-5 text-[length:var(--text-body-lg)]",
 } as const satisfies Record<ButtonSize, string>;
@@ -46,19 +46,20 @@ export function ButtonLink({
   );
 
   if (external || href.startsWith("http") || href.startsWith("mailto:")) {
+    const opensInNewTab = external || href.startsWith("http");
+
     return (
       <a
         href={href}
         className={classes}
-        rel={
-          external || href.startsWith("http")
-            ? "noopener noreferrer"
-            : undefined
-        }
-        target={external || href.startsWith("http") ? "_blank" : undefined}
+        rel={opensInNewTab ? "noopener noreferrer" : undefined}
+        target={opensInNewTab ? "_blank" : undefined}
         {...props}
       >
         {children}
+        {opensInNewTab ? (
+          <span className="sr-only"> (opens in a new tab)</span>
+        ) : null}
       </a>
     );
   }

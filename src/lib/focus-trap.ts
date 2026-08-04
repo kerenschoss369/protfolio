@@ -74,3 +74,29 @@ export function lockBodyScroll(): () => void {
     document.body.style.paddingRight = previousPaddingRight;
   };
 }
+
+/**
+ * Marks page landmarks outside an open dialog as inert so assistive
+ * technology browse mode cannot reach background content.
+ * Does not inert ancestors that contain the dialog (e.g. header).
+ */
+export function inertBackgroundLandmarks(): () => void {
+  const candidates = [
+    document.getElementById("main-content"),
+    document.querySelector("footer"),
+    document.querySelector('a[href="#main-content"]'),
+  ].filter((element): element is HTMLElement => element instanceof HTMLElement);
+
+  const restored: Array<{ element: HTMLElement; wasInert: boolean }> = [];
+
+  for (const element of candidates) {
+    restored.push({ element, wasInert: element.inert });
+    element.inert = true;
+  }
+
+  return () => {
+    for (const { element, wasInert } of restored) {
+      element.inert = wasInert;
+    }
+  };
+}

@@ -10,7 +10,11 @@ type ProjectVisualFrameProps = {
   children: ReactNode;
   caption?: string;
   className?: string;
-  /** When true, the visual is decorative; caption remains available text. */
+  /**
+   * When true, the visual surface is hidden from assistive technology.
+   * Default false — most project visuals include meaningful text.
+   * Opt in only for purely decorative compositions with an adequate caption.
+   */
   decorative?: boolean;
 };
 
@@ -19,7 +23,7 @@ export function ProjectVisualFrame({
   children,
   caption,
   className,
-  decorative = true,
+  decorative = false,
 }: ProjectVisualFrameProps) {
   return (
     <figure className={cn("space-y-3", className)}>

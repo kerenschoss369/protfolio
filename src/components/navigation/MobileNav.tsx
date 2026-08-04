@@ -12,6 +12,7 @@ import { portfolio } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
 import {
   getFocusableElements,
+  inertBackgroundLandmarks,
   lockBodyScroll,
   trapFocus,
 } from "@/lib/focus-trap";
@@ -41,6 +42,7 @@ export function MobileNav({
 
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     const unlock = lockBodyScroll();
+    const clearInert = inertBackgroundLandmarks();
 
     const frame = window.requestAnimationFrame(() => {
       const focusable = panelRef.current
@@ -51,6 +53,7 @@ export function MobileNav({
 
     return () => {
       window.cancelAnimationFrame(frame);
+      clearInert();
       unlock();
       previouslyFocused.current?.focus();
     };

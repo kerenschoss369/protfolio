@@ -191,10 +191,12 @@ Hosting platform is not selected in-repo yet. Add platform config only when the 
 
 - Target: **WCAG 2.2 AA**
 - Semantic landmarks, one meaningful `h1` per page, skip link to focusable `#main-content`
-- Overlay dialogs (mobile nav, command menu): focus trap, Escape, restore, scroll lock
+- Overlay dialogs (mobile nav, command menu): focus trap, Escape, restore, scroll lock, and inert background landmarks
 - Status via text + color (never color alone)
 - Live regions announce meaningful changes only (TapTap does not announce per-frame ms)
-- Hebrew AcademEase mode sets `lang` + `dir`
+- AcademEase keeps English chrome under `lang="en"`; localized schedule/materials use `lang` + `dir`
+- External HTTP links disclose “opens in a new tab” to assistive technology
+- Project conceptual previews are not `aria-hidden` by default when they contain meaningful text
 - Automated axe checks via `@axe-core/playwright` (does not replace keyboard review)
 - Contrast pairs unit-tested in `src/lib/contrast.test.ts`
 
@@ -245,6 +247,8 @@ Abra / EL AL work is described at a high level only:
 
 ## Missing-content checklist
 
+Unresolved items (also tracked in `src/data/missing-content.ts`):
+
 - [ ] Email
 - [ ] GitHub
 - [ ] LinkedIn
@@ -254,9 +258,11 @@ Abra / EL AL work is described at a high level only:
 - [ ] Live demo links
 - [ ] Project screenshots
 - [ ] Optional profile photograph
-- [ ] Confirm employment / project dates
-- [ ] Confirm repository visibility / ownership
+- [ ] Confirm employment / education / project dates
+- [ ] Confirm repository visibility / ownership (including Clinical and Go repositories)
 - [ ] Hosting platform selection
 - [ ] Production deployment
+
+Do not mark these complete until real values are supplied. Null placeholders must remain hidden in the UI.
 
 See `docs/` for the product specification, content decisions, design system, and phased implementation plan.

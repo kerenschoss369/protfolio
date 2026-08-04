@@ -101,6 +101,15 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
               <Tag variant="default">Research</Tag>
             ) : null}
           </div>
+
+          {project.safetyNote ? (
+            <Text
+              variant="small"
+              className="text-warning max-w-[40rem] text-pretty"
+            >
+              {project.safetyNote}
+            </Text>
+          ) : null}
         </div>
 
         <div
@@ -113,7 +122,7 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
           <ButtonLink
             href={`/work/${project.slug}`}
             variant="secondary"
-            size="sm"
+            size="md"
             className="group"
           >
             View case study
@@ -126,7 +135,7 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
               href={project.repositoryUrl}
               external
               variant="ghost"
-              size="sm"
+              size="md"
             >
               Repository
             </ButtonLink>
@@ -136,7 +145,7 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
               href={project.liveUrl}
               external
               variant="ghost"
-              size="sm"
+              size="md"
             >
               Live demo
             </ButtonLink>

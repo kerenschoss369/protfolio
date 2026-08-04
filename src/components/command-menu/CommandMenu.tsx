@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/cn";
 import {
   getFocusableElements,
+  inertBackgroundLandmarks,
   lockBodyScroll,
   trapFocus,
 } from "@/lib/focus-trap";
@@ -97,6 +98,7 @@ function CommandMenuDialog({
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     const unlock = lockBodyScroll();
+    const clearInert = inertBackgroundLandmarks();
 
     const frame = window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -104,6 +106,7 @@ function CommandMenuDialog({
 
     return () => {
       window.cancelAnimationFrame(frame);
+      clearInert();
       unlock();
       previouslyFocused.current?.focus();
     };
@@ -219,7 +222,12 @@ function CommandMenuDialog({
           className="overflow-y-auto p-2"
         >
           {results.length === 0 ? (
-            <li className="text-muted px-3 py-6 text-center text-[length:var(--text-sm)]">
+            <li
+              role="option"
+              aria-disabled="true"
+              aria-selected="false"
+              className="text-muted px-3 py-6 text-center text-[length:var(--text-sm)]"
+            >
               No matching commands
             </li>
           ) : (

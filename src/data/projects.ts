@@ -203,7 +203,7 @@ const clinicalFollowUpDetector: ClinicalFollowUpDetectorProject = {
     personal: {
       kind: "personal",
       summary:
-        "Built a full-stack demonstration spanning React, Node, Python AI extraction, validation, and review workflows.",
+        "Implemented a full-stack demonstration spanning React, Node, Python AI extraction, validation, and review workflows. Collaboration attribution remains pending verification.",
       items: [
         "Implemented note input, .txt upload validation, analyze flow, and review UI states",
         "Designed Node as the application boundary for validation, workflow, and SQLite persistence",
@@ -497,7 +497,7 @@ const realtimeGptCli: PublicCaseStudyProject & {
     personal: {
       kind: "personal",
       summary:
-        "Implemented realtime WebSocket session handling, event channels, and local function calling in Go.",
+        "Implemented realtime WebSocket session handling, event channels, and local function calling in Go. Collaboration attribution remains pending verification.",
       items: [
         "Connected to the realtime GPT-4o-mini WebSocket endpoint",
         "Decoded streamed JSON events through a reader goroutine and channel",

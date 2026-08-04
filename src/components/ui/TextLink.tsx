@@ -25,19 +25,20 @@ export function TextLink({
   );
 
   if (external || href.startsWith("http") || href.startsWith("mailto:")) {
+    const opensInNewTab = external || href.startsWith("http");
+
     return (
       <a
         href={href}
         className={classes}
-        rel={
-          external || href.startsWith("http")
-            ? "noopener noreferrer"
-            : undefined
-        }
-        target={external || href.startsWith("http") ? "_blank" : undefined}
+        rel={opensInNewTab ? "noopener noreferrer" : undefined}
+        target={opensInNewTab ? "_blank" : undefined}
         {...props}
       >
         {children}
+        {opensInNewTab ? (
+          <span className="sr-only"> (opens in a new tab)</span>
+        ) : null}
       </a>
     );
   }

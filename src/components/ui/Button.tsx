@@ -14,7 +14,7 @@ const buttonVariants = {
 } as const;
 
 const buttonSizes = {
-  sm: "min-h-9 gap-1.5 px-3 text-[length:var(--text-sm)]",
+  sm: "min-h-[var(--touch-target)] gap-1.5 px-3 text-[length:var(--text-sm)]",
   md: "min-h-[var(--touch-target)] gap-2 px-4 text-[length:var(--text-body)]",
   lg: "min-h-12 gap-2 px-5 text-[length:var(--text-body-lg)]",
 } as const;

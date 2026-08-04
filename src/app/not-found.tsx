@@ -1,6 +1,10 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
+import { ButtonLink } from "@/components/ui/ButtonLink";
+import { Container } from "@/components/ui/Container";
+import { Heading } from "@/components/ui/Heading";
+import { Section } from "@/components/ui/Section";
+import { Text } from "@/components/ui/Text";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = {
@@ -17,32 +21,32 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-6 px-4 py-24 sm:px-6 lg:px-8">
-      <h1 className="font-serif text-4xl tracking-tight">Page not found</h1>
-      <p className="max-w-xl text-[var(--muted)]">
-        The page you requested does not exist. Return home or browse selected
-        work.
-      </p>
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center rounded-md bg-[var(--accent)] px-4 text-[var(--accent-contrast)]"
-        >
-          Home
-        </Link>
-        <Link
-          href="/work"
-          className="inline-flex min-h-11 items-center rounded-md border border-[var(--border-strong)] px-4"
-        >
-          Work
-        </Link>
-        <Link
-          href="/contact"
-          className="inline-flex min-h-11 items-center rounded-md border border-[var(--border-strong)] px-4"
-        >
-          Contact
-        </Link>
-      </div>
-    </div>
+    <Section spacing="default" aria-labelledby="not-found-heading">
+      <Container>
+        <div className="max-w-[var(--prose-max)] space-y-6 py-[var(--space-8)]">
+          <Text variant="meta" className="text-steel">
+            404
+          </Text>
+          <Heading as="h1" variant="page" id="not-found-heading">
+            Page not found
+          </Heading>
+          <Text variant="muted" className="text-pretty">
+            The page you requested does not exist. Return home or browse
+            selected work.
+          </Text>
+          <div className="flex flex-wrap gap-3">
+            <ButtonLink href="/" variant="primary">
+              Home
+            </ButtonLink>
+            <ButtonLink href="/work" variant="secondary">
+              Work
+            </ButtonLink>
+            <ButtonLink href="/contact" variant="ghost">
+              Contact
+            </ButtonLink>
+          </div>
+        </div>
+      </Container>
+    </Section>
   );
 }

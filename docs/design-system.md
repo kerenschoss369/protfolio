@@ -239,7 +239,7 @@ Shared foundations:
 - `Tag` — default / accent / steel / success / warning / danger
 - `ProjectMeta` — category, dates, stack as monospace metadata
 - `ButtonLink` — link styled with button variants for CTAs
-- `ProjectVisualFrame` — labeled conceptual-preview frame for abstract media
+- `ProjectVisualFrame` — labeled conceptual-preview frame for abstract media (`decorative` defaults to `false`; opt in only for purely decorative surfaces)
 - Case-study sections — `CaseStudyHero`, `CaseStudySection`, `ContributionPanel`, `ArchitectureOverview`, `DecisionList`, `LimitationPanel`, `SafetyNotice`, `ConfidentialityNotice`, `ProjectNavigation`, `ProjectLinkActions`
 
 Work index filters use semantic `button` controls with `aria-pressed`, touch-sized targets, and an accessible empty `role="status"` state.
