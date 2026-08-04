@@ -292,20 +292,20 @@ Under `prefers-reduced-motion: reduce`:
 
 | Concern              | Implementation                                                             |
 | -------------------- | -------------------------------------------------------------------------- |
-| Motion for React     | **Not added** — CSS + `IntersectionObserver` + optional VT helpers suffice |
-| Route enter          | `app/template.tsx` + `.route-enter` (opacity + 0.35rem translateY)         |
+| Motion for React     | **Added** (`motion` v12) — LazyMotion + Client islands only                |
+| Route enter          | `app/template.tsx` + `.route-enter`; optional VT via `ViewTransitionLink`  |
 | Section reveals      | `Reveal` / `RevealEnhancer`; progressive; SSR visible                      |
-| Shared project morph | Deferred                                                                   |
+| Shared project morph | Title `view-transition-name` continuity; unstable full morphs deferred     |
 | Nav                  | Sliding accent underline; sticky surface; overlay/dialog keyframes         |
-| Theme                | `.theme-transition` on intentional toggles (~200ms colors/borders)         |
-| Hero                 | Transform parallax ≤4px; path emphasis on node focus/press                 |
-| Previews             | Project-specific border response + 1px lift; focus-visible parity          |
-| Micro                | `.pressable` active translateY(1px); link underline offset; `.link-arrow`  |
-| Scroll               | Native smooth for anchors; `scroll-margin-top`; no hijacking               |
+| Theme                | `.theme-transition` on intentional toggles; origin vars for progressive UI |
+| Hero                 | Masked typography; SVG path draw; pulses; depth ≤8px; node keyboard select |
+| Previews             | Unique systems per featured project (Clinical / AcademEase / CLI / TapTap) |
+| Micro                | `.pressable`; underline masks; link arrows; status confirmation            |
+| Scroll               | Native only; desktop `ScrollProgress`; no hijacking                        |
 
-JS helpers in `src/lib/motion.ts` mirror tokens and expose `motionBudget`, reduced-motion subscription helpers, and `runViewTransition` fallbacks.
+JS helpers: `src/lib/motion.ts`, `animation-config.ts`, `animation-variants.ts`, `view-transitions.ts`.
 
-Motion inside demos remains local CSS / `requestAnimationFrame` only.
+See `docs/signature-animation-plan.md` for the full audit, budget, and reduced-motion design.
 
 ---
 

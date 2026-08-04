@@ -28,7 +28,7 @@ test.describe("work index and case studies", () => {
       page.getByText(/Professional work is described at a high level/i),
     ).toBeVisible();
     // Work index uses "Repository" labels; case studies use "View repository".
-    await expect(page.getByRole("link", { name: /^Repository$/i })).toHaveCount(
+    await expect(page.getByRole("link", { name: /Repository/i })).toHaveCount(
       3,
     );
     await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);

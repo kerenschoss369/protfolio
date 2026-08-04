@@ -345,3 +345,24 @@
     }
   }
 }
+
+/* Signature path / pulse helpers */
+.hero-path-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .underline-mask {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size var(--duration-base) var(--ease-standard);
+  }
+
+  .underline-mask:hover,
+  .underline-mask:focus-visible {
+    background-size: 100% 1px;
+  }
+}

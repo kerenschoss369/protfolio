@@ -1,13 +1,13 @@
-import Link from "next/link";
-
+import { ViewTransitionLink } from "@/components/motion/ViewTransitionLink";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { ProjectMeta } from "@/components/ui/ProjectMeta";
 import { Tag } from "@/components/ui/Tag";
 import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
+import { cn } from "@/lib/cn";
 import { isConfiguredHttpUrl } from "@/lib/links";
 import { getCollaborationLabel, isTeamAttributed } from "@/lib/project-utils";
-import { cn } from "@/lib/cn";
+import { projectTitleTransitionName } from "@/lib/view-transitions";
 
 type WorkProjectCardProps = {
   project: Project;
@@ -66,12 +66,15 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
           />
 
           <h3 className="font-serif text-[length:var(--text-project)] tracking-tight text-balance">
-            <Link
+            <ViewTransitionLink
               href={`/work/${project.slug}`}
               className="hover:text-accent focus-visible:outline-focus-ring focus-visible:text-accent rounded-sm transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+              style={{
+                viewTransitionName: projectTitleTransitionName(project.slug),
+              }}
             >
               {project.title}
-            </Link>
+            </ViewTransitionLink>
           </h3>
 
           <Text

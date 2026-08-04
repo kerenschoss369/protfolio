@@ -1,3 +1,4 @@
+import { ContactConverge } from "@/components/motion/ContactConverge";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
@@ -40,42 +41,44 @@ export default function ContactPage() {
           className="mt-10 max-w-[var(--prose-max)] space-y-4"
           aria-label="Contact methods"
         >
-          {hasAnyLink ? (
-            <ul className="space-y-3 text-[length:var(--text-body)]">
-              {links.email ? (
-                <li>
-                  <TextLink href={`mailto:${links.email}`}>
-                    Email {portfolio.name}
-                  </TextLink>
-                </li>
-              ) : null}
-              {links.linkedinUrl ? (
-                <li>
-                  <TextLink href={links.linkedinUrl} external>
-                    LinkedIn
-                  </TextLink>
-                </li>
-              ) : null}
-              {links.githubUrl ? (
-                <li>
-                  <TextLink href={links.githubUrl} external>
-                    GitHub
-                  </TextLink>
-                </li>
-              ) : null}
-              {links.cvPath ? (
-                <li>
-                  <TextLink href={links.cvPath}>Download CV</TextLink>
-                </li>
-              ) : null}
-            </ul>
-          ) : (
-            <Text variant="small" className="text-muted text-pretty">
-              Contact methods are not configured yet. Verified email, LinkedIn,
-              GitHub, and CV links will appear here when available — no
-              placeholder actions are shown.
-            </Text>
-          )}
+          <ContactConverge email={links.email}>
+            {hasAnyLink ? (
+              <ul className="space-y-3 text-[length:var(--text-body)]">
+                {links.email ? (
+                  <li>
+                    <TextLink href={`mailto:${links.email}`}>
+                      Email {portfolio.name}
+                    </TextLink>
+                  </li>
+                ) : null}
+                {links.linkedinUrl ? (
+                  <li>
+                    <TextLink href={links.linkedinUrl} external>
+                      LinkedIn
+                    </TextLink>
+                  </li>
+                ) : null}
+                {links.githubUrl ? (
+                  <li>
+                    <TextLink href={links.githubUrl} external>
+                      GitHub
+                    </TextLink>
+                  </li>
+                ) : null}
+                {links.cvPath ? (
+                  <li>
+                    <TextLink href={links.cvPath}>Download CV</TextLink>
+                  </li>
+                ) : null}
+              </ul>
+            ) : (
+              <Text variant="small" className="text-muted text-pretty">
+                Contact methods are not configured yet. Verified email,
+                LinkedIn, GitHub, and CV links will appear here when available —
+                no placeholder actions are shown.
+              </Text>
+            )}
+          </ContactConverge>
         </section>
       </Container>
     </Section>

@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -16,7 +17,7 @@ export type Theme = "light" | "dark";
 type ThemeContextValue = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
+  toggleTheme: (origin?: { x: number; y: number } | null) => void;
 };
 
 const STORAGE_KEY = "portfolio-theme";
@@ -55,6 +56,17 @@ function applyTheme(theme: Theme, options?: { animate?: boolean }) {
   root.setAttribute("data-theme", theme);
 }
 
+function setThemeOrigin(origin?: { x: number; y: number } | null) {
+  const root = document.documentElement;
+  if (origin) {
+    root.style.setProperty("--theme-origin-x", `${origin.x}px`);
+    root.style.setProperty("--theme-origin-y", `${origin.y}px`);
+  } else {
+    root.style.setProperty("--theme-origin-x", "50%");
+    root.style.setProperty("--theme-origin-y", "0%");
+  }
+}
+
 function subscribeTheme(onStoreChange: () => void) {
   const handleChange = () => {
     applyTheme(readTheme(), { animate: false });
@@ -88,6 +100,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     getThemeSnapshot,
     getServerThemeSnapshot,
   );
+  const lastOrigin = useRef<{ x: number; y: number } | null>(null);
 
   const setTheme = useCallback((next: Theme) => {
     window.localStorage.setItem(STORAGE_KEY, next);
@@ -95,9 +108,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === "light" ? "dark" : "light");
-  }, [setTheme, theme]);
+  const toggleTheme = useCallback(
+    (origin?: { x: number; y: number } | null) => {
+      lastOrigin.current = origin ?? null;
+      setThemeOrigin(origin ?? null);
+      const next = theme === "light" ? "dark" : "light";
+      window.localStorage.setItem(STORAGE_KEY, next);
+      applyTheme(next, { animate: true });
+      window.dispatchEvent(new Event(THEME_EVENT));
+    },
+    [theme],
+  );
 
   const value = useMemo(
     () => ({

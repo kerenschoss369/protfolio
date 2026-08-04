@@ -13,10 +13,11 @@ afterEach(() => {
 });
 
 describe("motion utilities", () => {
-  it("keeps Motion for React out of the budget", () => {
-    expect(motionBudget.motionForReact).toBe(false);
-    expect(motionBudget.staggerMaxMs).toBeLessThanOrEqual(180);
-    expect(motionBudget.heroParallaxPx).toBeLessThanOrEqual(6);
+  it("includes Motion for React in the signature budget", () => {
+    expect(motionBudget.motionForReact).toBe(true);
+    expect(motionBudget.packageName).toBe("motion");
+    expect(motionBudget.staggerMaxMs).toBeLessThanOrEqual(280);
+    expect(motionBudget.heroParallaxPx).toBeLessThanOrEqual(8);
   });
 
   it("detects reduced motion from a media query snapshot", () => {

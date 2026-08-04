@@ -2,8 +2,17 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { WorkFilters } from "@/components/work/WorkFilters";
 import { getAllProjects } from "@/lib/project-utils";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/work",
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+  }),
+}));
 
 vi.mock("next/link", () => ({
   default: ({
@@ -20,10 +29,35 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+vi.spyOn(window, "matchMedia").mockImplementation((query: string) => {
+  return {
+    matches: query.includes("prefers-reduced-motion"),
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  } as MediaQueryList;
+});
+
+function renderFilters(
+  projects:
+    | ReturnType<typeof getAllProjects>
+    | readonly ReturnType<typeof getAllProjects>[number][],
+) {
+  return render(
+    <MotionProvider>
+      <WorkFilters projects={projects} />
+    </MotionProvider>,
+  );
+}
+
 describe("WorkFilters", () => {
   it("filters projects with keyboard-accessible buttons", async () => {
     const user = userEvent.setup();
-    render(<WorkFilters projects={getAllProjects()} />);
+    renderFilters(getAllProjects());
 
     expect(
       screen.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
@@ -54,7 +88,7 @@ describe("WorkFilters", () => {
     const practiceOnly = getAllProjects().filter(
       (project) => project.kind === "engineering-practice",
     );
-    render(<WorkFilters projects={practiceOnly} />);
+    renderFilters(practiceOnly);
 
     await user.click(screen.getByRole("button", { name: /AI/i }));
 

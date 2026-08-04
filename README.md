@@ -16,7 +16,9 @@ The site demonstrates production frontend engineering, accessible interaction de
 - **Playwright** + **@axe-core/playwright**
 - ESLint + Prettier
 
-Intentionally not included: CMS, database, auth, global state library, Motion for React, analytics, UI component libraries.
+Intentionally not included: CMS, database, auth, global state library, analytics, UI component libraries.
+
+**Motion:** CSS for simple transitions; **Motion for React** (`motion` v12) for springs, shared layout, and coordinated choreography inside focused Client Components. See `docs/signature-animation-plan.md`.
 
 ## Architecture
 
@@ -33,14 +35,17 @@ src/
     demos/             # Route-local interactive simulations
     seo/               # JSON-LD helper
     ui/                # Design-system primitives
+    motion/            # Signature motion architecture (LazyMotion provider, previews, VT links)
   data/                # Typed verified content + null link placeholders
-  lib/                 # Links, metadata, motion, structured data, contrast
+  hooks/               # Reduced-motion, fine-pointer, in-view, pointer, visibility
+  lib/                 # Links, metadata, motion, animation-config, structured data, contrast
   styles/              # Tokens + globals
 ```
 
 - Static content stays in Server Components.
-- Client Components are limited to theme, navigation overlays, filters, reveals, hero pointer enhancement, and demos.
+- Client Components are limited to theme, navigation overlays, filters, reveals, hero pointer enhancement, signature motion islands, and demos.
 - Heavy demos load only on matching `/work/[slug]` routes via `next/dynamic`.
+- Playwright e2e uses `npm run start` (run `npm run build` first when the server is not already up).
 
 ## Routes
 
@@ -155,9 +160,10 @@ Observed strategy (not invented Lighthouse scores):
 | Demo code           | Route-local async chunks; homepage must not load demo implementations |
 | Third-party runtime | None (no analytics, no trackers)                                      |
 | Layout shift        | Reserve demo/loading dimensions; no late-injected hero media          |
-| Motion              | CSS-first; disabled/simplified under `prefers-reduced-motion`         |
-| Fonts               | `next/font` with `display: "swap"`; latin subsets only                |
-| Media               | No autoplay audio/video; no oversized placeholders                    |
+| Motion              | CSS-first for simple UI; Motion for React for springs/layout; pause offscreen; RM alternatives |
+| Shared client growth| LazyMotion + route-local demos; do not load case-study demo chunks on `/`                      |
+| Fonts               | `next/font` with `display: "swap"`; latin subsets only                                        |
+| Media               | No autoplay audio/video; no oversized placeholders                                            |
 
 Inspect client chunks after `npm run build` (Next.js route/chunk summary). Do not add a permanent heavy analyzer unless it provides ongoing value.
 

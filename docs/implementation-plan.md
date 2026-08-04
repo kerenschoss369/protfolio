@@ -337,24 +337,44 @@ Owner prompt:
 
 - `docs/agents/06-motion-refinement.md`
 
-Status: **complete**
+Status: **complete** (superseded by signature animation phase for library decision)
 
 Deliverables:
 
 - Route transitions via `app/template.tsx` CSS enter (no content delay)
 - Progressive homepage section reveals (`Reveal` + `RevealEnhancer`)
-- Shared project transitions deferred (documented)
 - Theme transition class on intentional toggles
-- Refined hover/focus/press states; active nav indicator
-- Fine-pointer hero parallax (transform-only, ≤4px) + path activation
-- Motion budget in `src/lib/motion.ts`; Motion for React not added
+- Fine-pointer hero parallax + path activation
+- Motion budget in `src/lib/motion.ts`
+
+Exit criteria: met. Signature animation phase later added Motion for React.
+
+---
+
+### Signature animation phase
+
+Owner: this phase (see `docs/signature-animation-plan.md`)
+
+Status: **complete**
+
+Deliverables:
+
+- Motion for React (`motion`) with LazyMotion / Client-island boundaries
+- Shared motion architecture under `src/components/motion/`, `src/hooks/`, `src/lib/animation-config.ts`
+- Hero masked typography + interactive system visual (SVG paths, pulses, depth)
+- Unique homepage project preview animations
+- Work-index layout filter motion
+- View Transition helpers for project title continuity
+- About / Contact / 404 signature visuals
+- Theme origin CSS enhancement (immediate theme change; no blocking VT)
+- Unit + Playwright coverage for reduced motion, hero, previews, filters, routes
+- Docs: `docs/signature-animation-plan.md`, design-system + README updates
 
 Exit criteria:
 
-- Motion adds clarity
-- No content delay
-- Reduced-motion mode is complete
-- Mobile performance remains strong
+- Memorable signature moments without delaying content
+- Reduced-motion alternatives remain polished
+- Demos stay route-local; production build and a11y suites pass
 
 ---
 
@@ -499,6 +519,10 @@ Do not claim a command passed until it has actually been run.
 | 2026-08-04 | A11y / performance | JSON-LD Person + CreativeWork/SoftwareSourceCode from verified facts; clinical demo disclaimer | Avoid fake socials, medical-device claims, and proprietary open-source marking                                                              | `structured-data.ts`, `JsonLd.tsx`, case-study/work pages                                            |
 | 2026-08-04 | A11y / performance | TapTap live region announces phase/judgement only; visual ms stays non-live                    | Per-frame timing announcements violated polite live-region guidance                                                                         | `TapTapDemo.tsx`                                                                                     |
 | 2026-08-04 | A11y / performance | KS favicon + `/og` typographic cards; absolute `og:image` only when `siteUrl` is set           | Avoid Next file-convention localhost absolutes when metadataBase is unset; no fabricated photos                                             | `icon.tsx`, `apple-icon.tsx`, `src/app/og/**`, `metadata.ts`                                         |
+| 2026-08-05 | Signature animation | Add Motion for React (`motion`); LazyMotion Client islands only                          | Springs, shared layout, choreography exceed clean CSS; React 19 / Next 16 compatible                                                   | `package.json`, `src/components/motion/**`, `src/lib/animation-config.ts`, docs |
+| 2026-08-05 | Signature animation | Hero system visual + per-project homepage preview systems + work atlas filters           | Spec requires memorable, project-specific frontend technique                                                                           | `HeroVisual`, `ProjectPreviewMotion`, `WorkFilters`, case-study path motion    |
+| 2026-08-05 | Signature animation | Theme uses CSS `theme-transition` only (no blocking View Transition wrapper)             | VT-wrapped theme updates could leave interactions unstable in some browsers                                                            | `ThemeProvider`, `globals.css`                                                 |
+| 2026-08-05 | Signature animation | Playwright webServer uses `next start` after build                                       | Stable chunks for e2e; avoid stale broken `next dev` sessions during validation                                                        | `playwright.config.ts`, README                                                 |
 | 2026-08-05 | Final review       | Align About/Contact/404 to design tokens; add route error/loading fallbacks                    | Secondary routes looked unfinished vs homepage/work; audit found missing app-level fallbacks                                                | `about/page.tsx`, `contact/page.tsx`, `not-found.tsx`, `error.tsx`, `loading.tsx`                    |
 | 2026-08-05 | Final review       | Clinical page meta + work-index safety excerpt; soften pending-verification contribution copy  | Safety substance required beyond structured data / homepage; avoid sole-delivery tone without changing pending state                        | `work/[slug]/page.tsx`, `WorkProjectCard.tsx`, `projects.ts`                                         |
 | 2026-08-05 | Final review       | Visual-frame a11y default, AcademEase lang scoping, overlay inert, listbox empty, new-tab cue  | Evidence-backed a11y polish from Phase 8 audit only                                                                                         | `ProjectVisualFrame`, `AcademEaseDemo`, `focus-trap`, overlays, `TextLink`/`ButtonLink`              |

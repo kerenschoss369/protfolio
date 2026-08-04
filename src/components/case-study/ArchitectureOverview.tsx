@@ -1,5 +1,6 @@
 import { Surface } from "@/components/ui/Surface";
 import { Text } from "@/components/ui/Text";
+import { CaseStudyPathMotion } from "@/components/motion/CaseStudyPathMotion";
 import type { ArchitectureDiagram } from "@/data/content-types";
 import { cn } from "@/lib/cn";
 
@@ -45,6 +46,10 @@ export function ArchitectureOverview({
             <Text variant="meta" className="text-steel">
               {architecture.title}
             </Text>
+          </div>
+
+          <div className="border-border-subtle border-b px-2 py-2">
+            <CaseStudyPathMotion architecture={architecture} />
           </div>
 
           {/* Decorative flow — details stay in the list below */}

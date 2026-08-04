@@ -1,12 +1,34 @@
-import { HeroVisual } from "@/components/home/HeroVisual";
-import { Reveal } from "@/components/interactions/Reveal";
+import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
+
+import {
+  AnimatedText,
+  StaggerGroup,
+  StaggerItem,
+} from "@/components/motion/AnimatedText";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
-import { Text } from "@/components/ui/Text";
+import { TextLink } from "@/components/ui/TextLink";
 import { getConfiguredExternalLinks } from "@/data/links";
 import { portfolio } from "@/data/portfolio";
+
+const HeroVisual = dynamic(
+  () =>
+    import("@/components/home/HeroVisual").then(
+      (mod) => mod.HeroVisual,
+    ) as Promise<ComponentType>,
+  {
+    ssr: true,
+    loading: () => (
+      <div
+        className="border-border-subtle bg-surface-1 aspect-[5/4] w-full rounded-[var(--radius-lg)] border max-md:aspect-[4/3]"
+        aria-hidden
+      />
+    ),
+  },
+);
 
 const heroTechnologies = [
   "Angular",
@@ -28,91 +50,109 @@ export function HeroSection() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[36rem] bg-[radial-gradient(ellipse_at_top,color-mix(in_srgb,var(--accent)_10%,transparent),transparent_60%)]"
-      />
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[36rem]"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in_srgb,var(--accent)_10%,transparent),transparent_60%)]" />
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, color-mix(in srgb, var(--border-subtle) 55%, transparent) 1px, transparent 1px),
+              linear-gradient(to bottom, color-mix(in srgb, var(--border-subtle) 55%, transparent) 1px, transparent 1px)
+            `,
+            backgroundSize: "72px 72px",
+            maskImage: "linear-gradient(to bottom, black 0%, transparent 75%)",
+          }}
+        />
+      </div>
 
       <Container>
         <div className="editorial-grid items-center gap-y-10">
           <div className="col-span-full space-y-6 lg:col-span-6 xl:col-span-5">
-            <Text variant="meta" className="text-steel">
+            <AnimatedText
+              as="p"
+              delay={0}
+              masked={false}
+              className="font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] text-[var(--steel)] uppercase"
+            >
               {portfolio.location}
-            </Text>
+            </AnimatedText>
 
             <div className="space-y-3">
-              <Heading as="h1" variant="hero" id="hero-heading">
-                {portfolio.name}
-              </Heading>
-              <Text variant="body-lg" className="text-muted">
+              <AnimatedText as="div" delay={0.06} masked>
+                <Heading as="h1" variant="hero" id="hero-heading">
+                  {portfolio.name}
+                </Heading>
+              </AnimatedText>
+              <AnimatedText
+                as="p"
+                delay={0.14}
+                masked={false}
+                className="text-muted text-[length:var(--text-body-lg)]"
+              >
                 {portfolio.title}
-              </Text>
+              </AnimatedText>
             </div>
 
-            <Reveal>
-              <Text
-                variant="body-lg"
-                className="text-foreground max-w-[38rem] text-pretty"
-              >
-                {portfolio.heroStatement}
-              </Text>
-            </Reveal>
+            <AnimatedText
+              as="p"
+              delay={0.22}
+              masked={false}
+              className="text-foreground max-w-[38rem] text-[length:var(--text-body-lg)] text-pretty"
+            >
+              {portfolio.heroStatement}
+            </AnimatedText>
 
-            <Reveal stagger={1}>
-              <Text variant="muted" className="max-w-[36rem] text-pretty">
-                {portfolio.supportingStatement}
-              </Text>
-            </Reveal>
+            <AnimatedText
+              as="p"
+              delay={0.3}
+              masked={false}
+              className="text-muted max-w-[36rem] text-pretty"
+            >
+              {portfolio.supportingStatement}
+            </AnimatedText>
 
-            <Reveal stagger={2}>
-              <div className="flex flex-wrap gap-3 pt-2">
+            <StaggerGroup
+              className="flex flex-wrap gap-3 pt-2"
+              delayChildren={0.36}
+            >
+              <StaggerItem>
                 <ButtonLink href="/work">View selected work</ButtonLink>
-                {links.cvPath ? (
+              </StaggerItem>
+              {links.cvPath ? (
+                <StaggerItem>
                   <ButtonLink href={links.cvPath} variant="secondary">
                     Download CV
                   </ButtonLink>
-                ) : null}
-              </div>
-            </Reveal>
+                </StaggerItem>
+              ) : null}
+            </StaggerGroup>
 
             {(links.githubUrl || links.linkedinUrl || links.email) && (
               <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
                 {links.githubUrl ? (
                   <li>
-                    <a
-                      href={links.githubUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      className="text-muted hover:text-foreground inline-flex min-h-11 items-center text-[length:var(--text-sm)] underline-offset-4 hover:underline"
-                    >
+                    <TextLink href={links.githubUrl} external>
                       GitHub
-                    </a>
+                    </TextLink>
                   </li>
                 ) : null}
                 {links.linkedinUrl ? (
                   <li>
-                    <a
-                      href={links.linkedinUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                      className="text-muted hover:text-foreground inline-flex min-h-11 items-center text-[length:var(--text-sm)] underline-offset-4 hover:underline"
-                    >
+                    <TextLink href={links.linkedinUrl} external>
                       LinkedIn
-                    </a>
+                    </TextLink>
                   </li>
                 ) : null}
                 {links.email ? (
                   <li>
-                    <a
-                      href={`mailto:${links.email}`}
-                      className="text-muted hover:text-foreground inline-flex min-h-11 items-center text-[length:var(--text-sm)] underline-offset-4 hover:underline"
-                    >
-                      Email
-                    </a>
+                    <TextLink href={`mailto:${links.email}`}>Email</TextLink>
                   </li>
                 ) : null}
               </ul>
             )}
 
-            <ul className="flex flex-wrap gap-x-3 gap-y-2 pt-2">
+            <ul className="flex flex-wrap gap-2 pt-2">
               {heroTechnologies.map((tech) => (
                 <li
                   key={tech}

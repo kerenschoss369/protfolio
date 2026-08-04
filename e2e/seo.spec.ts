@@ -92,16 +92,14 @@ test.describe("SEO and production readiness", () => {
     await expect(
       page.getByRole("link", { name: /Email Keren Schoss/i }),
     ).toHaveAttribute("href", "mailto:kerenschoss369@gmail.com");
-    await expect(page.getByRole("link", { name: /LinkedIn/i })).toHaveAttribute(
-      "href",
-      "https://www.linkedin.com/in/kerenschoss/",
-    );
-    await expect(page.getByRole("link", { name: /GitHub/i })).toHaveAttribute(
-      "href",
-      "https://github.com/kerenschoss369",
-    );
     await expect(
-      page.getByRole("link", { name: /Download CV/i }),
+      page.getByRole("main").getByRole("link", { name: /LinkedIn/i }),
+    ).toHaveAttribute("href", "https://www.linkedin.com/in/kerenschoss/");
+    await expect(
+      page.getByRole("main").getByRole("link", { name: /GitHub/i }),
+    ).toHaveAttribute("href", "https://github.com/kerenschoss369");
+    await expect(
+      page.getByRole("main").getByRole("link", { name: /Download CV/i }),
     ).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
     await expect(page.locator('a[href="#"]')).toHaveCount(0);
     await expect(page.locator('a[href*="example.com"]')).toHaveCount(0);

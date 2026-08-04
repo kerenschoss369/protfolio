@@ -152,4 +152,70 @@ test.describe("motion refinements", () => {
         .first(),
     ).toBeVisible();
   });
+
+  test("hero nodes remain keyboard selectable", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/");
+
+    const interfaceNode = page.getByRole("button", {
+      name: /^Interface$/i,
+    });
+    await interfaceNode.focus();
+    await expect(interfaceNode).toBeFocused();
+    await interfaceNode.click();
+    await expect(interfaceNode).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText(/User-facing experience/i)).toBeVisible();
+  });
+
+  test("browser back keeps content visible after case-study navigation", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/work");
+    await page
+      .locator('a[href="/work/clinical-follow-up-detector"]')
+      .first()
+      .click();
+    await expect(page).toHaveURL(/clinical-follow-up-detector/);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/work$/);
+    await expect(
+      page.getByRole("heading", { name: "Work", exact: true }),
+    ).toBeVisible();
+  });
+
+  test("work filters remain usable with motion", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/work");
+
+    const aiFilter = page.getByRole("button", { name: /^AI\b/i });
+    await aiFilter.click();
+    await expect(aiFilter).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#main-content")).toBeVisible();
+  });
+
+  test("about narrative and contact converge remain readable", async ({
+    page,
+  }) => {
+    await page.goto("/about");
+    await expect(page.getByText(/Composition → interface/i)).toBeVisible();
+    await page.getByRole("button", { name: /Systems/i }).click();
+
+    await page.goto("/contact");
+    await expect(page.getByRole("heading", { name: "Contact" })).toBeVisible();
+    await expect(page.getByText(/Frontend/i).first()).toBeVisible();
+  });
+
+  test("not-found reconnect visual stays lightweight", async ({ page }) => {
+    await page.goto("/missing-route-signature-motion");
+    await expect(
+      page.getByRole("heading", { name: "Page not found" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Home", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Work", exact: true }).first(),
+    ).toBeVisible();
+  });
 });

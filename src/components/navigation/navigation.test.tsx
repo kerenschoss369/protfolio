@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturedWorkSection } from "@/components/home/FeaturedWorkSection";
 import { ExperiencePreview } from "@/components/home/ExperiencePreview";
@@ -21,6 +22,7 @@ vi.mock("next/navigation", () => ({
   usePathname: () => pathname,
   useRouter: () => ({
     push: pushMock,
+    replace: pushMock,
   }),
 }));
 
@@ -39,8 +41,21 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+vi.mock("next/dynamic", () => ({
+  default: () => {
+    function DynamicStub() {
+      return <div data-testid="hero-visual-stub" />;
+    }
+    return DynamicStub;
+  },
+}));
+
 function renderWithProviders(ui: React.ReactElement) {
-  return render(<ThemeProvider>{ui}</ThemeProvider>);
+  return render(
+    <ThemeProvider>
+      <MotionProvider>{ui}</MotionProvider>
+    </ThemeProvider>,
+  );
 }
 
 describe("command actions", () => {
@@ -165,7 +180,9 @@ describe("SiteHeader navigation", () => {
 
 describe("homepage content", () => {
   it("renders featured project treatments and clinical safety context", () => {
-    render(<FeaturedWorkSection projects={getFeaturedProjects()} />);
+    renderWithProviders(
+      <FeaturedWorkSection projects={getFeaturedProjects()} />,
+    );
 
     expect(
       screen.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
@@ -201,7 +218,7 @@ describe("homepage content", () => {
   });
 
   it("renders hero identity without fake profile photography", () => {
-    render(<HeroSection />);
+    renderWithProviders(<HeroSection />);
 
     expect(
       screen.getByRole("heading", { name: "Keren Schoss" }),

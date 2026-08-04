@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { NotFoundReconnect } from "@/components/motion/NotFoundReconnect";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
@@ -27,12 +28,13 @@ export default function NotFound() {
           <Text variant="meta" className="text-steel">
             404
           </Text>
+          <NotFoundReconnect />
           <Heading as="h1" variant="page" id="not-found-heading">
             Page not found
           </Heading>
           <Text variant="muted" className="text-pretty">
-            The page you requested does not exist. Return home or browse
-            selected work.
+            The page you requested does not exist. The system could not resolve
+            this route — return home or browse selected work.
           </Text>
           <div className="flex flex-wrap gap-3">
             <ButtonLink href="/" variant="primary">

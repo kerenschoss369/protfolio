@@ -5,6 +5,7 @@ import { ProjectLinkActions } from "@/components/case-study/ProjectLinkActions";
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
+import { projectTitleTransitionName } from "@/lib/view-transitions";
 import type { ReactNode } from "react";
 
 type CaseStudyHeroProps = {
@@ -43,7 +44,13 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
           }
         >
           <CaseStudyMetadata project={project} />
-          <Heading as="h1" variant="page">
+          <Heading
+            as="h1"
+            variant="page"
+            style={{
+              viewTransitionName: projectTitleTransitionName(project.slug),
+            }}
+          >
             {project.title}
           </Heading>
           <Text variant="body-lg" className="max-w-[40rem] text-pretty">

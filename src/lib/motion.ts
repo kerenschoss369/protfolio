@@ -1,8 +1,10 @@
 /**
- * Motion foundations — Phase 6.
- * Prefer CSS custom properties and progressive enhancement.
- * Motion for React is intentionally not used.
+ * Motion foundations — signature animation phase.
+ * CSS remains primary for simple transitions; Motion for React handles
+ * springs, shared layout, and coordinated choreography in Client Components.
  */
+
+import { motionBudget as signatureBudget } from "@/lib/animation-config";
 
 export const motionPreferences = {
   respectReducedMotion: true,
@@ -22,22 +24,18 @@ export const motionEasing = {
   exit: "var(--ease-exit)",
 } as const;
 
-/** Motion budget for Phase 6 refinements (documentation + runtime guards). */
+/** Motion budget — CSS tokens + signature Motion for React limits. */
 export const motionBudget = {
-  /** Homepage section reveal vertical offset */
   revealOffsetRem: 0.75,
-  /** Max stagger between related children */
   staggerStepMs: 60,
-  /** Max total stagger window */
-  staggerMaxMs: 180,
-  /** Theme color transition */
-  themeTransitionMs: 200,
-  /** Route enter opacity/transform */
-  routeEnterMs: 200,
-  /** Fine-pointer hero parallax in CSS pixels */
-  heroParallaxPx: 4,
-  /** Libraries */
-  motionForReact: false,
+  staggerMaxMs: 280,
+  themeTransitionMs: signatureBudget.themeTransitionMs,
+  routeEnterMs: signatureBudget.routeEnterMs,
+  heroParallaxPx: signatureBudget.heroParallaxPx,
+  pointerDepthMaxPx: signatureBudget.distances.pointerDepthMaxPx,
+  continuousLoopsMax: signatureBudget.continuousLoopsMax,
+  motionForReact: true,
+  packageName: "motion",
 } as const;
 
 export function getReducedMotionMediaQuery(): string {

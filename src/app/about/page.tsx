@@ -1,4 +1,5 @@
 import { ConfidentialityNotice } from "@/components/case-study/ConfidentialityNotice";
+import { AboutNarrative } from "@/components/motion/AboutNarrative";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
@@ -43,6 +44,10 @@ export default function AboutPage() {
             </Text>
           ))}
         </header>
+
+        <div className="mt-[var(--space-section-sm)] max-w-[48rem]">
+          <AboutNarrative />
+        </div>
 
         {primaryExperience ? (
           <section
