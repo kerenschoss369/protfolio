@@ -21,9 +21,9 @@ export function SelectedWorkIntro() {
               Projects that show how interfaces, systems, and AI boundaries meet
             </Heading>
             <Text variant="muted" className="max-w-[40rem] text-pretty">
-              Four featured compositions—each with its own visual language.
-              Detailed case studies and interactive demonstrations arrive in
-              later phases.
+              Four featured compositions—each with its own visual language. Open
+              a case study for the full write-up and local interactive
+              simulation where available.
             </Text>
           </div>
           <div className="col-span-full lg:col-span-4 lg:justify-self-end">

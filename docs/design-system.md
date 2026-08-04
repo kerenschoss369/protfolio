@@ -242,7 +242,26 @@ Shared foundations:
 - `ProjectVisualFrame` — labeled conceptual-preview frame for abstract media
 - Case-study sections — `CaseStudyHero`, `CaseStudySection`, `ContributionPanel`, `ArchitectureOverview`, `DecisionList`, `LimitationPanel`, `SafetyNotice`, `ConfidentialityNotice`, `ProjectNavigation`, `ProjectLinkActions`
 
-Work index filters use semantic `button` controls with `aria-pressed`, touch-sized targets, and an accessible empty `role="status"` state. Interactive demos remain deferred to Phase 5.
+Work index filters use semantic `button` controls with `aria-pressed`, touch-sized targets, and an accessible empty `role="status"` state.
+
+### Interactive demo visual rules (Phase 5)
+
+Shared shell primitives live under `src/components/demos/shared/`:
+
+- `DemoFrame` — steel-bordered inset surface with reserved min-height
+- `SimulationNotice` — persistent “Portfolio simulation” label
+- `DemoControls` / `DemoModeButton` — `aria-pressed` mode switches, ~44px targets
+- `InteractiveArchitectureDiagram` — focusable nodes, details panel, semantic list; decorative arrows only
+- Project-specific loading fallbacks (no spinner-only shells)
+
+Each demonstration keeps a distinct surface language:
+
+- Clinical — review/safety surfaces, evidence marks, warning safety panel
+- Realtime CLI — dark selectable terminal + event timeline
+- AcademEase — schedule CSS grid + RTL `dir`/`lang` recomposition
+- TapTap — lane targets, Perfect/Good/Miss text tags (never color alone)
+
+Motion inside demos is local CSS / `requestAnimationFrame` only. Motion for React and global route transitions remain deferred.
 
 ---
 

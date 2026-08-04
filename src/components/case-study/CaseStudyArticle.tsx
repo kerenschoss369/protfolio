@@ -9,6 +9,8 @@ import { LimitationPanel } from "@/components/case-study/LimitationPanel";
 import { ProjectNavigation } from "@/components/case-study/ProjectNavigation";
 import { SafetyNoticePanel } from "@/components/case-study/SafetyNotice";
 import { TechnologyList } from "@/components/case-study/TechnologyList";
+import { hasInteractiveDemo } from "@/components/demos/demo-projects";
+import { ProjectDemoSection } from "@/components/demos/ProjectDemoSection";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
 import { Text } from "@/components/ui/Text";
@@ -44,6 +46,16 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
 
         {project.confidentialityNote ? (
           <ConfidentialityNotice note={project.confidentialityNote} />
+        ) : null}
+
+        {hasInteractiveDemo(project.slug) ? (
+          <CaseStudySection
+            id="interactive-demo"
+            title="Interactive demonstration"
+            lead="Deterministic local simulation — not a live product session."
+          >
+            <ProjectDemoSection slug={project.slug} />
+          </CaseStudySection>
         ) : null}
 
         <div className="editorial-grid gap-y-12">

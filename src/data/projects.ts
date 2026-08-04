@@ -583,7 +583,7 @@ const realtimeGptCli: PublicCaseStudyProject & {
         id: "realtime-cli-terminal",
         label: "Deterministic browser terminal",
         sendsOpenAIRequests: false,
-        commands: ["hi", "6*7", "architecture", "exit"],
+        commands: ["help", "hi", "6*7", "architecture", "clear", "exit"],
       },
       caption: "Deterministic terminal simulation — not a live model session",
     },

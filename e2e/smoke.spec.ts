@@ -47,6 +47,9 @@ test.describe("homepage and navigation", () => {
   }) => {
     await page.goto("/");
 
+    await expect(
+      page.getByRole("button", { name: "Open command menu" }).first(),
+    ).toBeVisible();
     await page.keyboard.press("Control+K");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
@@ -101,7 +104,10 @@ test("work project route loads", async ({ page }) => {
   await page.goto("/work/clinical-follow-up-detector");
 
   await expect(
-    page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
+    page.getByRole("heading", {
+      name: "Clinical Follow-Up Detector",
+      exact: true,
+    }),
   ).toBeVisible();
   await expect(
     page.getByText("Demonstration system only", { exact: false }).first(),

@@ -162,7 +162,9 @@ export type InteractiveDemoDefinition =
       id: "realtime-cli-terminal";
       label: string;
       sendsOpenAIRequests: false;
-      commands: readonly ("hi" | "6*7" | "architecture" | "exit")[];
+      commands: readonly (
+        "help" | "hi" | "6*7" | "architecture" | "clear" | "exit"
+      )[];
     }
   | {
       kind: "schedule-rtl-preview";
