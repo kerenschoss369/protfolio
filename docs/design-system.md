@@ -1,8 +1,6 @@
 # Design System Direction
 
-This document defines the intended visual and interaction language. It is a constraint, not a demand to create every component immediately.
-
-The design-system agent should update concrete token names after inspecting the repository.
+This document defines the visual and interaction language and records the concrete tokens implemented in Phase 1.
 
 ## 1. Design character
 
@@ -46,346 +44,271 @@ Use:
 - Small monospace metadata
 - Precise alignment
 - Selective asymmetry
-- Subtle steel/chrome references
-- One controlled accent
+- Subtle steel/chrome references (`--steel`, `--steel-highlight`)
+- One controlled accent (electric cobalt)
+
+Implemented direction: warm paper light theme + deep graphite dark theme, restrained metallic borders, fluid type, editorial serif for key titles only.
 
 ---
 
 ## 3. Color system
 
-Exact values should be tested for contrast before finalization.
+Tokens live in `src/styles/tokens.css` and map into Tailwind via `@theme inline` in `src/styles/globals.css`.
 
-### Light theme roles
+Theme switching uses `data-theme="light" | "dark"` on `<html>`, with:
 
-- `--background`: warm off-white
-- `--foreground`: near-black
-- `--surface-1`: soft neutral
-- `--surface-2`: slightly elevated neutral
-- `--border-subtle`: cool gray
-- `--border-strong`: darker neutral
-- `--muted`: secondary text
-- `--accent`: electric cobalt or another controlled cool accent
-- `--accent-contrast`: text on accent
-- `--success`
-- `--warning`
-- `--danger`
-- `--focus-ring`
+- Inline boot script (no incorrect-theme flash where practical)
+- `ThemeProvider` persistence in `localStorage` (`portfolio-theme`)
+- System preference when no override is stored
+- `prefers-color-scheme` fallback before hydration
 
-### Dark theme roles
+### Light theme (`[data-theme="light"]`)
 
-- `--background`: deep graphite
-- `--foreground`: warm white
-- `--surface-1`: charcoal
-- `--surface-2`: slightly lighter charcoal
-- `--border-subtle`: muted silver
-- `--border-strong`: brighter silver
-- `--muted`: secondary warm gray
-- Same semantic accent family
-- Accessible semantic status colors
+| Token               | Value                      | Role                                    |
+| ------------------- | -------------------------- | --------------------------------------- |
+| `--background`      | `#f5f2ec`                  | Warm off-white page ground              |
+| `--foreground`      | `#12141a`                  | Near-black body text                    |
+| `--surface-1`       | `#ece8e1`                  | Soft neutral surface                    |
+| `--surface-2`       | `#e1dcd3`                  | Slightly elevated / inset surface       |
+| `--border-subtle`   | `#cdc7bc`                  | Hairline rules                          |
+| `--border-strong`   | `#857f74`                  | Stronger separators / secondary buttons |
+| `--muted`           | `#5a5751`                  | Secondary text                          |
+| `--accent`          | `#1b4fd8`                  | Electric cobalt                         |
+| `--accent-contrast` | `#f5f2ec`                  | Text on accent                          |
+| `--accent-muted`    | mix of accent + background | Soft accent wash                        |
+| `--success`         | `#1a6b42`                  | Positive / confirmed                    |
+| `--warning`         | `#8a5800`                  | Needs review                            |
+| `--danger`          | `#a91d2f`                  | Rejected / destructive                  |
+| `--focus-ring`      | `#1b4fd8`                  | Keyboard focus                          |
+| `--steel`           | `#7a828c`                  | Metallic metadata / accents             |
+| `--steel-highlight` | white mix                  | Inset metallic sheen                    |
+| `--overlay`         | darkened mix               | Future overlays                         |
+
+### Dark theme (`[data-theme="dark"]`)
+
+| Token               | Value     | Role                                |
+| ------------------- | --------- | ----------------------------------- |
+| `--background`      | `#121417` | Deep graphite                       |
+| `--foreground`      | `#f1eee7` | Warm white                          |
+| `--surface-1`       | `#1a1d22` | Charcoal                            |
+| `--surface-2`       | `#242830` | Elevated charcoal                   |
+| `--border-subtle`   | `#3a3f48` | Muted silver                        |
+| `--border-strong`   | `#7e8591` | Brighter silver                     |
+| `--muted`           | `#a9a399` | Secondary warm gray                 |
+| `--accent`          | `#6b8aff` | Same accent family, lifted for dark |
+| `--accent-contrast` | `#0c0e12` | Text on accent                      |
+| `--success`         | `#4caf7a` | Status                              |
+| `--warning`         | `#d6a33a` | Status                              |
+| `--danger`          | `#e35a67` | Status                              |
+| `--focus-ring`      | `#6b8aff` | Keyboard focus                      |
+| `--steel`           | `#9aa3ae` | Metallic reference                  |
+
+Status also exposes `--*-contrast` pairs for filled chips/buttons.
 
 Rules:
 
-- Color should support hierarchy, not replace it.
-- Do not use gradients as decoration by default.
-- Metallic references should come from border, reflection, typography, and restrained highlights.
-- Never communicate state with color alone.
+- Color supports hierarchy; it does not replace it.
+- Gradients are not decorative defaults.
+- Metallic references come from borders, sheens, and monospace metadata.
+- State is never communicated with color alone (status tags include text labels).
+- Contrast for core pairs is covered by unit tests in `src/lib/contrast.test.ts`.
 
 ---
 
 ## 4. Typography
 
-Use no more than three families.
+Three families via `next/font` in `src/app/layout.tsx`:
 
-### Sans
+| Role  | Family         | CSS variable          | Usage                                       |
+| ----- | -------------- | --------------------- | ------------------------------------------- |
+| Sans  | Geist          | `--font-sans-family`  | Body, navigation, UI, most section headings |
+| Serif | Source Serif 4 | `--font-serif-family` | Display, hero, page, and project titles     |
+| Mono  | Geist Mono     | `--font-mono-family`  | Metadata, tags, code, terminal, tech labels |
 
-Purpose:
+Kept from Phase 0: no strong design reason to replace; Geist reads contemporary and precise; Source Serif 4 provides editorial contrast without theatrical display fonts.
 
-- Body
-- Navigation
-- UI labels
-- Buttons
-- Most headings
+### Fluid scale (`clamp()`)
 
-Characteristics:
+| Token            | Purpose                           |
+| ---------------- | --------------------------------- |
+| `--text-display` | Rare large display                |
+| `--text-hero`    | Homepage name / primary statement |
+| `--text-page`    | Page titles                       |
+| `--text-section` | Section titles                    |
+| `--text-project` | Project titles                    |
+| `--text-body-lg` | Lead paragraphs                   |
+| `--text-body`    | Body                              |
+| `--text-sm`      | Supporting UI copy                |
+| `--text-meta`    | Uppercase monospace metadata      |
+| `--text-code`    | Code / terminal                   |
 
-- Variable
-- Excellent Latin rendering
-- Strong legibility
-- Multiple useful weights
-- Professional and contemporary
+Related tokens: `--leading-*`, `--tracking-*`.
 
-### Serif
-
-Purpose:
-
-- Selected statements
-- Project titles
-- Editorial contrast
-
-Use sparingly.
-
-### Monospace
-
-Purpose:
-
-- Technology labels
-- Code
-- Terminal simulation
-- Architecture metadata
-- Dates
-- Small status labels
-
-### Fluid scale
-
-Use `clamp()` and avoid abrupt breakpoint-only changes.
-
-Suggested semantic levels:
-
-- Display
-- Hero title
-- Page title
-- Section title
-- Project title
-- Body large
-- Body
-- Small
-- Metadata
-- Code
-
-Ensure headings remain readable at 320px without clipping.
+Primitives: `Heading`, `Text` in `src/components/ui/`.
 
 ---
 
 ## 5. Spacing and layout
 
-Create a coherent token scale.
+### Spacing tokens
 
-Suggested principles:
+`--space-1` … `--space-24`, plus:
 
-- Compact UI spacing
-- Generous section spacing
-- Comfortable reading measure
-- Strong vertical rhythm
-- Grid alignment across sections
+- `--space-gutter` — fluid horizontal page padding
+- `--space-section` / `--space-section-sm` — vertical section rhythm
 
-Large-screen content width:
+### Layout tokens
 
-- Approximately 1,400–1,500px maximum
+| Token            | Value / behavior             |
+| ---------------- | ---------------------------- |
+| `--content-max`  | `92.5rem` (1480px)           |
+| `--prose-max`    | `40rem` (~65ch)              |
+| `--measure`      | `65ch`                       |
+| `--grid-gap`     | fluid                        |
+| `--grid-columns` | 4 → 8 (≥48rem) → 12 (≥64rem) |
 
-Reading measure:
+Utility: `.editorial-grid`.
 
-- Approximately 60–75 characters for long prose
+Breakpoints (CSS vars + Tailwind `@theme`):
 
-Grid:
+- `--bp-sm` / `40rem`
+- `--bp-md` / `48rem`
+- `--bp-lg` / `64rem`
+- `--bp-xl` / `80rem`
+- `--bp-2xl` / `90rem`
 
-- 4 columns on small layouts where useful
-- 8 columns on medium layouts
-- 12 columns on large layouts
-
-Use container queries for reusable project components.
-
-Do not simply stack desktop columns on mobile. Reorder and simplify based on content importance.
+Primitive: `Container` (`content` | `prose` | `full`), `Section`.
 
 ---
 
 ## 6. Surfaces and borders
 
-Prefer:
+| Token / primitive   | Notes                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `--radius-sm/md/lg` | Controlled corners; no default pills                                                       |
+| `--border-width`    | 1px default                                                                                |
+| `Surface`           | `flat` / `raised` / `inset` / `accent` with `none` / `subtle` / `strong` / `steel` borders |
+| `Divider`           | `subtle` / `strong` / `steel`                                                              |
+| `--shadow-sm/md`    | Restrained; prefer borders                                                                 |
 
-- Thin borders
-- Soft tonal surfaces
-- Subtle inset or reflective highlights
-- Limited shadow use
-- Clear layering
-
-Avoid:
-
-- Heavy drop shadows
-- Frosted glass on every component
-- Floating cards with no structural alignment
-- Excessive rounded rectangles
-
-Rounded corners should be controlled and consistent.
+Avoid heavy drop shadows, ubiquitous glass, and floating card walls.
 
 ---
 
 ## 7. Buttons and links
 
-Buttons should feel precise, not inflated.
+Primitives:
 
-Required states:
+- `Button` — `primary` | `secondary` | `ghost` | `danger`; sizes `sm` | `md` | `lg`; loading/disabled
+- `TextLink` — internal `next/link` or external/mailto; hides never invent URLs
+- `IconButton` — requires accessible `label`; min 44px target (`--touch-target`)
 
-- Default
-- Hover
-- Focus-visible
-- Active
-- Disabled
-- Loading where applicable
+States: default, hover, focus-visible, active, disabled, loading.
 
-Rules:
-
-- Minimum practical touch target around 44px
-- Links must remain recognizable
-- Hover must not be the only feedback
-- Missing configured URLs must not create clickable elements
-- The primary CTA can use the accent
-- Secondary actions should be quieter
-
-Magnetic movement is optional and must be extremely subtle.
+Focus uses `--focus-ring` with `--focus-ring-width` and `--focus-ring-offset` globally via `:focus-visible`.
 
 ---
 
 ## 8. Navigation design
 
-Desktop:
+Full sticky/mobile navigation belongs to Phase 3. Foundations ready:
 
-- Minimal horizontal navigation
-- Strong route indication
-- Subtle surface after scroll
-- Compact theme and command controls
-
-Mobile:
-
-- Clear trigger
-- Full-width or full-screen panel
-- Large targets
-- Logical focus order
-- Escape support
-- Background scroll lock
-- Focus restoration
+- Theme toggle via `IconButton`
+- Skip link uses `--z-skip-link`
+- Preview includes a mobile-panel sample (targets, hierarchy only)
 
 ---
 
 ## 9. Project visual language
 
-Each featured project should have a distinct treatment.
+Deferred compositions remain project-specific. Shared foundations:
 
-### Clinical Follow-Up Detector
+- `Tag` — default / accent / steel / success / warning / danger
+- `ProjectMeta` — category, dates, stack as monospace metadata
 
-- Structured note-to-action transformation
-- Evidence highlighting
-- Architecture nodes
-- Safety and review indicators
-- Calm clinical-neutral language without mimicking real medical software
-
-### AcademEase
-
-- Schedule grid
-- Multilingual and RTL transformations
-- Course-material filtering
-- Academic planning rhythm
-
-### Realtime GPT CLI
-
-- Monospace terminal
-- Event timeline
-- Function-call visualization
-- WebSocket flow
-
-### TapTap Avengers
-
-- Rhythm lanes
-- Timing marks
-- Controlled game feedback
-- No copyrighted imagery or audio
-
-### Additional work
-
-Use compact editorial entries rather than full-screen experiences.
+Clinical / AcademEase / CLI / TapTap treatments stay for later case-study and demo phases.
 
 ---
 
 ## 10. Motion principles
 
-Motion must:
+Tokens:
 
-- Explain a relationship
-- Clarify state
-- Reinforce hierarchy
-- Reward interaction
-- Remain optional
+| Token               | Default                      |
+| ------------------- | ---------------------------- |
+| `--duration-fast`   | 120ms                        |
+| `--duration-base`   | 200ms                        |
+| `--duration-slow`   | 320ms                        |
+| `--ease-standard`   | `cubic-bezier(0.2, 0, 0, 1)` |
+| `--ease-emphasized` | `cubic-bezier(0.3, 0, 0, 1)` |
+| `--ease-entrance`   | `cubic-bezier(0, 0, 0.2, 1)` |
+| `--ease-exit`       | `cubic-bezier(0.4, 0, 1, 1)` |
 
-Motion must not:
+Under `prefers-reduced-motion: reduce`:
 
-- Delay reading
-- Move continuously without purpose
-- Hijack scroll
-- Cause layout shift
-- Require precise pointer control
-- create nausea or distraction
+- Duration tokens collapse to `0ms`
+- Global transitions/animations near-disabled in `globals.css`
+- Smooth scrolling disabled
 
-Preferred properties:
-
-- `transform`
-- `opacity`
-- Clip or mask only when performance remains acceptable
-
-Reduced-motion mode:
-
-- Remove parallax
-- Remove pointer-follow effects
-- Replace large transitions with instant or very short fades
-- Keep state changes understandable
-- Provide static alternatives for interactive demos where needed
+JS helpers in `src/lib/motion.ts` mirror token names. Motion for React remains deferred.
 
 ---
 
 ## 11. Responsive principles
 
-At every width:
+Validated intent for 320–1920px:
 
-- Preserve content hierarchy
-- Keep interactive targets usable
-- Prevent horizontal overflow
-- Simplify nonessential visuals
-- Recompose architecture diagrams vertically
-- Avoid tiny labels
-- Prevent code blocks from breaking layout
-- Support both pointer and touch
+- Fluid type and gutters avoid breakpoint-only jumps
+- `--touch-target` ≈ 44px
+- Editorial grid column count adapts
+- Preview exercises narrow and wide compositions
 
-Target review widths:
-
-- 320
-- 375
-- 430
-- 768
-- 1024
-- 1280
-- 1440
-- 1920
+Full page responsive polish continues in later phases.
 
 ---
 
 ## 12. Accessibility design rules
 
-- Focus-visible style must be part of the design
-- Contrast must meet WCAG 2.2 AA
-- Status cannot rely on color alone
-- Motion cannot be mandatory
-- Dialogs need visible close controls
-- Active route should be communicated semantically and visually
-- Icons need accessible names when interactive
-- Decorative visuals must not pollute the accessibility tree
-- Code and terminal content must remain selectable and readable
+- Visible `:focus-visible` using `--focus-ring`
+- Contrast unit-tested for AA body/UI pairs
+- Status tags include text, not color alone
+- Theme control is labeled
+- Reduced-motion token + CSS behavior
+- Preview documents keyboard focus paths
 
 ---
 
-## 13. Internal design preview
+## 13. Z-index layers
 
-Before full-page implementation, create a development-only showcase containing:
+`--z-base`, `--z-raised`, `--z-sticky`, `--z-overlay`, `--z-modal`, `--z-toast`, `--z-skip-link`
 
-- Type scale
-- Color roles
-- Theme switching
-- Buttons
-- Links
-- Focus states
-- Tags
-- Project metadata
-- Surfaces
-- Architecture node
-- Terminal row
-- Review-status item
-- Mobile navigation sample
+---
 
-Do not deploy the preview publicly unless intentionally placed behind a development condition.
+## 14. Foundational primitives
+
+Located in `src/components/ui/`:
+
+- `Container`
+- `Section`
+- `Heading`
+- `Text`
+- `Button`
+- `TextLink`
+- `Tag`
+- `ProjectMeta`
+- `Surface`
+- `Divider`
+- `IconButton`
+
+No heavy UI library.
+
+---
+
+## 15. Internal design preview
+
+- Route: `/design-system`
+- Component: `src/components/design-system/DesignSystemPreview.tsx`
+- Development only: `force-dynamic` + `notFound()` when `NODE_ENV !== "development"`
+- Open with `npm run dev`, then visit [http://localhost:3000/design-system](http://localhost:3000/design-system)
+
+Demonstrates type scale, color roles, theme switching, buttons, links, focus, tags, project metadata, surfaces, architecture-node sample, terminal row, review status, and mobile-nav sample.

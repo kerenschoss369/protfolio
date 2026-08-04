@@ -1,0 +1,109 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
+
+export type Theme = "light" | "dark";
+
+type ThemeContextValue = {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+};
+
+const STORAGE_KEY = "portfolio-theme";
+const THEME_EVENT = "portfolio-theme";
+
+const ThemeContext = createContext<ThemeContextValue | null>(null);
+
+function getSystemTheme(): Theme {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function readTheme(): Theme {
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (stored === "light" || stored === "dark") {
+    return stored;
+  }
+  return getSystemTheme();
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  const handleChange = () => {
+    applyTheme(readTheme());
+    onStoreChange();
+  };
+
+  window.addEventListener(THEME_EVENT, handleChange);
+  window.addEventListener("storage", handleChange);
+
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", handleChange);
+
+  return () => {
+    window.removeEventListener(THEME_EVENT, handleChange);
+    window.removeEventListener("storage", handleChange);
+    media.removeEventListener("change", handleChange);
+  };
+}
+
+function getThemeSnapshot(): Theme {
+  return readTheme();
+}
+
+function getServerThemeSnapshot(): Theme {
+  return "light";
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot,
+  );
+
+  const setTheme = useCallback((next: Theme) => {
+    window.localStorage.setItem(STORAGE_KEY, next);
+    applyTheme(next);
+    window.dispatchEvent(new Event(THEME_EVENT));
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "light" ? "dark" : "light");
+  }, [setTheme, theme]);
+
+  const value = useMemo(
+    () => ({
+      theme,
+      setTheme,
+      toggleTheme,
+    }),
+    [setTheme, theme, toggleTheme],
+  );
+
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+
+  if (!context) {
+    throw new Error("useTheme must be used within ThemeProvider");
+  }
+
+  return context;
+}

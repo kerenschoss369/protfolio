@@ -56,8 +56,8 @@ export const externalLinks = {
 Each project may include:
 
 ```ts
-repositoryUrl: null
-liveUrl: null
+repositoryUrl: null;
+liveUrl: null;
 ```
 
 Behavior:
@@ -497,7 +497,7 @@ The site design may aspire to award-level quality. The copy must not falsely cla
 For every project, include a field such as:
 
 ```ts
-collaboration: "solo" | "team" | "professional"
+collaboration: "solo" | "team" | "professional";
 ```
 
 Use:

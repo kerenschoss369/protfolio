@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Keren Schoss Portfolio
 
-## Getting Started
+Professional portfolio site for **Keren Schoss**, Frontend & Full-Stack Developer.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router)
+- React
+- TypeScript (strict)
+- Tailwind CSS v4
+- Vitest + Testing Library
+- Playwright
+- ESLint + Prettier
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Validation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run format
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run test:e2e
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Content editing
 
-## Learn More
+Central configuration lives in `src/data/`:
 
-To learn more about Next.js, take a look at the following resources:
+- `portfolio.ts` — name, title, positioning
+- `projects.ts` — projects (keep URLs `null` until real)
+- `experience.ts` — professional experience
+- `skills.ts` — skill groups
+- `links.ts` — GitHub, LinkedIn, email, CV, site URL
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Missing URLs must remain `null`. Do not use `#` or `example.com`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture notes
 
-## Deploy on Vercel
+- Server Components by default; Client Components only for theme (and later interactive surfaces)
+- Routes: `/`, `/work`, `/work/[slug]`, `/about`, `/contact`, custom `not-found`
+- Design tokens and full page design are intentionally incomplete in Phase 0
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Missing content checklist
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Add email
+- Add GitHub
+- Add LinkedIn
+- Add CV
+- Add repository links
+- Add live demos
+- Add screenshots
+- Add optional profile photo
+- Verify dates
+- Confirm repository visibility
+- Confirm hosting / domain (`siteUrl`)
+
+See `docs/` for the full product specification and phased agent prompts.

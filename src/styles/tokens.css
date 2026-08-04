@@ -1,0 +1,199 @@
+/*
+  Portfolio design tokens — Phase 1.
+  Semantic roles only; themes switch via data-theme on <html>.
+*/
+
+:root {
+  /* Typography — fluid scale via clamp()
+     Font families come from next/font (--font-sans-family, --font-serif-family, --font-mono-family). */
+
+  --text-display: clamp(2.5rem, 1.85rem + 3.2vw, 4.5rem);
+  --text-hero: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem);
+  --text-page: clamp(1.875rem, 1.55rem + 1.6vw, 3rem);
+  --text-section: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --text-project: clamp(1.25rem, 1.15rem + 0.55vw, 1.75rem);
+  --text-body-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);
+  --text-body: 1rem;
+  --text-sm: 0.875rem;
+  --text-meta: 0.75rem;
+  --text-code: 0.8125rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-meta: 0.06em;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-gutter: clamp(1rem, 0.7rem + 1.4vw, 2rem);
+  --space-section: clamp(4rem, 3rem + 4vw, 8rem);
+  --space-section-sm: clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  /* Layout / grid */
+  --content-max: 92.5rem; /* 1480px */
+  --prose-max: 40rem; /* ~65ch at body size */
+  --measure: 65ch;
+  --grid-gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+  --grid-columns: 4;
+
+  /* Breakpoints (documented reference; media queries use matching values) */
+  --bp-sm: 40rem; /* 640px */
+  --bp-md: 48rem; /* 768px */
+  --bp-lg: 64rem; /* 1024px */
+  --bp-xl: 80rem; /* 1280px */
+  --bp-2xl: 90rem; /* 1440px */
+
+  /* Borders & radius */
+  --border-width: 1px;
+  --border-width-strong: 1.5px;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  /* Focus */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Motion */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Elevation — restrained; prefer borders over heavy shadows */
+  --shadow-sm: 0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent);
+  --shadow-md: 0 4px 16px color-mix(in srgb, var(--foreground) 8%, transparent);
+
+  /* Z-index layers */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-skip-link: 600;
+
+  /* Touch */
+  --touch-target: 2.75rem; /* 44px */
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --grid-columns: 8;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --grid-columns: 12;
+  }
+}
+
+/* ——— Light theme ——— */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --background: #f5f2ec;
+  --foreground: #12141a;
+  --surface-1: #ece8e1;
+  --surface-2: #e1dcd3;
+  --border-subtle: #cdc7bc;
+  --border-strong: #857f74;
+  --muted: #5a5751;
+  --accent: #1b4fd8;
+  --accent-contrast: #f5f2ec;
+  --accent-muted: color-mix(in srgb, var(--accent) 12%, var(--background));
+  --success: #1a6b42;
+  --success-contrast: #f5f2ec;
+  --warning: #8a5800;
+  --warning-contrast: #f5f2ec;
+  --danger: #a91d2f;
+  --danger-contrast: #f5f2ec;
+  --focus-ring: #1b4fd8;
+  --steel: #7a828c;
+  --steel-highlight: color-mix(in srgb, #ffffff 55%, transparent);
+  --overlay: color-mix(in srgb, #12141a 45%, transparent);
+}
+
+/* ——— Dark theme ——— */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: #121417;
+  --foreground: #f1eee7;
+  --surface-1: #1a1d22;
+  --surface-2: #242830;
+  --border-subtle: #3a3f48;
+  --border-strong: #7e8591;
+  --muted: #a9a399;
+  --accent: #6b8aff;
+  --accent-contrast: #0c0e12;
+  --accent-muted: color-mix(in srgb, var(--accent) 16%, var(--background));
+  --success: #4caf7a;
+  --success-contrast: #0c0e12;
+  --warning: #d6a33a;
+  --warning-contrast: #0c0e12;
+  --danger: #e35a67;
+  --danger-contrast: #0c0e12;
+  --focus-ring: #6b8aff;
+  --steel: #9aa3ae;
+  --steel-highlight: color-mix(in srgb, #ffffff 12%, transparent);
+  --overlay: color-mix(in srgb, #000000 55%, transparent);
+}
+
+/* System preference when no explicit data-theme is set yet (boot flash guard) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: #121417;
+    --foreground: #f1eee7;
+    --surface-1: #1a1d22;
+    --surface-2: #242830;
+    --border-subtle: #3a3f48;
+    --border-strong: #7e8591;
+    --muted: #a9a399;
+    --accent: #6b8aff;
+    --accent-contrast: #0c0e12;
+    --accent-muted: color-mix(in srgb, var(--accent) 16%, var(--background));
+    --success: #4caf7a;
+    --success-contrast: #0c0e12;
+    --warning: #d6a33a;
+    --warning-contrast: #0c0e12;
+    --danger: #e35a67;
+    --danger-contrast: #0c0e12;
+    --focus-ring: #6b8aff;
+    --steel: #9aa3ae;
+    --steel-highlight: color-mix(in srgb, #ffffff 12%, transparent);
+    --overlay: color-mix(in srgb, #000000 55%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
