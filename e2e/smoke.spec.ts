@@ -104,6 +104,6 @@ test("work project route loads", async ({ page }) => {
     page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
   ).toBeVisible();
   await expect(
-    page.getByText("Demonstration system only", { exact: false }),
+    page.getByText("Demonstration system only", { exact: false }).first(),
   ).toBeVisible();
 });

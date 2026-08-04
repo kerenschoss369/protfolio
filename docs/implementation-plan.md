@@ -109,7 +109,8 @@ Helpers:
 
 - `ThemeProvider`, `ThemeToggle`
 - `SiteHeader`, `MobileNav`, `CommandMenu`, `HeroVisual` (scroll/overlay/pointer interaction)
-- Future: filters, demos, architecture controls, advanced motion
+- `WorkFilters` (keyboard-accessible project filtering)
+- Future: demos, architecture controls, advanced motion
 
 ### State strategy
 
@@ -150,9 +151,10 @@ Helpers:
 
 ### Testing strategy
 
-- Unit: link/config helpers and later interaction logic
-- Playwright: homepage, navigation, case-study route; expand in Phase 7
+- Unit: link/config helpers, work filters, adjacent navigation, case-study content guarantees
+- Playwright: homepage, navigation, `/work` filtering, all public project routes, invalid slug 404, prev/next, 320px overflow
 - Manual responsive/keyboard checks each major phase
+- Full WCAG / performance audit remains Phase 7
 
 ---
 
@@ -277,14 +279,17 @@ Owner prompt:
 
 - `docs/agents/04-case-study-system.md`
 
+Status: **complete**
+
 Deliverables:
 
-- Work index
-- Reusable case-study structure
-- Individual project pages
-- Distinct visual composition per project
-- Architecture, contribution, limitations, and attribution sections
-- Project-to-project navigation
+- Work index with editorial intro, featured / practice grouping, and keyboard-accessible filters
+- Reusable case-study primitives under `src/components/case-study/`
+- Complete `/work/[slug]` pages from typed project data with `generateStaticParams` + `notFound()`
+- Distinct abstract visual per project (no fabricated screenshots)
+- Architecture, contribution, limitations, safety, and attribution sections only when content exists
+- Non-wrapping previous/next project navigation
+- Professional Abra / EL AL section on `/work` (not a repository case study)
 
 Exit criteria:
 
@@ -424,29 +429,35 @@ Do not claim a command passed until it has actually been run.
 
 ## 5. Decision log
 
-| Date       | Agent          | Decision                                                                               | Reason                                                                                                                    | Affected files                                                                                       |
-| ---------- | -------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 2026-08-04 | Lead architect | Scaffold greenfield Next.js 16 App Router + React 19 + TS + Tailwind v4 with npm       | Repo was docs-only; preferred stack from portfolio-spec with no conflicting foundation                                    | `package.json`, `src/app/**`, config files                                                           |
-| 2026-08-04 | Lead architect | Keep all external and project URLs as `null` and gate rendering with `isConfiguredUrl` | Content-decisions forbid fake links                                                                                       | `src/data/links.ts`, `src/data/projects.ts`, `src/lib/links.ts`, contact/header/footer/project pages |
-| 2026-08-04 | Lead architect | Defer Motion for React, command menu, demos, and full design tokens                    | Phase 0 scope is foundation only                                                                                          | `docs/implementation-plan.md`, later phase owners                                                    |
-| 2026-08-04 | Lead architect | Use `collaboration: "pending-verification"` for Clinical and Realtime GPT CLI          | Content-decisions require repository evidence before solo claims                                                          | `src/data/projects.ts`                                                                               |
-| 2026-08-04 | Lead architect | Employment dates remain `2025–Present` and easy to edit                                | Spec/content mark dates subject to final verification                                                                     | `src/data/experience.ts`                                                                             |
-| 2026-08-04 | Lead architect | Temporary fonts: Geist (sans/mono) + Source Serif 4                                    | Need three-family slots without final design-system selection                                                             | `src/app/layout.tsx`                                                                                 |
-| 2026-08-04 | Design system  | Keep Geist + Source Serif 4 + Geist Mono as permanent portfolio pairing                | Strong legibility, editorial contrast, three-family limit; no reason to replace                                           | `src/app/layout.tsx`, `docs/design-system.md`                                                        |
-| 2026-08-04 | Design system  | Electric cobalt accent on warm paper / graphite themes with steel metallic accents     | Spec light/dark direction; photographer-calm editorial + technical precision                                              | `src/styles/tokens.css`, `docs/design-system.md`                                                     |
-| 2026-08-04 | Design system  | Dev-only `/design-system` preview via `force-dynamic` + `notFound` outside development | Showcase tokens/primitives without shipping a public design-kit page                                                      | `src/app/design-system/page.tsx`, `src/components/design-system/DesignSystemPreview.tsx`             |
-| 2026-08-04 | Design system  | Foundational UI primitives only (no component library)                                 | Reuse without generic library look; homepage redesign deferred to Phase 3                                                 | `src/components/ui/*`                                                                                |
-| 2026-08-04 | Design system  | Automate WCAG AA contrast checks for solid theme pairs                                 | Validate accent/muted/status against backgrounds as tokens evolve                                                         | `src/lib/contrast.ts`, `src/lib/contrast.test.ts`                                                    |
-| 2026-08-04 | Content model  | Expand collaboration into a discriminated attribution object                           | Support pending-verification, team, individual-practice, educational-research, professional without premature solo claims | `src/data/content-types.ts`, `src/data/projects.ts`                                                  |
-| 2026-08-04 | Content model  | Require structured `clinicalSafety` on Clinical Follow-Up Detector                     | Spec mandates non-softenable safety facts; type + validation enforce them                                                 | `src/data/projects.ts`, `src/lib/content-validation.ts`                                              |
-| 2026-08-04 | Content model  | Keep Abra / EL AL as `ProfessionalWork`, not a public project                          | Proprietary work must stay separate from repository/case-study presentation                                               | `src/data/experience.ts`                                                                             |
-| 2026-08-04 | Content model  | Reject `#`, `example.com`, and bracket placeholders in link helpers                    | Content-decisions forbid fake public actions                                                                              | `src/lib/links.ts`, `src/data/links.ts`                                                              |
-| 2026-08-04 | Content model  | Leave Clinical + Realtime GPT CLI as `pending-verification`                            | No repository ownership evidence yet                                                                                      | `src/data/projects.ts`, open questions                                                               |
-| 2026-08-04 | Homepage/nav   | Implement focus trap + scroll lock locally; no dialog library                          | Phase 3 forbids heavy overlay deps unless necessary; keeps bundle small                                                   | `src/lib/focus-trap.ts`, `MobileNav`, `CommandMenu`                                                  |
-| 2026-08-04 | Homepage/nav   | Simple substring command search over labels/keywords; no fuzzy library                 | Spec allows avoiding fuzzy deps; title/category/tech matching is enough                                                   | `src/lib/command-actions.ts`                                                                         |
-| 2026-08-04 | Homepage/nav   | Keep Motion for React deferred; CSS transitions + SVG static hero only                 | Phase 3 motion constraints; hero must work without JS animation                                                           | `HeroVisual`, `globals.css`                                                                          |
-| 2026-08-04 | Homepage/nav   | Distinct featured compositions per project; static previews only                       | Spec forbids identical cards; advanced demos belong to Phase 5                                                            | `src/components/home/FeaturedProjects.tsx`                                                           |
-| 2026-08-04 | Homepage/nav   | Hide CV/GitHub/LinkedIn/email actions when null                                        | Content-decisions: no fake links                                                                                          | Header, footer, hero, contact CTA, command menu                                                      |
+| Date       | Agent          | Decision                                                                                | Reason                                                                                                                    | Affected files                                                                                       |
+| ---------- | -------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 2026-08-04 | Lead architect | Scaffold greenfield Next.js 16 App Router + React 19 + TS + Tailwind v4 with npm        | Repo was docs-only; preferred stack from portfolio-spec with no conflicting foundation                                    | `package.json`, `src/app/**`, config files                                                           |
+| 2026-08-04 | Lead architect | Keep all external and project URLs as `null` and gate rendering with `isConfiguredUrl`  | Content-decisions forbid fake links                                                                                       | `src/data/links.ts`, `src/data/projects.ts`, `src/lib/links.ts`, contact/header/footer/project pages |
+| 2026-08-04 | Lead architect | Defer Motion for React, command menu, demos, and full design tokens                     | Phase 0 scope is foundation only                                                                                          | `docs/implementation-plan.md`, later phase owners                                                    |
+| 2026-08-04 | Lead architect | Use `collaboration: "pending-verification"` for Clinical and Realtime GPT CLI           | Content-decisions require repository evidence before solo claims                                                          | `src/data/projects.ts`                                                                               |
+| 2026-08-04 | Lead architect | Employment dates remain `2025–Present` and easy to edit                                 | Spec/content mark dates subject to final verification                                                                     | `src/data/experience.ts`                                                                             |
+| 2026-08-04 | Lead architect | Temporary fonts: Geist (sans/mono) + Source Serif 4                                     | Need three-family slots without final design-system selection                                                             | `src/app/layout.tsx`                                                                                 |
+| 2026-08-04 | Design system  | Keep Geist + Source Serif 4 + Geist Mono as permanent portfolio pairing                 | Strong legibility, editorial contrast, three-family limit; no reason to replace                                           | `src/app/layout.tsx`, `docs/design-system.md`                                                        |
+| 2026-08-04 | Design system  | Electric cobalt accent on warm paper / graphite themes with steel metallic accents      | Spec light/dark direction; photographer-calm editorial + technical precision                                              | `src/styles/tokens.css`, `docs/design-system.md`                                                     |
+| 2026-08-04 | Design system  | Dev-only `/design-system` preview via `force-dynamic` + `notFound` outside development  | Showcase tokens/primitives without shipping a public design-kit page                                                      | `src/app/design-system/page.tsx`, `src/components/design-system/DesignSystemPreview.tsx`             |
+| 2026-08-04 | Design system  | Foundational UI primitives only (no component library)                                  | Reuse without generic library look; homepage redesign deferred to Phase 3                                                 | `src/components/ui/*`                                                                                |
+| 2026-08-04 | Design system  | Automate WCAG AA contrast checks for solid theme pairs                                  | Validate accent/muted/status against backgrounds as tokens evolve                                                         | `src/lib/contrast.ts`, `src/lib/contrast.test.ts`                                                    |
+| 2026-08-04 | Content model  | Expand collaboration into a discriminated attribution object                            | Support pending-verification, team, individual-practice, educational-research, professional without premature solo claims | `src/data/content-types.ts`, `src/data/projects.ts`                                                  |
+| 2026-08-04 | Content model  | Require structured `clinicalSafety` on Clinical Follow-Up Detector                      | Spec mandates non-softenable safety facts; type + validation enforce them                                                 | `src/data/projects.ts`, `src/lib/content-validation.ts`                                              |
+| 2026-08-04 | Content model  | Keep Abra / EL AL as `ProfessionalWork`, not a public project                           | Proprietary work must stay separate from repository/case-study presentation                                               | `src/data/experience.ts`                                                                             |
+| 2026-08-04 | Content model  | Reject `#`, `example.com`, and bracket placeholders in link helpers                     | Content-decisions forbid fake public actions                                                                              | `src/lib/links.ts`, `src/data/links.ts`                                                              |
+| 2026-08-04 | Content model  | Leave Clinical + Realtime GPT CLI as `pending-verification`                             | No repository ownership evidence yet                                                                                      | `src/data/projects.ts`, open questions                                                               |
+| 2026-08-04 | Homepage/nav   | Implement focus trap + scroll lock locally; no dialog library                           | Phase 3 forbids heavy overlay deps unless necessary; keeps bundle small                                                   | `src/lib/focus-trap.ts`, `MobileNav`, `CommandMenu`                                                  |
+| 2026-08-04 | Homepage/nav   | Simple substring command search over labels/keywords; no fuzzy library                  | Spec allows avoiding fuzzy deps; title/category/tech matching is enough                                                   | `src/lib/command-actions.ts`                                                                         |
+| 2026-08-04 | Homepage/nav   | Keep Motion for React deferred; CSS transitions + SVG static hero only                  | Phase 3 motion constraints; hero must work without JS animation                                                           | `HeroVisual`, `globals.css`                                                                          |
+| 2026-08-04 | Homepage/nav   | Distinct featured compositions per project; static previews only                        | Spec forbids identical cards; advanced demos belong to Phase 5                                                            | `src/components/home/FeaturedProjects.tsx`                                                           |
+| 2026-08-04 | Homepage/nav   | Hide CV/GitHub/LinkedIn/email actions when null                                         | Content-decisions: no fake links                                                                                          | Header, footer, hero, contact CTA, command menu                                                      |
+| 2026-08-04 | Case studies   | Derive work filters from category/kind/stack; client filter buttons with `aria-pressed` | Avoid duplicate hard-coded project lists; keep filtering lightweight without a search dependency                          | `src/lib/project-utils.ts`, `src/components/work/WorkFilters.tsx`                                    |
+| 2026-08-04 | Case studies   | Keep typed `projects` array order for prev/next; do not wrap at ends                    | Simple, predictable navigation; first has no previous, last has no next                                                   | `getAdjacentProjects`, `ProjectNavigation`                                                           |
+| 2026-08-04 | Case studies   | Shared case-study primitives + per-slug visual compositions                             | Consistency without one identical card/layout for every project                                                           | `src/components/case-study/**`                                                                       |
+| 2026-08-04 | Case studies   | Abstract HTML/CSS visuals + media README guidance; keep `.gitkeep` folders              | No fabricated screenshots or stock imagery until real assets exist                                                        | `public/projects/`, visual components                                                                |
+| 2026-08-04 | Case studies   | Professional work as `/work` section only, never a public project slug                  | Proprietary EL AL work must stay separate from repository case studies                                                    | `ProfessionalWorkSection`                                                                            |
+| 2026-08-04 | Case studies   | Defer interactive demos, Motion, and full structured-data audit to later phases         | Phase 4 scope is editorial case studies; Phase 5/6/7 own demos, motion, SEO                                               | Phase status in this plan                                                                            |
 
 ---
 

@@ -225,20 +225,24 @@ Implemented in Phase 3:
 
 ## 9. Project visual language
 
-Homepage featured treatments (Phase 3) introduce distinct preview languages:
+Homepage featured treatments (Phase 3) and case-study pages (Phase 4) share distinct preview languages:
 
-- Clinical — note/action review surfaces, evidence, needs-review status, safety copy
-- AcademEase — schedule grid + multilingual/RTL metadata
-- Realtime GPT CLI — terminal/event rows, offline simulation label
-- TapTap — silent rhythm/timing marks (Perfect / Good / Miss)
+- Clinical — note/action review surfaces, evidence, needs-review status, safety copy, architecture chain
+- AcademEase — schedule grid + course-material tiles + multilingual/RTL metadata
+- Realtime GPT CLI — terminal/event rows, goroutine/channel cues, offline simulation label
+- TapTap — silent rhythm/timing marks (Perfect / Good / Miss), no copyrighted assets
+- OverTheWire Bandit — compact level-progress practice visual (no secrets)
+- ATLAS — abstract data-analysis bars (not fabricated scientific results)
 
 Shared foundations:
 
 - `Tag` — default / accent / steel / success / warning / danger
 - `ProjectMeta` — category, dates, stack as monospace metadata
 - `ButtonLink` — link styled with button variants for CTAs
+- `ProjectVisualFrame` — labeled conceptual-preview frame for abstract media
+- Case-study sections — `CaseStudyHero`, `CaseStudySection`, `ContributionPanel`, `ArchitectureOverview`, `DecisionList`, `LimitationPanel`, `SafetyNotice`, `ConfidentialityNotice`, `ProjectNavigation`, `ProjectLinkActions`
 
-Full case-study layouts and interactive demos remain for later phases.
+Work index filters use semantic `button` controls with `aria-pressed`, touch-sized targets, and an accessible empty `role="status"` state. Interactive demos remain deferred to Phase 5.
 
 ---
 
