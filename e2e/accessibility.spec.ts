@@ -2,6 +2,16 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 async function expectNoSeriousAxeViolations(page: Page) {
+  // Unrevealed motion content is opacity:0, which creates false color-contrast
+  // failures. Match the themes/reduced-motion cases for stable axe runs.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.evaluate(() => {
+    document.documentElement.removeAttribute("data-reveal-enhanced");
+    document.querySelectorAll("[data-reveal]").forEach((node) => {
+      node.setAttribute("data-revealed", "");
+    });
+  });
+
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();

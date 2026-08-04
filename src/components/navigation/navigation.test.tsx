@@ -58,13 +58,13 @@ describe("command actions", () => {
     expect(labels).toContain("Switch theme");
   });
 
-  it("hides unconfigured external actions", () => {
+  it("includes configured external actions", () => {
     const labels = buildCommandActions().map((action) => action.label);
 
-    expect(labels).not.toContain("Open GitHub");
-    expect(labels).not.toContain("Open LinkedIn");
-    expect(labels).not.toContain("Download CV");
-    expect(labels).not.toContain("Send email");
+    expect(labels).toContain("Open GitHub");
+    expect(labels).toContain("Open LinkedIn");
+    expect(labels).toContain("Download CV");
+    expect(labels).toContain("Send email");
   });
 
   it("filters by title, category, and technology", () => {
@@ -153,9 +153,13 @@ describe("SiteHeader navigation", () => {
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
 
-  it("does not render Download CV when unconfigured", () => {
+  it("renders Download CV when configured", () => {
     renderWithProviders(<SiteHeader />);
-    expect(screen.queryByText("Download CV")).not.toBeInTheDocument();
+    const cvLinks = screen.getAllByRole("link", { name: /Download CV/i });
+    expect(cvLinks.length).toBeGreaterThan(0);
+    for (const link of cvLinks) {
+      expect(link).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
+    }
   });
 });
 

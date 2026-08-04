@@ -307,7 +307,8 @@ const clinicalFollowUpDetector: ClinicalFollowUpDetectorProject = {
     "SQLite-backed persistence with atomic writes",
     "Testable AI integration using mocked LLM responses",
   ],
-  repositoryUrl: null,
+  repositoryUrl:
+    "https://github.com/kerenschoss369/clinical-follow-up-detector",
   liveUrl: null,
   media: [
     {
@@ -573,7 +574,7 @@ const realtimeGptCli: PublicCaseStudyProject & {
     "Local function calling against a streamed model session",
     "Environment-based credential handling",
   ],
-  repositoryUrl: null,
+  repositoryUrl: "https://github.com/kerenschoss369/go-gpt-realtime-cli",
   liveUrl: null,
   media: [
     {
@@ -687,7 +688,7 @@ const tapTapAvengers: PublicCaseStudyProject & {
     "Shader and animation experimentation",
     "Team game-development collaboration",
   ],
-  repositoryUrl: null,
+  repositoryUrl: "https://github.com/uvw222/TapTapAvengers",
   liveUrl: null,
   media: [
     {

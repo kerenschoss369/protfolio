@@ -21,8 +21,8 @@ Location wording allowed:
 Background:
 
 - Professional fashion photographer from 2014–2020
-- Computer Science education at the Academic College of Tel Aviv–Yaffo
-- Alpha Research Program in the Sciences at Tel Aviv University
+- B.Sc. in Computer Science at the Academic College of Tel Aviv–Yaffo (graduated Oct 2024)
+- Alpha Research Program in the Sciences at Tel Aviv University (2015–2018)
 - Current production frontend work through Abra on EL AL’s web platform
 
 Do not infer:
@@ -43,22 +43,30 @@ Do not infer:
 
 Use configuration values, never hard-coded fake links.
 
+Configured contact links (as of Keren-supplied values):
+
 ```ts
 export const externalLinks = {
-  githubUrl: null,
-  linkedinUrl: null,
-  email: null,
-  cvPath: null,
-  siteUrl: null,
+  githubUrl: "https://github.com/kerenschoss369",
+  linkedinUrl: "https://www.linkedin.com/in/kerenschoss/",
+  email: "kerenschoss369@gmail.com",
+  cvPath: "/cv/keren-schoss-cv.pdf",
+  siteUrl: null, // production domain not set yet
 } as const;
 ```
 
-Each project may include:
+Configured public repository links:
 
-```ts
-repositoryUrl: null;
-liveUrl: null;
-```
+- Clinical Follow-Up Detector — `https://github.com/kerenschoss369/clinical-follow-up-detector` (collaboration remains `pending-verification`)
+- Realtime GPT-4o-mini CLI — `https://github.com/kerenschoss369/go-gpt-realtime-cli` (collaboration remains `pending-verification`)
+- TapTap Avengers — `https://github.com/uvw222/TapTapAvengers` (team repository; collaboration stays `team`)
+
+Still `null` (do not invent links):
+
+- AcademEase — no confirmed public repository yet
+- OverTheWire Bandit — engineering-practice item; no repository link
+- ATLAS Research — educational research; not a GitHub software repository
+- All `liveUrl` values — no live-demo links yet
 
 Behavior:
 
@@ -66,6 +74,7 @@ Behavior:
 - Never use `#`.
 - Never use `example.com`.
 - Never display `[GITHUB_URL]` or similar text publicly.
+- Do not change collaboration/ownership solely because a repo is under Keren’s GitHub account.
 
 ---
 
@@ -516,16 +525,25 @@ Do not render “solo” until verified.
 
 ## 13. Missing content checklist
 
-- GitHub profile
-- LinkedIn profile
-- Email
-- CV PDF
-- Domain
-- Public repository links
+Resolved:
+
+- GitHub profile — https://github.com/kerenschoss369
+- LinkedIn profile — https://www.linkedin.com/in/kerenschoss/
+- Email — kerenschoss369@gmail.com
+- CV PDF — `/cv/keren-schoss-cv.pdf`
+- Confirmed education dates — B.Sc. graduated Oct 2024; Alpha research 2015–2018
+
+Partially resolved:
+
+- Public repository links — Clinical, Realtime GPT CLI, and TapTap configured; AcademEase still pending
+
+Still unresolved:
+
+- Domain / site URL
+- AcademEase public repository link
 - Live demos
 - Project screenshots
 - Optional profile photograph
-- Confirmed employment dates
-- Confirmed education dates
+- Confirmed employment dates (CV shows 2025–2026; site currently uses 2025–Present pending confirmation)
 - Confirmation of public/private repository status
-- Confirmation of ownership for the clinical and Go repositories
+- Confirmation of ownership / individual attribution for the clinical and Go repositories

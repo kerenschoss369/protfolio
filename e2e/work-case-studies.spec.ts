@@ -27,9 +27,11 @@ test.describe("work index and case studies", () => {
     await expect(
       page.getByText(/Professional work is described at a high level/i),
     ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /View repository/i }),
-    ).toHaveCount(0);
+    // Work index uses "Repository" labels; case studies use "View repository".
+    await expect(page.getByRole("link", { name: /^Repository$/i })).toHaveCount(
+      3,
+    );
+    await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
   });
 
   test("project filtering works by keyboard", async ({ page }) => {
@@ -126,12 +128,55 @@ test.describe("work index and case studies", () => {
     }
   });
 
-  test("project links are absent when URLs are null", async ({ page }) => {
+  test("configured repository links appear only on verified projects", async ({
+    page,
+  }) => {
+    await page.goto("/work/clinical-follow-up-detector");
+    const clinicalRepo = page.getByRole("link", { name: /View repository/i });
+    await expect(clinicalRepo).toHaveCount(1);
+    await expect(clinicalRepo).toHaveAttribute(
+      "href",
+      "https://github.com/kerenschoss369/clinical-follow-up-detector",
+    );
+    await expect(clinicalRepo).toHaveAttribute("target", "_blank");
+    await expect(clinicalRepo).toHaveAttribute("rel", /noopener/);
+    await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
+
     await page.goto("/work/realtime-gpt-cli");
+    const cliRepo = page.getByRole("link", { name: /View repository/i });
+    await expect(cliRepo).toHaveCount(1);
+    await expect(cliRepo).toHaveAttribute(
+      "href",
+      "https://github.com/kerenschoss369/go-gpt-realtime-cli",
+    );
+    await expect(cliRepo).toHaveAttribute("target", "_blank");
+    await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
+
+    await page.goto("/work/taptap-avengers");
+    const tapRepo = page.getByRole("link", { name: /View repository/i });
+    await expect(tapRepo).toHaveCount(1);
+    await expect(tapRepo).toHaveAttribute(
+      "href",
+      "https://github.com/uvw222/TapTapAvengers",
+    );
+    await expect(tapRepo).toHaveAttribute("target", "_blank");
+    await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
+
+    await page.goto("/work/academease");
     await expect(
       page.getByRole("link", { name: /View repository/i }),
     ).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
+
+    await page.goto("/work/overthewire-bandit");
+    await expect(
+      page.getByRole("link", { name: /View repository/i }),
+    ).toHaveCount(0);
+
+    await page.goto("/work/atlas-research");
+    await expect(
+      page.getByRole("link", { name: /View repository/i }),
+    ).toHaveCount(0);
   });
 
   test("professional work has no repository link", async ({ page }) => {

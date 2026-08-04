@@ -43,18 +43,18 @@ export const educationAndResearch: EducationOrResearchItem[] = [
   {
     id: "cs-academic-college-tlv",
     kind: "education",
-    title: "Computer Science",
+    title: "B.Sc. in Computer Science",
     organization: "Academic College of Tel Aviv–Yaffo",
-    dates: null,
+    dates: "Graduated Oct 2024",
     summary:
-      "Computer Science education at the Academic College of Tel Aviv–Yaffo.",
+      "B.Sc. in Computer Science at the Academic College of Tel Aviv–Yaffo.",
   },
   {
     id: "alpha-research-tau",
     kind: "research-program",
     title: "Alpha Research Program in the Sciences",
     organization: "Tel Aviv University",
-    dates: null,
+    dates: "2015–2018",
     summary:
       "Educational research context for the ATLAS two-photon invariant-mass analysis project.",
   },

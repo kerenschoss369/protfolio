@@ -94,11 +94,26 @@ describe("case-study route data", () => {
     );
   });
 
-  it("omits missing external links from configured project data", () => {
+  it("omits unconfigured live demos and keeps null repository links hidden", () => {
     for (const project of projects) {
-      expect(isConfiguredHttpUrl(project.repositoryUrl)).toBe(false);
       expect(isConfiguredHttpUrl(project.liveUrl)).toBe(false);
     }
+
+    expect(getProjectBySlug("academease")?.repositoryUrl).toBeNull();
+    expect(getProjectBySlug("overthewire-bandit")?.repositoryUrl).toBeNull();
+    expect(getProjectBySlug("atlas-research")?.repositoryUrl).toBeNull();
+  });
+
+  it("exposes repository links only on verified projects", () => {
+    expect(getProjectBySlug("clinical-follow-up-detector")?.repositoryUrl).toBe(
+      "https://github.com/kerenschoss369/clinical-follow-up-detector",
+    );
+    expect(getProjectBySlug("realtime-gpt-cli")?.repositoryUrl).toBe(
+      "https://github.com/kerenschoss369/go-gpt-realtime-cli",
+    );
+    expect(getProjectBySlug("taptap-avengers")?.repositoryUrl).toBe(
+      "https://github.com/uvw222/TapTapAvengers",
+    );
   });
 });
 

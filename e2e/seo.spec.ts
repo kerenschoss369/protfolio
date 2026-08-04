@@ -51,7 +51,10 @@ test.describe("SEO and production readiness", () => {
     const payload = Array.isArray(parsed) ? parsed : [parsed];
     const person = payload.find((item) => item["@type"] === "Person");
     expect(person?.name).toBe("Keren Schoss");
-    expect(person?.sameAs).toBeUndefined();
+    expect(person?.sameAs).toEqual([
+      "https://github.com/kerenschoss369",
+      "https://www.linkedin.com/in/kerenschoss/",
+    ]);
     expect(JSON.stringify(person)).not.toMatch(/example\.com/i);
   });
 
@@ -72,21 +75,65 @@ test.describe("SEO and production readiness", () => {
       foundProject = true;
       expect(text).toMatch(/Demonstration system only/i);
       expect(text.toLowerCase()).not.toContain("medical device");
-      expect(text).not.toMatch(/"codeRepository"/);
+      expect(text).toMatch(
+        /"codeRepository":"https:\/\/github\.com\/kerenschoss369\/clinical-follow-up-detector"/,
+      );
     }
     expect(foundProject).toBe(true);
   });
 
-  test("contact empty state has no fake actions", async ({ page }) => {
+  test("contact exposes configured methods without fake placeholders", async ({
+    page,
+  }) => {
     await page.goto("/contact");
     await expect(
       page.getByRole("heading", { name: "Contact", exact: true }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: /Email/i })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /GitHub/i })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /LinkedIn/i })).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: /Email Keren Schoss/i }),
+    ).toHaveAttribute("href", "mailto:kerenschoss369@gmail.com");
+    await expect(page.getByRole("link", { name: /LinkedIn/i })).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/kerenschoss/",
+    );
+    await expect(page.getByRole("link", { name: /GitHub/i })).toHaveAttribute(
+      "href",
+      "https://github.com/kerenschoss369",
+    );
+    await expect(
+      page.getByRole("link", { name: /Download CV/i }),
+    ).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
     await expect(page.locator('a[href="#"]')).toHaveCount(0);
     await expect(page.locator('a[href*="example.com"]')).toHaveCount(0);
+  });
+
+  test("CV download is available from homepage, nav, and command menu", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("navigation", { name: "Primary" }).getByRole("link", {
+        name: /Download CV/i,
+      }),
+    ).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
+    await expect(
+      page
+        .getByRole("main")
+        .getByRole("link", { name: /Download CV/i })
+        .first(),
+    ).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
+
+    const cvResponse = await page.request.get("/cv/keren-schoss-cv.pdf");
+    expect(cvResponse.ok()).toBeTruthy();
+    expect(cvResponse.headers()["content-type"]).toMatch(/pdf/i);
+
+    await page.keyboard.press("Control+K");
+    const dialog = page.getByRole("dialog", { name: "Command menu" });
+    await expect(dialog).toBeVisible();
+    await page.getByLabel("Search commands").fill("cv");
+    await expect(
+      dialog.getByRole("option", { name: /Download CV/i }),
+    ).toBeVisible();
   });
 
   test("favicon and open graph image routes respond", async ({ page }) => {

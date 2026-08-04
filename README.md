@@ -94,10 +94,10 @@ Edit `src/data/links.ts`:
 
 ```ts
 export const externalLinks = {
-  githubUrl: null,
-  linkedinUrl: null,
-  email: null,
-  cvPath: null,
+  githubUrl: "https://github.com/kerenschoss369",
+  linkedinUrl: "https://www.linkedin.com/in/kerenschoss/",
+  email: "kerenschoss369@gmail.com",
+  cvPath: "/cv/keren-schoss-cv.pdf",
   siteUrl: null, // required for absolute canonicals, sitemap host, and OG absolute URLs
 } as const;
 ```
@@ -249,20 +249,20 @@ Abra / EL AL work is described at a high level only:
 
 Unresolved items (also tracked in `src/data/missing-content.ts`):
 
-- [ ] Email
-- [ ] GitHub
-- [ ] LinkedIn
-- [ ] CV
+- [x] Email
+- [x] GitHub
+- [x] LinkedIn
+- [x] CV
 - [ ] `siteUrl` / custom domain
-- [ ] Public repository links
+- [ ] Public repository links (Clinical, Realtime GPT CLI, TapTap set; AcademEase still pending)
 - [ ] Live demo links
 - [ ] Project screenshots
 - [ ] Optional profile photograph
-- [ ] Confirm employment / education / project dates
+- [ ] Confirm employment dates (education dates resolved from CV)
 - [ ] Confirm repository visibility / ownership (including Clinical and Go repositories)
 - [ ] Hosting platform selection
 - [ ] Production deployment
 
-Do not mark these complete until real values are supplied. Null placeholders must remain hidden in the UI.
+Do not mark remaining items complete until real values are supplied. Null placeholders must remain hidden in the UI.
 
 See `docs/` for the product specification, content decisions, design system, and phased implementation plan.

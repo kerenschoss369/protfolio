@@ -5,10 +5,10 @@ import type { MissingContentItem } from "@/data/content-types";
  * Items stay unresolved until repository evidence or Keren supplies real values.
  */
 export const missingContentChecklist: MissingContentItem[] = [
-  { id: "github-profile", label: "GitHub profile", status: "unresolved" },
-  { id: "linkedin-profile", label: "LinkedIn profile", status: "unresolved" },
-  { id: "email", label: "Email", status: "unresolved" },
-  { id: "cv-pdf", label: "CV PDF", status: "unresolved" },
+  { id: "github-profile", label: "GitHub profile", status: "resolved" },
+  { id: "linkedin-profile", label: "LinkedIn profile", status: "resolved" },
+  { id: "email", label: "Email", status: "resolved" },
+  { id: "cv-pdf", label: "CV PDF", status: "resolved" },
   { id: "domain", label: "Domain / site URL", status: "unresolved" },
   {
     id: "public-repository-links",
@@ -34,7 +34,7 @@ export const missingContentChecklist: MissingContentItem[] = [
   {
     id: "education-dates",
     label: "Confirmed education dates",
-    status: "unresolved",
+    status: "resolved",
   },
   {
     id: "repository-visibility",

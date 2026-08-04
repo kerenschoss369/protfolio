@@ -16,10 +16,11 @@ import {
  * null means the action must not render. Never use fake URLs.
  */
 export const externalLinks = {
-  githubUrl: null as ConfigurableUrl,
-  linkedinUrl: null as ConfigurableUrl,
-  email: null as ConfigurableUrl,
-  cvPath: null as ConfigurableUrl,
+  githubUrl: "https://github.com/kerenschoss369" as ConfigurableUrl,
+  linkedinUrl: "https://www.linkedin.com/in/kerenschoss/" as ConfigurableUrl,
+  email: "kerenschoss369@gmail.com" as ConfigurableUrl,
+  cvPath: "/cv/keren-schoss-cv.pdf" as ConfigurableUrl,
+  /** Set when the production domain is known. */
   siteUrl: null as ConfigurableUrl,
 } as const;
 

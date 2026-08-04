@@ -183,15 +183,53 @@ describe("portfolio content model", () => {
     expect(isConfiguredUrl("https://example.com/profile")).toBe(false);
     expect(isConfiguredUrl("[GITHUB_URL]")).toBe(false);
     expect(isFakePlaceholderValue("https://example.org")).toBe(true);
-    expect(isConfiguredHttpUrl(externalLinks.githubUrl)).toBe(false);
-    expect(isConfiguredEmail(externalLinks.email)).toBe(false);
-    expect(isConfiguredCvPath(externalLinks.cvPath)).toBe(false);
-    expect(getConfiguredExternalActions()).toEqual([]);
 
     for (const project of projects) {
-      expect(isConfiguredHttpUrl(project.repositoryUrl)).toBe(false);
       expect(isConfiguredHttpUrl(project.liveUrl)).toBe(false);
     }
+  });
+
+  it("configures only the verified public repository links", () => {
+    const bySlug = Object.fromEntries(
+      projects.map((project) => [project.slug, project]),
+    );
+
+    expect(bySlug["clinical-follow-up-detector"]?.repositoryUrl).toBe(
+      "https://github.com/kerenschoss369/clinical-follow-up-detector",
+    );
+    expect(bySlug["realtime-gpt-cli"]?.repositoryUrl).toBe(
+      "https://github.com/kerenschoss369/go-gpt-realtime-cli",
+    );
+    expect(bySlug["taptap-avengers"]?.repositoryUrl).toBe(
+      "https://github.com/uvw222/TapTapAvengers",
+    );
+    expect(bySlug["academease"]?.repositoryUrl).toBeNull();
+    expect(bySlug["overthewire-bandit"]?.repositoryUrl).toBeNull();
+    expect(bySlug["atlas-research"]?.repositoryUrl).toBeNull();
+
+    expect(bySlug["clinical-follow-up-detector"]?.collaboration.type).toBe(
+      "pending-verification",
+    );
+    expect(bySlug["realtime-gpt-cli"]?.collaboration.type).toBe(
+      "pending-verification",
+    );
+    expect(bySlug["taptap-avengers"]?.collaboration.type).toBe("team");
+  });
+
+  it("exposes configured contact and profile links", () => {
+    expect(isConfiguredHttpUrl(externalLinks.githubUrl)).toBe(true);
+    expect(isConfiguredHttpUrl(externalLinks.linkedinUrl)).toBe(true);
+    expect(isConfiguredEmail(externalLinks.email)).toBe(true);
+    expect(isConfiguredCvPath(externalLinks.cvPath)).toBe(true);
+    expect(isConfiguredHttpUrl(externalLinks.siteUrl)).toBe(false);
+
+    const actions = getConfiguredExternalActions();
+    expect(actions.map((action) => action.action)).toEqual([
+      "github",
+      "linkedin",
+      "email",
+      "cv",
+    ]);
   });
 
   it("recognizes valid external link shapes", () => {
@@ -205,10 +243,18 @@ describe("portfolio content model", () => {
     expect(isConfiguredHttpUrl("https://linkedin.com/in/keren")).toBe(true);
   });
 
-  it("keeps missing-content checklist unresolved until evidence exists", () => {
-    expect(
-      missingContentChecklist.every((item) => item.status === "unresolved"),
-    ).toBe(true);
+  it("tracks remaining unresolved missing-content items", () => {
+    const byId = Object.fromEntries(
+      missingContentChecklist.map((item) => [item.id, item.status]),
+    );
+
+    expect(byId["github-profile"]).toBe("resolved");
+    expect(byId["linkedin-profile"]).toBe("resolved");
+    expect(byId["email"]).toBe("resolved");
+    expect(byId["cv-pdf"]).toBe("resolved");
+    expect(byId["education-dates"]).toBe("resolved");
+    expect(byId["domain"]).toBe("unresolved");
+    expect(byId["public-repository-links"]).toBe("unresolved");
   });
 
   it("passes aggregate content invariants", () => {

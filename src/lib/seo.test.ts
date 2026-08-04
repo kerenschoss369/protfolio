@@ -65,12 +65,15 @@ describe("site routes", () => {
 });
 
 describe("structured data", () => {
-  it("builds Person JSON-LD without null social links or fake images", () => {
+  it("builds Person JSON-LD with configured social links and no fake images", () => {
     const person = buildPersonJsonLd();
     expect(person["@type"]).toBe("Person");
     expect(person.name).toBe("Keren Schoss");
     expect(person.jobTitle).toBe("Frontend & Full-Stack Developer");
-    expect(person.sameAs).toBeUndefined();
+    expect(person.sameAs).toEqual([
+      "https://github.com/kerenschoss369",
+      "https://www.linkedin.com/in/kerenschoss/",
+    ]);
     expect(person.url).toBeUndefined();
     expect(person.image).toBeUndefined();
     expect(JSON.stringify(person)).not.toMatch(/example\.com/i);
@@ -96,7 +99,10 @@ describe("structured data", () => {
     expect(serialized).toMatch(/not clinically validated/i);
     expect(serialized.toLowerCase()).not.toContain("medical device");
     expect(serialized.toLowerCase()).not.toContain("fda");
-    expect(jsonLd.codeRepository).toBeUndefined();
+    expect(jsonLd["@type"]).toBe("SoftwareSourceCode");
+    expect(jsonLd.codeRepository).toBe(
+      "https://github.com/kerenschoss369/clinical-follow-up-detector",
+    );
   });
 
   it("builds breadcrumbs matching visible work navigation", () => {
