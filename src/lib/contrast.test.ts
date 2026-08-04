@@ -30,6 +30,10 @@ describe("theme contrast (WCAG 2.2 AA)", () => {
         expect(meetsWcagAa(palette.danger, palette.background)).toBe(true);
       });
 
+      it("steel metadata text on background meets AA", () => {
+        expect(meetsWcagAa(palette.steel, palette.background)).toBe(true);
+      });
+
       it("focus ring contrasts with background", () => {
         expect(
           contrastRatio(palette.focusRing, palette.background),

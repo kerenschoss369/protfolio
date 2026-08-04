@@ -68,9 +68,10 @@ export const themeContrastPairs = {
     accent: "#1b4fd8",
     accentContrast: "#f5f2ec",
     success: "#1a6b42",
-    warning: "#8a5800",
+    warning: "#745000",
     danger: "#a91d2f",
     focusRing: "#1b4fd8",
+    steel: "#555c66",
   },
   dark: {
     background: "#121417",
@@ -80,7 +81,8 @@ export const themeContrastPairs = {
     accentContrast: "#0c0e12",
     success: "#4caf7a",
     warning: "#d6a33a",
-    danger: "#e35a67",
+    danger: "#ef6b76",
     focusRing: "#6b8aff",
+    steel: "#9aa3ae",
   },
 } as const;

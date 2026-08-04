@@ -73,10 +73,21 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
         </div>
       </div>
 
+      <p
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {filtered.length === 0
+          ? "No projects match this filter. Try another category or choose All."
+          : `Showing ${filtered.length} ${filtered.length === 1 ? "project" : "projects"}.`}
+      </p>
+
       {filtered.length === 0 ? (
         <div
-          role="status"
           className="border-border-subtle rounded-[var(--radius-md)] border px-4 py-8"
+          aria-hidden="true"
         >
           <Text className="text-pretty">
             No projects match this filter. Try another category or choose All.

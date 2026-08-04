@@ -1,3 +1,4 @@
+import { TextLink } from "@/components/ui/TextLink";
 import { getConfiguredExternalLinks } from "@/data/links";
 import { portfolio } from "@/data/portfolio";
 import { createPageMetadata } from "@/lib/metadata";
@@ -25,46 +26,44 @@ export default function ContactPage() {
         </p>
       </header>
 
-      <section className="mt-10 max-w-3xl space-y-4">
+      <section
+        className="mt-10 max-w-3xl space-y-4"
+        aria-label="Contact methods"
+      >
         {hasAnyLink ? (
           <ul className="space-y-3 text-base">
             {links.email ? (
               <li>
-                <a href={`mailto:${links.email}`}>Email {portfolio.name}</a>
+                <TextLink href={`mailto:${links.email}`}>
+                  Email {portfolio.name}
+                </TextLink>
               </li>
             ) : null}
             {links.linkedinUrl ? (
               <li>
-                <a
-                  href={links.linkedinUrl}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <TextLink href={links.linkedinUrl} external>
                   LinkedIn
-                </a>
+                </TextLink>
               </li>
             ) : null}
             {links.githubUrl ? (
               <li>
-                <a
-                  href={links.githubUrl}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <TextLink href={links.githubUrl} external>
                   GitHub
-                </a>
+                </TextLink>
               </li>
             ) : null}
             {links.cvPath ? (
               <li>
-                <a href={links.cvPath}>Download CV</a>
+                <TextLink href={links.cvPath}>Download CV</TextLink>
               </li>
             ) : null}
           </ul>
         ) : (
           <p className="text-sm text-[var(--muted)]">
-            Contact links are not configured yet. Add verified email, LinkedIn,
-            GitHub, and CV values in central configuration when available.
+            Contact methods are not configured yet. Verified email, LinkedIn,
+            GitHub, and CV links will appear here when available — no
+            placeholder actions are shown.
           </p>
         )}
       </section>

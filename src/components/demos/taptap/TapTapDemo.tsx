@@ -144,7 +144,8 @@ export function TapTapDemo() {
     }
   }
 
-  const statusMessage =
+  // Visual status may include timing detail; live region stays stable to avoid AT spam.
+  const visualStatus =
     state.phase === "idle"
       ? "Ready — review controls, then start"
       : state.phase === "paused"
@@ -154,6 +155,19 @@ export function TapTapDemo() {
           : state.reducedMotion
             ? `Step ${state.stepIndex + 1} of ${rhythmChart.length}`
             : `Playing · ${Math.round(state.elapsedMs)} ms`;
+
+  const announcedStatus =
+    state.phase === "idle"
+      ? "Ready — review controls, then start"
+      : state.phase === "paused"
+        ? "Paused"
+        : state.phase === "completed"
+          ? `Completed · score ${state.score} · max combo ${state.maxCombo}`
+          : state.reducedMotion
+            ? `Step ${state.stepIndex + 1} of ${rhythmChart.length}`
+            : state.lastJudgement
+              ? state.lastJudgement
+              : "Playing";
 
   return (
     <DemoFrame
@@ -331,7 +345,10 @@ export function TapTapDemo() {
           ))}
         </dl>
 
-        <DemoStatus message={statusMessage} />
+        <p className="text-muted font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase">
+          {visualStatus}
+        </p>
+        <DemoStatus message={announcedStatus} visuallyHidden />
       </div>
     </DemoFrame>
   );

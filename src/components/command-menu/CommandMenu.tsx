@@ -182,6 +182,7 @@ function CommandMenuDialog({
           <input
             ref={inputRef}
             id={searchId}
+            role="combobox"
             value={query}
             onChange={(event) => handleQueryChange(event.target.value)}
             placeholder="Search projects, pages, and actions…"
@@ -189,6 +190,8 @@ function CommandMenuDialog({
             autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
+            aria-expanded="true"
+            aria-autocomplete="list"
             aria-controls={listboxId}
             aria-activedescendant={
               results[activeIndex]

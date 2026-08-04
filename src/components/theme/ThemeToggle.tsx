@@ -12,6 +12,7 @@ export function ThemeToggle() {
   return (
     <IconButton
       label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      aria-pressed={isDark}
       onClick={toggleTheme}
     >
       {isDark ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}

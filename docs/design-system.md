@@ -77,10 +77,10 @@ Theme switching uses `data-theme="light" | "dark"` on `<html>`, with:
 | `--accent-contrast` | `#f5f2ec`                  | Text on accent                          |
 | `--accent-muted`    | mix of accent + background | Soft accent wash                        |
 | `--success`         | `#1a6b42`                  | Positive / confirmed                    |
-| `--warning`         | `#8a5800`                  | Needs review                            |
+| `--warning`         | `#745000`                  | Needs review                            |
 | `--danger`          | `#a91d2f`                  | Rejected / destructive                  |
 | `--focus-ring`      | `#1b4fd8`                  | Keyboard focus                          |
-| `--steel`           | `#7a828c`                  | Metallic metadata / accents             |
+| `--steel`           | `#555c66`                  | Metallic metadata / accents             |
 | `--steel-highlight` | white mix                  | Inset metallic sheen                    |
 | `--overlay`         | darkened mix               | Future overlays                         |
 
@@ -99,7 +99,7 @@ Theme switching uses `data-theme="light" | "dark"` on `<html>`, with:
 | `--accent-contrast` | `#0c0e12` | Text on accent                      |
 | `--success`         | `#4caf7a` | Status                              |
 | `--warning`         | `#d6a33a` | Status                              |
-| `--danger`          | `#e35a67` | Status                              |
+| `--danger`          | `#ef6b76` | Status                              |
 | `--focus-ring`      | `#6b8aff` | Keyboard focus                      |
 | `--steel`           | `#9aa3ae` | Metallic reference                  |
 

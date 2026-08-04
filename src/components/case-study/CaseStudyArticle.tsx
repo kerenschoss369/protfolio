@@ -11,12 +11,17 @@ import { SafetyNoticePanel } from "@/components/case-study/SafetyNotice";
 import { TechnologyList } from "@/components/case-study/TechnologyList";
 import { hasInteractiveDemo } from "@/components/demos/demo-projects";
 import { ProjectDemoSection } from "@/components/demos/ProjectDemoSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import { Tag } from "@/components/ui/Tag";
 import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
 import { isClinicalFollowUpDetector } from "@/lib/content-validation";
 import { getAdjacentProjects } from "@/lib/project-utils";
+import {
+  buildBreadcrumbJsonLd,
+  buildProjectJsonLd,
+} from "@/lib/structured-data";
 
 type CaseStudyArticleProps = {
   project: Project;
@@ -30,6 +35,16 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
 
   return (
     <article className="pt-[var(--space-section-sm)] pb-[var(--space-section)]">
+      <JsonLd
+        data={[
+          buildProjectJsonLd(project),
+          buildBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Work", path: "/work" },
+            { name: project.title, path: `/work/${project.slug}` },
+          ]),
+        ]}
+      />
       <Container className="space-y-14 lg:space-y-20">
         <CaseStudyHero
           project={project}

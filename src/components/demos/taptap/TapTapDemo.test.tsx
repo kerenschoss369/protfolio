@@ -14,7 +14,9 @@ describe("TapTapDemo", () => {
     render(<TapTapDemo />);
     expect(screen.getByText(/Controls before start/i)).toBeInTheDocument();
     expect(screen.getByText(/No copyrighted music/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ready — review controls/i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /Ready — review controls/i,
+    );
   });
 
   it("supports start, pause, and reset", async () => {
@@ -22,13 +24,25 @@ describe("TapTapDemo", () => {
     render(<TapTapDemo />);
 
     await user.click(screen.getByRole("button", { name: /^Start$/i }));
-    expect(screen.getByText(/Playing|Step /i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/Playing|Step /i);
 
     await user.click(screen.getByRole("button", { name: /^Pause$/i }));
-    expect(screen.getByText(/^Paused$/i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/^Paused$/i);
 
     await user.click(screen.getByRole("button", { name: /^Reset$/i }));
-    expect(screen.getByText(/Ready — review controls/i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /Ready — review controls/i,
+    );
+  });
+
+  it("does not announce per-frame timing in the live region while playing", async () => {
+    const user = userEvent.setup();
+    render(<TapTapDemo />);
+
+    await user.click(screen.getByRole("button", { name: /^Start$/i }));
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent(/^Playing$/i);
+    expect(status).not.toHaveTextContent(/\d+\s*ms/i);
   });
 
   it("uses reduced-motion step mode when preferred", async () => {

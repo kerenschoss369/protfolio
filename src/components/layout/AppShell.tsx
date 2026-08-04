@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <SkipLink />
       <RevealEnhancer />
       <SiteHeader />
-      <main id="main-content" className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
         {children}
       </main>
       <SiteFooter />

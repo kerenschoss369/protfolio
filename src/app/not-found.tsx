@@ -1,4 +1,19 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = {
+  ...createPageMetadata({
+    title: "Page not found",
+    description:
+      "The requested page was not found. Return home or browse selected work by Keren Schoss.",
+  }),
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (
@@ -20,6 +35,12 @@ export default function NotFound() {
           className="inline-flex min-h-11 items-center rounded-md border border-[var(--border-strong)] px-4"
         >
           Work
+        </Link>
+        <Link
+          href="/contact"
+          className="inline-flex min-h-11 items-center rounded-md border border-[var(--border-strong)] px-4"
+        >
+          Contact
         </Link>
       </div>
     </div>

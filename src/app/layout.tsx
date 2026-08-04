@@ -2,23 +2,28 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 
 import { AppShell } from "@/components/layout/AppShell";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildPersonJsonLd, buildWebsiteJsonLd } from "@/lib/structured-data";
 import "@/styles/globals.css";
 
 const sans = Geist({
   variable: "--font-sans-family",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const serif = Source_Serif_4({
   variable: "--font-serif-family",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const mono = Geist_Mono({
   variable: "--font-mono-family",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = createPageMetadata();
@@ -52,6 +57,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <JsonLd data={[buildPersonJsonLd(), buildWebsiteJsonLd()]} />
       </head>
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
