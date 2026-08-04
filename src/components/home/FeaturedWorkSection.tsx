@@ -4,6 +4,7 @@ import {
   FeaturedRealtimeCli,
   FeaturedTapTap,
 } from "@/components/home/FeaturedProjects";
+import { Reveal } from "@/components/interactions/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import type { Project } from "@/data/content-types";
@@ -21,22 +22,30 @@ export function FeaturedWorkSection({ projects }: FeaturedWorkSectionProps) {
     >
       <Container>
         {projects.map((project) => {
-          switch (project.slug) {
-            case "clinical-follow-up-detector":
-              return <FeaturedClinical key={project.slug} project={project} />;
-            case "academease":
-              return (
-                <FeaturedAcademEase key={project.slug} project={project} />
-              );
-            case "realtime-gpt-cli":
-              return (
-                <FeaturedRealtimeCli key={project.slug} project={project} />
-              );
-            case "taptap-avengers":
-              return <FeaturedTapTap key={project.slug} project={project} />;
-            default:
-              return null;
+          const content = (() => {
+            switch (project.slug) {
+              case "clinical-follow-up-detector":
+                return <FeaturedClinical project={project} />;
+              case "academease":
+                return <FeaturedAcademEase project={project} />;
+              case "realtime-gpt-cli":
+                return <FeaturedRealtimeCli project={project} />;
+              case "taptap-avengers":
+                return <FeaturedTapTap project={project} />;
+              default:
+                return null;
+            }
+          })();
+
+          if (!content) {
+            return null;
           }
+
+          return (
+            <Reveal key={project.slug} as="div">
+              {content}
+            </Reveal>
+          );
         })}
       </Container>
     </Section>

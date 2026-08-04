@@ -26,7 +26,7 @@ export function FeaturedClinical({ project }: FeaturedProjectProps) {
         <Heading as="h3" variant="project">
           <Link
             href={`/work/${project.slug}`}
-            className="hover:text-accent transition-colors"
+            className="hover:text-accent focus-visible:text-accent transition-colors"
           >
             {project.title}
           </Link>
@@ -44,8 +44,12 @@ export function FeaturedClinical({ project }: FeaturedProjectProps) {
           href={`/work/${project.slug}`}
           variant="secondary"
           size="sm"
+          className="group"
         >
           View case study
+          <span aria-hidden className="link-arrow ms-1">
+            →
+          </span>
         </ButtonLink>
       </div>
 
@@ -53,7 +57,7 @@ export function FeaturedClinical({ project }: FeaturedProjectProps) {
         <Surface
           variant="raised"
           border="steel"
-          className="overflow-hidden"
+          className="project-preview-clinical interactive-surface overflow-hidden"
           aria-hidden={false}
         >
           <div className="border-border-subtle flex items-center justify-between border-b px-4 py-3">
@@ -123,7 +127,11 @@ export function FeaturedAcademEase({ project }: FeaturedProjectProps) {
   return (
     <article className="editorial-grid items-stretch gap-y-6 border-b border-[var(--border-subtle)] py-10 lg:py-14">
       <div className="order-2 col-span-full space-y-5 lg:order-1 lg:col-span-7">
-        <Surface variant="inset" border="subtle" className="overflow-hidden">
+        <Surface
+          variant="inset"
+          border="subtle"
+          className="project-preview-academease interactive-surface overflow-hidden"
+        >
           <div className="border-border-subtle flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
             <Text variant="meta" className="text-steel">
               Schedule grid · EN / HE
@@ -170,7 +178,7 @@ export function FeaturedAcademEase({ project }: FeaturedProjectProps) {
         <Heading as="h3" variant="project">
           <Link
             href={`/work/${project.slug}`}
-            className="hover:text-accent transition-colors"
+            className="hover:text-accent focus-visible:text-accent transition-colors"
           >
             {project.title}
           </Link>
@@ -187,8 +195,12 @@ export function FeaturedAcademEase({ project }: FeaturedProjectProps) {
           href={`/work/${project.slug}`}
           variant="secondary"
           size="sm"
+          className="group"
         >
           View case study
+          <span aria-hidden className="link-arrow ms-1">
+            →
+          </span>
         </ButtonLink>
       </div>
     </article>
@@ -215,7 +227,7 @@ export function FeaturedRealtimeCli({ project }: FeaturedProjectProps) {
         <Heading as="h3" variant="project">
           <Link
             href={`/work/${project.slug}`}
-            className="hover:text-accent transition-colors"
+            className="hover:text-accent focus-visible:text-accent transition-colors"
           >
             {project.title}
           </Link>
@@ -231,8 +243,12 @@ export function FeaturedRealtimeCli({ project }: FeaturedProjectProps) {
           href={`/work/${project.slug}`}
           variant="secondary"
           size="sm"
+          className="group"
         >
           View case study
+          <span aria-hidden className="link-arrow ms-1">
+            →
+          </span>
         </ButtonLink>
       </div>
 
@@ -240,7 +256,7 @@ export function FeaturedRealtimeCli({ project }: FeaturedProjectProps) {
         <Surface
           variant="inset"
           border="steel"
-          className="overflow-hidden font-mono"
+          className="project-preview-terminal interactive-surface overflow-hidden font-mono"
         >
           <div className="border-border-subtle flex items-center justify-between border-b px-4 py-3">
             <Text variant="meta" className="text-steel">
@@ -289,7 +305,11 @@ export function FeaturedTapTap({ project }: FeaturedProjectProps) {
   return (
     <article className="editorial-grid items-stretch gap-y-6 py-10 lg:py-14">
       <div className="order-2 col-span-full space-y-5 lg:order-1 lg:col-span-7">
-        <Surface variant="raised" border="subtle" className="overflow-hidden">
+        <Surface
+          variant="raised"
+          border="subtle"
+          className="project-preview-taptap interactive-surface overflow-hidden"
+        >
           <div className="border-border-subtle flex items-center justify-between border-b px-4 py-3">
             <Text variant="meta" className="text-steel">
               Rhythm timing · silent preview
@@ -333,7 +353,7 @@ export function FeaturedTapTap({ project }: FeaturedProjectProps) {
         <Heading as="h3" variant="project">
           <Link
             href={`/work/${project.slug}`}
-            className="hover:text-accent transition-colors"
+            className="hover:text-accent focus-visible:text-accent transition-colors"
           >
             {project.title}
           </Link>
@@ -349,8 +369,12 @@ export function FeaturedTapTap({ project }: FeaturedProjectProps) {
           href={`/work/${project.slug}`}
           variant="secondary"
           size="sm"
+          className="group"
         >
           View case study
+          <span aria-hidden className="link-arrow ms-1">
+            →
+          </span>
         </ButtonLink>
       </div>
     </article>

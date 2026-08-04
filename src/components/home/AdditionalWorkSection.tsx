@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/interactions/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { ProjectMeta } from "@/components/ui/ProjectMeta";
@@ -12,6 +13,16 @@ type AdditionalWorkSectionProps = {
   projects: Project[];
 };
 
+function previewClassForSlug(slug: string) {
+  if (slug === "overthewire-bandit") {
+    return "project-preview-bandit";
+  }
+  if (slug === "atlas-research") {
+    return "project-preview-atlas";
+  }
+  return "";
+}
+
 export function AdditionalWorkSection({
   projects,
 }: AdditionalWorkSectionProps) {
@@ -21,23 +32,27 @@ export function AdditionalWorkSection({
       aria-labelledby="additional-work-heading"
     >
       <Container>
-        <div className="mb-8 max-w-3xl space-y-4">
-          <Text variant="meta" className="text-steel">
-            Additional engineering work
-          </Text>
-          <Heading as="h2" variant="section" id="additional-work-heading">
-            Practice and research, kept compact
-          </Heading>
-          <Text variant="muted" className="max-w-[40rem] text-pretty">
-            These entries support the story without competing with the featured
-            product case studies.
-          </Text>
-        </div>
+        <Reveal>
+          <div className="mb-8 max-w-3xl space-y-4">
+            <Text variant="meta" className="text-steel">
+              Additional engineering work
+            </Text>
+            <Heading as="h2" variant="section" id="additional-work-heading">
+              Practice and research, kept compact
+            </Heading>
+            <Text variant="muted" className="max-w-[40rem] text-pretty">
+              These entries support the story without competing with the
+              featured product case studies.
+            </Text>
+          </div>
+        </Reveal>
 
         <ul className="divide-border-subtle divide-y border-y border-[var(--border-subtle)]">
-          {projects.map((project) => (
-            <li key={project.slug} className="py-6">
-              <article className="editorial-grid gap-y-3">
+          {projects.map((project, index) => (
+            <Reveal key={project.slug} as="li" stagger={Math.min(index, 2)}>
+              <article
+                className={`editorial-grid gap-y-3 py-6 ${previewClassForSlug(project.slug)}`}
+              >
                 <div className="col-span-full space-y-3 md:col-span-8">
                   <ProjectMeta
                     category={project.category}
@@ -50,9 +65,15 @@ export function AdditionalWorkSection({
                   >
                     <Link
                       href={`/work/${project.slug}`}
-                      className="hover:text-accent transition-colors"
+                      className="group hover:text-accent focus-visible:text-accent inline-flex items-center gap-2 transition-colors"
                     >
                       {project.title}
+                      <span
+                        aria-hidden
+                        className="link-arrow text-[length:var(--text-sm)]"
+                      >
+                        →
+                      </span>
                     </Link>
                   </Heading>
                   <Text
@@ -78,7 +99,7 @@ export function AdditionalWorkSection({
                   </Text>
                 </div>
               </article>
-            </li>
+            </Reveal>
           ))}
         </ul>
       </Container>

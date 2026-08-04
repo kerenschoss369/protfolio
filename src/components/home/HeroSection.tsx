@@ -1,4 +1,5 @@
 import { HeroVisual } from "@/components/home/HeroVisual";
+import { Reveal } from "@/components/interactions/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
@@ -46,25 +47,31 @@ export function HeroSection() {
               </Text>
             </div>
 
-            <Text
-              variant="body-lg"
-              className="text-foreground max-w-[38rem] text-pretty"
-            >
-              {portfolio.heroStatement}
-            </Text>
+            <Reveal>
+              <Text
+                variant="body-lg"
+                className="text-foreground max-w-[38rem] text-pretty"
+              >
+                {portfolio.heroStatement}
+              </Text>
+            </Reveal>
 
-            <Text variant="muted" className="max-w-[36rem] text-pretty">
-              {portfolio.supportingStatement}
-            </Text>
+            <Reveal stagger={1}>
+              <Text variant="muted" className="max-w-[36rem] text-pretty">
+                {portfolio.supportingStatement}
+              </Text>
+            </Reveal>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <ButtonLink href="/work">View selected work</ButtonLink>
-              {links.cvPath ? (
-                <ButtonLink href={links.cvPath} variant="secondary">
-                  Download CV
-                </ButtonLink>
-              ) : null}
-            </div>
+            <Reveal stagger={2}>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <ButtonLink href="/work">View selected work</ButtonLink>
+                {links.cvPath ? (
+                  <ButtonLink href={links.cvPath} variant="secondary">
+                    Download CV
+                  </ButtonLink>
+                ) : null}
+              </div>
+            </Reveal>
 
             {(links.githubUrl || links.linkedinUrl || links.email) && (
               <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-1">

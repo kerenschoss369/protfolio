@@ -45,7 +45,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center rounded-[var(--radius-md)] font-medium transition-[background-color,color,border-color,filter,opacity] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+        "pressable inline-flex items-center justify-center rounded-[var(--radius-md)] font-medium",
         "focus-visible:outline-focus-ring focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]",
         "disabled:cursor-not-allowed disabled:opacity-60",
         buttonVariants[variant],

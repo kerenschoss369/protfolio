@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { motionBudget, prefersReducedMotion } from "@/lib/motion";
+
 export type Theme = "light" | "dark";
 
 type ThemeContextValue = {
@@ -19,6 +21,7 @@ type ThemeContextValue = {
 
 const STORAGE_KEY = "portfolio-theme";
 const THEME_EVENT = "portfolio-theme";
+const THEME_TRANSITION_CLASS = "theme-transition";
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
@@ -36,13 +39,25 @@ function readTheme(): Theme {
   return getSystemTheme();
 }
 
-function applyTheme(theme: Theme) {
-  document.documentElement.setAttribute("data-theme", theme);
+function applyTheme(theme: Theme, options?: { animate?: boolean }) {
+  const root = document.documentElement;
+  const shouldAnimate = Boolean(options?.animate) && !prefersReducedMotion();
+
+  if (shouldAnimate) {
+    root.classList.add(THEME_TRANSITION_CLASS);
+    window.setTimeout(() => {
+      root.classList.remove(THEME_TRANSITION_CLASS);
+    }, motionBudget.themeTransitionMs);
+  } else {
+    root.classList.remove(THEME_TRANSITION_CLASS);
+  }
+
+  root.setAttribute("data-theme", theme);
 }
 
 function subscribeTheme(onStoreChange: () => void) {
   const handleChange = () => {
-    applyTheme(readTheme());
+    applyTheme(readTheme(), { animate: false });
     onStoreChange();
   };
 
@@ -76,7 +91,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setTheme = useCallback((next: Theme) => {
     window.localStorage.setItem(STORAGE_KEY, next);
-    applyTheme(next);
+    applyTheme(next, { animate: true });
     window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 

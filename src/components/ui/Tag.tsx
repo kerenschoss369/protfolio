@@ -24,7 +24,7 @@ export function Tag({ className, variant = "default", ...props }: TagProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-[var(--radius-sm)] border px-2 py-0.5 font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase",
+        "inline-flex items-center rounded-[var(--radius-sm)] border px-2 py-0.5 font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase transition-[border-color,background-color,color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
         tagVariants[variant],
         className,
       )}

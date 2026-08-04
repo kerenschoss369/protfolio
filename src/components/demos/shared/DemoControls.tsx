@@ -46,7 +46,7 @@ export function DemoModeButton({
       aria-pressed={selected}
       onClick={onSelect}
       className={cn(
-        "min-h-[var(--touch-target)] rounded-[var(--radius-md)] border px-3 font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase transition-[background-color,border-color,color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+        "pressable min-h-[var(--touch-target)] rounded-[var(--radius-md)] border px-3 font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase",
         "focus-visible:outline-focus-ring focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]",
         selected
           ? "border-accent bg-accent-muted text-accent"

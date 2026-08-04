@@ -18,9 +18,15 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
       <p>
         <Link
           href="/work"
-          className="text-muted hover:text-foreground focus-visible:outline-focus-ring inline-flex min-h-[var(--touch-target)] items-center text-[length:var(--text-sm)] transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+          className="text-muted hover:text-foreground focus-visible:outline-focus-ring group inline-flex min-h-[var(--touch-target)] items-center text-[length:var(--text-sm)] transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
         >
-          ← All work
+          <span
+            aria-hidden
+            className="link-arrow me-1 inline-block -scale-x-100"
+          >
+            →
+          </span>
+          All work
         </Link>
       </p>
 

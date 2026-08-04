@@ -111,7 +111,7 @@ Helpers:
 - `SiteHeader`, `MobileNav`, `CommandMenu`, `HeroVisual` (scroll/overlay/pointer interaction)
 - `WorkFilters` (keyboard-accessible project filtering)
 - Interactive project demos (`ProjectDemoSection` + per-project Client Components)
-- Future: advanced motion (Phase 6)
+- `Reveal` / `RevealEnhancer` (progressive section reveals; Server pages stay Server)
 
 ### State strategy
 
@@ -138,9 +138,11 @@ Helpers:
 ### Animation strategy
 
 - Phase 1: motion duration/easing tokens + reduced-motion base CSS
-- Prefer CSS `transform`/`opacity` later
-- Motion for React only when genuinely required (Phase 6)
-- No scroll hijacking, no intro loaders
+- Phase 6: CSS-first refinement (transforms/opacity); Motion for React not added
+- Route enter: `src/app/template.tsx` + `.route-enter` keyframes
+- Section reveals: progressive enhancement (`data-reveal`); SSR stays visible
+- Theme: short `theme-transition` class on intentional toggles only
+- No scroll hijacking, no intro loaders, no shared-element project morphs
 
 ### Accessibility strategy
 
@@ -335,15 +337,17 @@ Owner prompt:
 
 - `docs/agents/06-motion-refinement.md`
 
+Status: **complete**
+
 Deliverables:
 
-- Route transitions
-- Reveal system
-- Shared project transitions where appropriate
-- Theme transition
-- Refined hover/focus states
-- Pointer enhancement on supported devices
-- Motion budget
+- Route transitions via `app/template.tsx` CSS enter (no content delay)
+- Progressive homepage section reveals (`Reveal` + `RevealEnhancer`)
+- Shared project transitions deferred (documented)
+- Theme transition class on intentional toggles
+- Refined hover/focus/press states; active nav indicator
+- Fine-pointer hero parallax (transform-only, ≤4px) + path activation
+- Motion budget in `src/lib/motion.ts`; Motion for React not added
 
 Exit criteria:
 
@@ -433,42 +437,48 @@ Do not claim a command passed until it has actually been run.
 
 ## 5. Decision log
 
-| Date       | Agent             | Decision                                                                                | Reason                                                                                                                    | Affected files                                                                                       |
-| ---------- | ----------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| 2026-08-04 | Lead architect    | Scaffold greenfield Next.js 16 App Router + React 19 + TS + Tailwind v4 with npm        | Repo was docs-only; preferred stack from portfolio-spec with no conflicting foundation                                    | `package.json`, `src/app/**`, config files                                                           |
-| 2026-08-04 | Lead architect    | Keep all external and project URLs as `null` and gate rendering with `isConfiguredUrl`  | Content-decisions forbid fake links                                                                                       | `src/data/links.ts`, `src/data/projects.ts`, `src/lib/links.ts`, contact/header/footer/project pages |
-| 2026-08-04 | Lead architect    | Defer Motion for React, command menu, demos, and full design tokens                     | Phase 0 scope is foundation only                                                                                          | `docs/implementation-plan.md`, later phase owners                                                    |
-| 2026-08-04 | Lead architect    | Use `collaboration: "pending-verification"` for Clinical and Realtime GPT CLI           | Content-decisions require repository evidence before solo claims                                                          | `src/data/projects.ts`                                                                               |
-| 2026-08-04 | Lead architect    | Employment dates remain `2025–Present` and easy to edit                                 | Spec/content mark dates subject to final verification                                                                     | `src/data/experience.ts`                                                                             |
-| 2026-08-04 | Lead architect    | Temporary fonts: Geist (sans/mono) + Source Serif 4                                     | Need three-family slots without final design-system selection                                                             | `src/app/layout.tsx`                                                                                 |
-| 2026-08-04 | Design system     | Keep Geist + Source Serif 4 + Geist Mono as permanent portfolio pairing                 | Strong legibility, editorial contrast, three-family limit; no reason to replace                                           | `src/app/layout.tsx`, `docs/design-system.md`                                                        |
-| 2026-08-04 | Design system     | Electric cobalt accent on warm paper / graphite themes with steel metallic accents      | Spec light/dark direction; photographer-calm editorial + technical precision                                              | `src/styles/tokens.css`, `docs/design-system.md`                                                     |
-| 2026-08-04 | Design system     | Dev-only `/design-system` preview via `force-dynamic` + `notFound` outside development  | Showcase tokens/primitives without shipping a public design-kit page                                                      | `src/app/design-system/page.tsx`, `src/components/design-system/DesignSystemPreview.tsx`             |
-| 2026-08-04 | Design system     | Foundational UI primitives only (no component library)                                  | Reuse without generic library look; homepage redesign deferred to Phase 3                                                 | `src/components/ui/*`                                                                                |
-| 2026-08-04 | Design system     | Automate WCAG AA contrast checks for solid theme pairs                                  | Validate accent/muted/status against backgrounds as tokens evolve                                                         | `src/lib/contrast.ts`, `src/lib/contrast.test.ts`                                                    |
-| 2026-08-04 | Content model     | Expand collaboration into a discriminated attribution object                            | Support pending-verification, team, individual-practice, educational-research, professional without premature solo claims | `src/data/content-types.ts`, `src/data/projects.ts`                                                  |
-| 2026-08-04 | Content model     | Require structured `clinicalSafety` on Clinical Follow-Up Detector                      | Spec mandates non-softenable safety facts; type + validation enforce them                                                 | `src/data/projects.ts`, `src/lib/content-validation.ts`                                              |
-| 2026-08-04 | Content model     | Keep Abra / EL AL as `ProfessionalWork`, not a public project                           | Proprietary work must stay separate from repository/case-study presentation                                               | `src/data/experience.ts`                                                                             |
-| 2026-08-04 | Content model     | Reject `#`, `example.com`, and bracket placeholders in link helpers                     | Content-decisions forbid fake public actions                                                                              | `src/lib/links.ts`, `src/data/links.ts`                                                              |
-| 2026-08-04 | Content model     | Leave Clinical + Realtime GPT CLI as `pending-verification`                             | No repository ownership evidence yet                                                                                      | `src/data/projects.ts`, open questions                                                               |
-| 2026-08-04 | Homepage/nav      | Implement focus trap + scroll lock locally; no dialog library                           | Phase 3 forbids heavy overlay deps unless necessary; keeps bundle small                                                   | `src/lib/focus-trap.ts`, `MobileNav`, `CommandMenu`                                                  |
-| 2026-08-04 | Homepage/nav      | Simple substring command search over labels/keywords; no fuzzy library                  | Spec allows avoiding fuzzy deps; title/category/tech matching is enough                                                   | `src/lib/command-actions.ts`                                                                         |
-| 2026-08-04 | Homepage/nav      | Keep Motion for React deferred; CSS transitions + SVG static hero only                  | Phase 3 motion constraints; hero must work without JS animation                                                           | `HeroVisual`, `globals.css`                                                                          |
-| 2026-08-04 | Homepage/nav      | Distinct featured compositions per project; static previews only                        | Spec forbids identical cards; advanced demos belong to Phase 5                                                            | `src/components/home/FeaturedProjects.tsx`                                                           |
-| 2026-08-04 | Homepage/nav      | Hide CV/GitHub/LinkedIn/email actions when null                                         | Content-decisions: no fake links                                                                                          | Header, footer, hero, contact CTA, command menu                                                      |
-| 2026-08-04 | Case studies      | Derive work filters from category/kind/stack; client filter buttons with `aria-pressed` | Avoid duplicate hard-coded project lists; keep filtering lightweight without a search dependency                          | `src/lib/project-utils.ts`, `src/components/work/WorkFilters.tsx`                                    |
-| 2026-08-04 | Case studies      | Keep typed `projects` array order for prev/next; do not wrap at ends                    | Simple, predictable navigation; first has no previous, last has no next                                                   | `getAdjacentProjects`, `ProjectNavigation`                                                           |
-| 2026-08-04 | Case studies      | Shared case-study primitives + per-slug visual compositions                             | Consistency without one identical card/layout for every project                                                           | `src/components/case-study/**`                                                                       |
-| 2026-08-04 | Case studies      | Abstract HTML/CSS visuals + media README guidance; keep `.gitkeep` folders              | No fabricated screenshots or stock imagery until real assets exist                                                        | `public/projects/`, visual components                                                                |
-| 2026-08-04 | Case studies      | Professional work as `/work` section only, never a public project slug                  | Proprietary EL AL work must stay separate from repository case studies                                                    | `ProfessionalWorkSection`                                                                            |
-| 2026-08-04 | Case studies      | Defer interactive demos, Motion, and full structured-data audit to later phases         | Phase 4 scope is editorial case studies; Phase 5/6/7 own demos, motion, SEO                                               | Phase status in this plan                                                                            |
-| 2026-08-04 | Interactive demos | Shared demo shell + project-specific visuals; no generic card-with-tabs for every demo  | Spec requires distinct visual language per project while reusing a11y/shell patterns                                      | `src/components/demos/shared/**`, per-project demo folders                                           |
-| 2026-08-04 | Interactive demos | Dynamic `next/dynamic` import per case-study route with sized loading fallback   | Avoid loading all demos on every route; reserve min-height to limit CLS; isolate failures with error boundary; keep slug helper server-safe | `ProjectDemoSection.tsx`, `demo-projects.ts`, `DemoLoadingFallback`, `DemoErrorBoundary` |
-| 2026-08-04 | Interactive demos | Terminal entries/commands as discriminated unions + pure engine helpers                 | Deterministic offline simulation; unit-testable without React; no API key or network                                      | `terminal-engine.ts`, `RealtimeTerminalDemo.tsx`                                                     |
-| 2026-08-04 | Interactive demos | TapTap timing via reducer + rAF clock; step mode under reduced motion                   | Explicit state model preferred over boolean soup; pause on visibilitychange; no audio/copyrighted assets                  | `taptap-engine.ts`, `TapTapDemo.tsx`                                                                 |
-| 2026-08-04 | Interactive demos | Interactive architecture diagram: focusable nodes + details panel + semantic list       | Relationships remain understandable without hover/drag; used for Clinical + Realtime CLI only                             | `ArchitectureDiagram.tsx`, clinical/terminal demos                                                   |
-| 2026-08-04 | Interactive demos | Bundle impact: demos are route-local async chunks; no Motion, canvas, or state libs     | Keep case-study shell light; Motion/global route transitions deferred to Phase 6                                          | Decision log; Phase 6 deferred                                                                       |
-| 2026-08-04 | Interactive demos | Defer global route/homepage motion refinements                                          | Phase 5 allows only demo-local transitions; Motion for React and shared reveals remain Phase 6                            | Phase 6 owner                                                                                        |
+| Date       | Agent             | Decision                                                                                | Reason                                                                                                                                      | Affected files                                                                                       |
+| ---------- | ----------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 2026-08-04 | Lead architect    | Scaffold greenfield Next.js 16 App Router + React 19 + TS + Tailwind v4 with npm        | Repo was docs-only; preferred stack from portfolio-spec with no conflicting foundation                                                      | `package.json`, `src/app/**`, config files                                                           |
+| 2026-08-04 | Lead architect    | Keep all external and project URLs as `null` and gate rendering with `isConfiguredUrl`  | Content-decisions forbid fake links                                                                                                         | `src/data/links.ts`, `src/data/projects.ts`, `src/lib/links.ts`, contact/header/footer/project pages |
+| 2026-08-04 | Lead architect    | Defer Motion for React, command menu, demos, and full design tokens                     | Phase 0 scope is foundation only                                                                                                            | `docs/implementation-plan.md`, later phase owners                                                    |
+| 2026-08-04 | Lead architect    | Use `collaboration: "pending-verification"` for Clinical and Realtime GPT CLI           | Content-decisions require repository evidence before solo claims                                                                            | `src/data/projects.ts`                                                                               |
+| 2026-08-04 | Lead architect    | Employment dates remain `2025–Present` and easy to edit                                 | Spec/content mark dates subject to final verification                                                                                       | `src/data/experience.ts`                                                                             |
+| 2026-08-04 | Lead architect    | Temporary fonts: Geist (sans/mono) + Source Serif 4                                     | Need three-family slots without final design-system selection                                                                               | `src/app/layout.tsx`                                                                                 |
+| 2026-08-04 | Design system     | Keep Geist + Source Serif 4 + Geist Mono as permanent portfolio pairing                 | Strong legibility, editorial contrast, three-family limit; no reason to replace                                                             | `src/app/layout.tsx`, `docs/design-system.md`                                                        |
+| 2026-08-04 | Design system     | Electric cobalt accent on warm paper / graphite themes with steel metallic accents      | Spec light/dark direction; photographer-calm editorial + technical precision                                                                | `src/styles/tokens.css`, `docs/design-system.md`                                                     |
+| 2026-08-04 | Design system     | Dev-only `/design-system` preview via `force-dynamic` + `notFound` outside development  | Showcase tokens/primitives without shipping a public design-kit page                                                                        | `src/app/design-system/page.tsx`, `src/components/design-system/DesignSystemPreview.tsx`             |
+| 2026-08-04 | Design system     | Foundational UI primitives only (no component library)                                  | Reuse without generic library look; homepage redesign deferred to Phase 3                                                                   | `src/components/ui/*`                                                                                |
+| 2026-08-04 | Design system     | Automate WCAG AA contrast checks for solid theme pairs                                  | Validate accent/muted/status against backgrounds as tokens evolve                                                                           | `src/lib/contrast.ts`, `src/lib/contrast.test.ts`                                                    |
+| 2026-08-04 | Content model     | Expand collaboration into a discriminated attribution object                            | Support pending-verification, team, individual-practice, educational-research, professional without premature solo claims                   | `src/data/content-types.ts`, `src/data/projects.ts`                                                  |
+| 2026-08-04 | Content model     | Require structured `clinicalSafety` on Clinical Follow-Up Detector                      | Spec mandates non-softenable safety facts; type + validation enforce them                                                                   | `src/data/projects.ts`, `src/lib/content-validation.ts`                                              |
+| 2026-08-04 | Content model     | Keep Abra / EL AL as `ProfessionalWork`, not a public project                           | Proprietary work must stay separate from repository/case-study presentation                                                                 | `src/data/experience.ts`                                                                             |
+| 2026-08-04 | Content model     | Reject `#`, `example.com`, and bracket placeholders in link helpers                     | Content-decisions forbid fake public actions                                                                                                | `src/lib/links.ts`, `src/data/links.ts`                                                              |
+| 2026-08-04 | Content model     | Leave Clinical + Realtime GPT CLI as `pending-verification`                             | No repository ownership evidence yet                                                                                                        | `src/data/projects.ts`, open questions                                                               |
+| 2026-08-04 | Homepage/nav      | Implement focus trap + scroll lock locally; no dialog library                           | Phase 3 forbids heavy overlay deps unless necessary; keeps bundle small                                                                     | `src/lib/focus-trap.ts`, `MobileNav`, `CommandMenu`                                                  |
+| 2026-08-04 | Homepage/nav      | Simple substring command search over labels/keywords; no fuzzy library                  | Spec allows avoiding fuzzy deps; title/category/tech matching is enough                                                                     | `src/lib/command-actions.ts`                                                                         |
+| 2026-08-04 | Homepage/nav      | Keep Motion for React deferred; CSS transitions + SVG static hero only                  | Phase 3 motion constraints; hero must work without JS animation                                                                             | `HeroVisual`, `globals.css`                                                                          |
+| 2026-08-04 | Homepage/nav      | Distinct featured compositions per project; static previews only                        | Spec forbids identical cards; advanced demos belong to Phase 5                                                                              | `src/components/home/FeaturedProjects.tsx`                                                           |
+| 2026-08-04 | Homepage/nav      | Hide CV/GitHub/LinkedIn/email actions when null                                         | Content-decisions: no fake links                                                                                                            | Header, footer, hero, contact CTA, command menu                                                      |
+| 2026-08-04 | Case studies      | Derive work filters from category/kind/stack; client filter buttons with `aria-pressed` | Avoid duplicate hard-coded project lists; keep filtering lightweight without a search dependency                                            | `src/lib/project-utils.ts`, `src/components/work/WorkFilters.tsx`                                    |
+| 2026-08-04 | Case studies      | Keep typed `projects` array order for prev/next; do not wrap at ends                    | Simple, predictable navigation; first has no previous, last has no next                                                                     | `getAdjacentProjects`, `ProjectNavigation`                                                           |
+| 2026-08-04 | Case studies      | Shared case-study primitives + per-slug visual compositions                             | Consistency without one identical card/layout for every project                                                                             | `src/components/case-study/**`                                                                       |
+| 2026-08-04 | Case studies      | Abstract HTML/CSS visuals + media README guidance; keep `.gitkeep` folders              | No fabricated screenshots or stock imagery until real assets exist                                                                          | `public/projects/`, visual components                                                                |
+| 2026-08-04 | Case studies      | Professional work as `/work` section only, never a public project slug                  | Proprietary EL AL work must stay separate from repository case studies                                                                      | `ProfessionalWorkSection`                                                                            |
+| 2026-08-04 | Case studies      | Defer interactive demos, Motion, and full structured-data audit to later phases         | Phase 4 scope is editorial case studies; Phase 5/6/7 own demos, motion, SEO                                                                 | Phase status in this plan                                                                            |
+| 2026-08-04 | Interactive demos | Shared demo shell + project-specific visuals; no generic card-with-tabs for every demo  | Spec requires distinct visual language per project while reusing a11y/shell patterns                                                        | `src/components/demos/shared/**`, per-project demo folders                                           |
+| 2026-08-04 | Interactive demos | Dynamic `next/dynamic` import per case-study route with sized loading fallback          | Avoid loading all demos on every route; reserve min-height to limit CLS; isolate failures with error boundary; keep slug helper server-safe | `ProjectDemoSection.tsx`, `demo-projects.ts`, `DemoLoadingFallback`, `DemoErrorBoundary`             |
+| 2026-08-04 | Interactive demos | Terminal entries/commands as discriminated unions + pure engine helpers                 | Deterministic offline simulation; unit-testable without React; no API key or network                                                        | `terminal-engine.ts`, `RealtimeTerminalDemo.tsx`                                                     |
+| 2026-08-04 | Interactive demos | TapTap timing via reducer + rAF clock; step mode under reduced motion                   | Explicit state model preferred over boolean soup; pause on visibilitychange; no audio/copyrighted assets                                    | `taptap-engine.ts`, `TapTapDemo.tsx`                                                                 |
+| 2026-08-04 | Interactive demos | Interactive architecture diagram: focusable nodes + details panel + semantic list       | Relationships remain understandable without hover/drag; used for Clinical + Realtime CLI only                                               | `ArchitectureDiagram.tsx`, clinical/terminal demos                                                   |
+| 2026-08-04 | Interactive demos | Bundle impact: demos are route-local async chunks; no Motion, canvas, or state libs     | Keep case-study shell light; Motion/global route transitions deferred to Phase 6                                                            | Decision log; Phase 6 deferred                                                                       |
+| 2026-08-04 | Interactive demos | Defer global route/homepage motion refinements                                          | Phase 5 allows only demo-local transitions; Motion for React and shared reveals remain Phase 6                                              | Phase 6 owner                                                                                        |
+| 2026-08-04 | Motion refinement | Keep Motion for React uninstalled; CSS + native APIs only                               | Budget satisfied without a motion library; demos already own local state motion                                                             | `package.json`, `src/lib/motion.ts`, `docs/design-system.md`                                         |
+| 2026-08-04 | Motion refinement | Route enter via App Router `template.tsx` CSS; View Transitions API helpers only        | Reliable remount animation; VT used optionally via `runViewTransition` without Next experimental coupling                                   | `src/app/template.tsx`, `src/lib/motion.ts`, `globals.css`                                           |
+| 2026-08-04 | Motion refinement | Defer shared project-card ↔ case-study morph transitions                                | Featured/work/case-study DOM structures differ; morph risked CLS and duplicate DOM without clear continuity benefit                         | Decision log; Phase 7+ if assets stabilize                                                           |
+| 2026-08-04 | Motion refinement | Progressive `Reveal` enhancement: mark in-view before enabling hide/show CSS            | Spec forbids invisible SSR content and no-JS breakage                                                                                       | `Reveal.tsx`, `RevealEnhancer`, homepage sections                                                    |
+| 2026-08-04 | Motion refinement | Theme transition class only on user toggle; system/storage sync stays instant           | Avoid flash on hydrate and preference changes; keep readable text                                                                           | `ThemeProvider.tsx`                                                                                  |
+| 2026-08-04 | Motion refinement | Bundle impact: no new dependencies; reveals/route CSS only; demos remain route-split    | Phase 6 must not inflate client JS; Motion library skipped                                                                                  | Decision log; validation notes                                                                       |
 
 ---
 
@@ -508,3 +518,53 @@ These should be resolved from repository evidence or later real data, not guesse
 - Hosting platform
 - Custom domain
 - Optional explicit “reset to system theme” control (override + system already supported)
+
+---
+
+## 8. Phase 6 motion audit and budget
+
+### Audit findings (pre-implementation)
+
+| Area                        | Existing                       | Gap / action                                             |
+| --------------------------- | ------------------------------ | -------------------------------------------------------- |
+| Tokens + reduced-motion CSS | Sufficient                     | Keep; extend with route/reveal/overlay keyframes         |
+| Mobile nav panel            | Slide-in present               | Add overlay fade; keep a11y intact                       |
+| Command menu                | Instant mount                  | Add dialog/overlay enter                                 |
+| Sticky header               | Surface transition             | Keep; add sliding active indicator                       |
+| Theme                       | Instant attribute              | Short color transition on intentional toggle             |
+| Homepage                    | Static                         | Progressive section reveals (once)                       |
+| Routes                      | Instant                        | Restrained template enter; no cinematic VT               |
+| Hero                        | Fine-pointer glow via left/top | Switch to transform; path activation; RM static          |
+| Project previews            | Color hover on titles          | Project-specific border + subtle lift + arrow            |
+| Case studies / demos        | Demo-local motion              | Sparse link feedback only; do not animate demos globally |
+| Shared morph                | None                           | **Deferred** — mismatched DOM, CLS risk                  |
+
+### Motion budget
+
+- Prefer CSS `transform` / `opacity` only
+- No Motion for React, GSAP, or second animation framework
+- Stagger ≤ 180ms total; reveal offset 0.75rem
+- Theme transition 200ms; route enter 200ms
+- Hero parallax ≤ 4px; fine pointer only; disabled under reduced motion
+- One IntersectionObserver pattern via `Reveal` (cleaned up on unmount)
+- No scroll hijacking; `scroll-margin-top` for sticky anchors
+- Demos remain dynamically imported route chunks
+
+### Strategies implemented
+
+- **Route transitions:** `src/app/template.tsx` + `.route-enter`; navigation starts immediately; RM disables animation
+- **View Transitions API:** feature helpers in `motion.ts`; not required for default navigations (fallback = CSS template enter)
+- **Shared project transitions:** deferred (see decision log)
+- **Section reveals:** `Reveal` + `RevealEnhancer`; content visible without JS; enhancement marks in-view before hiding others
+- **Navigation:** active underline indicator; overlay fades; pressable controls
+- **Theme:** `theme-transition` class on user toggle only
+- **Performance:** no new dependencies; Server Components retained for page shells
+- **Route-enter detail:** transform-only (no opacity hide) so content remains readable during navigation
+
+### Deferred (Phase 7+)
+
+- Full Lighthouse / WCAG / SEO / structured data
+- Shared-element project morphs
+- Scroll progress indicator (low value for this editorial layout)
+- Magnetic buttons
+- Cinematic View Transitions across the whole document

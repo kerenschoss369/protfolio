@@ -18,8 +18,8 @@ export function TextLink({
   ...props
 }: TextLinkProps) {
   const classes = cn(
-    "underline decoration-[color-mix(in_srgb,var(--accent)_45%,transparent)] decoration-1 underline-offset-[0.18em] transition-[color,text-decoration-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-    "hover:decoration-accent focus-visible:decoration-accent",
+    "underline decoration-[color-mix(in_srgb,var(--accent)_45%,transparent)] decoration-1 underline-offset-[0.18em] transition-[color,text-decoration-color,text-underline-offset] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+    "hover:decoration-accent hover:underline-offset-[0.24em] focus-visible:decoration-accent focus-visible:underline-offset-[0.24em]",
     muted ? "text-muted hover:text-foreground" : "text-foreground",
     className,
   );

@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/interactions/Reveal";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
@@ -27,40 +28,46 @@ export function EngineeringApproachSection({
       aria-labelledby="approach-heading"
     >
       <Container>
-        <div className="mb-10 max-w-3xl space-y-4">
-          <Text variant="meta" className="text-steel">
-            Engineering approach
-          </Text>
-          <Heading as="h2" variant="section" id="approach-heading">
-            Build for real flows, not just happy paths
-          </Heading>
-          <Text variant="muted" className="max-w-[40rem] text-pretty">
-            Interfaces inherit the quality of their contracts. Loading, empty,
-            error, validation, success, and recovery states are part of the
-            product—not afterthoughts.
-          </Text>
-        </div>
+        <Reveal>
+          <div className="mb-10 max-w-3xl space-y-4">
+            <Text variant="meta" className="text-steel">
+              Engineering approach
+            </Text>
+            <Heading as="h2" variant="section" id="approach-heading">
+              Build for real flows, not just happy paths
+            </Heading>
+            <Text variant="muted" className="max-w-[40rem] text-pretty">
+              Interfaces inherit the quality of their contracts. Loading, empty,
+              error, validation, success, and recovery states are part of the
+              product—not afterthoughts.
+            </Text>
+          </div>
+        </Reveal>
 
         <ol className="editorial-grid gap-y-6">
           {principles.map((principle, index) => (
-            <li
+            <Reveal
               key={principle.id}
-              className="border-border-subtle col-span-full space-y-3 border-t pt-6 sm:col-span-4 lg:col-span-3"
+              as="li"
+              stagger={index}
+              className="col-span-full sm:col-span-4 lg:col-span-3"
             >
-              <p className="text-steel font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase">
-                {String(index + 1).padStart(2, "0")}
-              </p>
-              <Heading
-                as="h3"
-                variant="project"
-                className="text-[length:var(--text-body-lg)]"
-              >
-                {principle.title}
-              </Heading>
-              <Text variant="small" className="text-muted text-pretty">
-                {principle.summary}
-              </Text>
-            </li>
+              <div className="border-border-subtle space-y-3 border-t pt-6">
+                <p className="text-steel font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <Heading
+                  as="h3"
+                  variant="project"
+                  className="text-[length:var(--text-body-lg)]"
+                >
+                  {principle.title}
+                </Heading>
+                <Text variant="small" className="text-muted text-pretty">
+                  {principle.summary}
+                </Text>
+              </div>
+            </Reveal>
           ))}
         </ol>
 

@@ -32,6 +32,7 @@ export function ArchitectureNodeButton({
         selected
           ? "border-accent bg-accent-muted"
           : "hover:bg-surface-1 border-transparent",
+        "pressable",
       )}
     >
       <span className="font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase">

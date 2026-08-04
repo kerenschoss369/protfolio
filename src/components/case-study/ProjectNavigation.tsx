@@ -34,12 +34,18 @@ export function ProjectNavigation({
       {previous ? (
         <Link
           href={`/work/${previous.slug}`}
-          className="group border-border-subtle hover:border-border-strong focus-visible:outline-focus-ring min-h-[var(--touch-target)] rounded-[var(--radius-md)] border p-4 transition-[border-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+          className="group border-border-subtle hover:border-border-strong focus-visible:outline-focus-ring focus-visible:border-accent min-h-[var(--touch-target)] rounded-[var(--radius-md)] border p-4 transition-[border-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:-translate-y-px focus-visible:-translate-y-px focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
         >
           <Text variant="meta" className="text-muted">
+            <span
+              aria-hidden
+              className="link-arrow me-1 inline-block -scale-x-100"
+            >
+              →
+            </span>
             Previous project
           </Text>
-          <p className="group-hover:text-accent mt-2 font-serif text-[length:var(--text-body-lg)] tracking-tight text-pretty transition-colors">
+          <p className="group-hover:text-accent group-focus-visible:text-accent mt-2 font-serif text-[length:var(--text-body-lg)] tracking-tight text-pretty transition-colors">
             {previous.title}
           </p>
         </Link>
@@ -50,12 +56,15 @@ export function ProjectNavigation({
       {next ? (
         <Link
           href={`/work/${next.slug}`}
-          className="group border-border-subtle hover:border-border-strong focus-visible:outline-focus-ring min-h-[var(--touch-target)] rounded-[var(--radius-md)] border p-4 text-left transition-[border-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)] focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] sm:text-right"
+          className="group border-border-subtle hover:border-border-strong focus-visible:outline-focus-ring focus-visible:border-accent min-h-[var(--touch-target)] rounded-[var(--radius-md)] border p-4 text-left transition-[border-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-standard)] hover:-translate-y-px focus-visible:-translate-y-px focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)] sm:text-right"
         >
           <Text variant="meta" className="text-muted">
             Next project
+            <span aria-hidden className="link-arrow ms-1">
+              →
+            </span>
           </Text>
-          <p className="group-hover:text-accent mt-2 font-serif text-[length:var(--text-body-lg)] tracking-tight text-pretty transition-colors">
+          <p className="group-hover:text-accent group-focus-visible:text-accent mt-2 font-serif text-[length:var(--text-body-lg)] tracking-tight text-pretty transition-colors">
             {next.title}
           </p>
         </Link>

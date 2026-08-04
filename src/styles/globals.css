@@ -60,6 +60,10 @@
     scroll-behavior: smooth;
   }
 
+  :where(h1, h2, h3, h4, [id]) {
+    scroll-margin-top: calc(4.5rem + var(--space-3));
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -121,6 +125,44 @@
   .text-pretty {
     text-wrap: pretty;
   }
+
+  .pressable {
+    transition:
+      background-color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      filter var(--duration-fast) var(--ease-standard),
+      opacity var(--duration-fast) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .pressable:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .interactive-surface {
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background-color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard);
+  }
+
+  .interactive-surface:hover,
+  .interactive-surface:focus-within {
+    transform: translateY(-1px);
+  }
+
+  .link-arrow {
+    display: inline-block;
+    transition: transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .group:hover .link-arrow,
+  .group:focus-visible .link-arrow,
+  .group:focus-within .link-arrow {
+    transform: translateX(0.2rem);
+  }
 }
 
 @keyframes nav-panel-in {
@@ -135,6 +177,118 @@
   }
 }
 
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes route-enter {
+  from {
+    transform: translateY(0.35rem);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hero-compose {
+  from {
+    opacity: 0.92;
+    transform: translateY(0.4rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .route-enter {
+    animation: route-enter var(--duration-base) var(--ease-entrance);
+  }
+
+  html[data-reveal-enhanced] [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  html[data-reveal-enhanced] [data-reveal] {
+    transition:
+      opacity var(--duration-slow) var(--ease-entrance),
+      transform var(--duration-slow) var(--ease-entrance);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  html[data-reveal-enhanced] [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.theme-transition,
+  html.theme-transition body,
+  html.theme-transition header,
+  html.theme-transition main,
+  html.theme-transition footer,
+  html.theme-transition [data-theme-surface] {
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      fill var(--duration-base) var(--ease-standard),
+      stroke var(--duration-base) var(--ease-standard) !important;
+  }
+
+  .hero-compose {
+    animation: hero-compose var(--duration-slow) var(--ease-entrance) both;
+  }
+
+  .project-preview-clinical:hover,
+  .project-preview-clinical:focus-within {
+    border-color: color-mix(in srgb, var(--warning) 45%, var(--border-subtle));
+  }
+
+  .project-preview-academease:hover,
+  .project-preview-academease:focus-within {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border-subtle));
+  }
+
+  .project-preview-terminal:hover,
+  .project-preview-terminal:focus-within {
+    border-color: color-mix(in srgb, var(--steel) 55%, var(--border-strong));
+  }
+
+  .project-preview-taptap:hover,
+  .project-preview-taptap:focus-within {
+    border-color: color-mix(in srgb, var(--success) 35%, var(--border-subtle));
+  }
+
+  .project-preview-bandit:hover,
+  .project-preview-bandit:focus-within,
+  .project-preview-atlas:hover,
+  .project-preview-atlas:focus-within {
+    border-color: var(--border-strong);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   @keyframes nav-panel-in {
     from {
@@ -145,6 +299,49 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes overlay-in {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dialog-in {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .pressable:active:not(:disabled),
+  .interactive-surface:hover,
+  .interactive-surface:focus-within {
+    transform: none;
+  }
+
+  .route-enter,
+  .hero-compose {
+    animation: none;
+  }
+}
+
+@supports (view-transition-name: none) {
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: var(--duration-base);
+      animation-timing-function: var(--ease-standard);
     }
   }
 }

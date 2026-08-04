@@ -261,7 +261,7 @@ Each demonstration keeps a distinct surface language:
 - AcademEase — schedule CSS grid + RTL `dir`/`lang` recomposition
 - TapTap — lane targets, Perfect/Good/Miss text tags (never color alone)
 
-Motion inside demos is local CSS / `requestAnimationFrame` only. Motion for React and global route transitions remain deferred.
+Motion inside demos is local CSS / `requestAnimationFrame` only. Global route/homepage motion is owned by Phase 6 (CSS-first; Motion for React not used).
 
 ---
 
@@ -284,8 +284,28 @@ Under `prefers-reduced-motion: reduce`:
 - Duration tokens collapse to `0ms`
 - Global transitions/animations near-disabled in `globals.css`
 - Smooth scrolling disabled
+- Route enter, hero compose, reveals, parallax, and theme color transitions simplify or disable
+- Focus and state feedback remain
+- TapTap step mode and demo functionality remain
 
-JS helpers in `src/lib/motion.ts` mirror token names. Motion for React remains deferred.
+### Phase 6 interaction language
+
+| Concern              | Implementation                                                             |
+| -------------------- | -------------------------------------------------------------------------- |
+| Motion for React     | **Not added** — CSS + `IntersectionObserver` + optional VT helpers suffice |
+| Route enter          | `app/template.tsx` + `.route-enter` (opacity + 0.35rem translateY)         |
+| Section reveals      | `Reveal` / `RevealEnhancer`; progressive; SSR visible                      |
+| Shared project morph | Deferred                                                                   |
+| Nav                  | Sliding accent underline; sticky surface; overlay/dialog keyframes         |
+| Theme                | `.theme-transition` on intentional toggles (~200ms colors/borders)         |
+| Hero                 | Transform parallax ≤4px; path emphasis on node focus/press                 |
+| Previews             | Project-specific border response + 1px lift; focus-visible parity          |
+| Micro                | `.pressable` active translateY(1px); link underline offset; `.link-arrow`  |
+| Scroll               | Native smooth for anchors; `scroll-margin-top`; no hijacking               |
+
+JS helpers in `src/lib/motion.ts` mirror tokens and expose `motionBudget`, reduced-motion subscription helpers, and `runViewTransition` fallbacks.
+
+Motion inside demos remains local CSS / `requestAnimationFrame` only.
 
 ---
 

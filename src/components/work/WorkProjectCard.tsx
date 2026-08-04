@@ -14,11 +14,31 @@ type WorkProjectCardProps = {
   emphasis: "featured" | "compact";
 };
 
+function previewClassForSlug(slug: string) {
+  switch (slug) {
+    case "clinical-follow-up-detector":
+      return "project-preview-clinical";
+    case "academease":
+      return "project-preview-academease";
+    case "realtime-gpt-cli":
+      return "project-preview-terminal";
+    case "taptap-avengers":
+      return "project-preview-taptap";
+    case "overthewire-bandit":
+      return "project-preview-bandit";
+    case "atlas-research":
+      return "project-preview-atlas";
+    default:
+      return "";
+  }
+}
+
 export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
   return (
     <article
       className={cn(
-        "border-border-subtle border-b py-8",
+        "border-border-subtle interactive-surface border-b py-8",
+        previewClassForSlug(project.slug),
         emphasis === "featured" && "lg:py-10",
       )}
     >
@@ -48,7 +68,7 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
           <h3 className="font-serif text-[length:var(--text-project)] tracking-tight text-balance">
             <Link
               href={`/work/${project.slug}`}
-              className="hover:text-accent focus-visible:outline-focus-ring rounded-sm transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+              className="hover:text-accent focus-visible:outline-focus-ring focus-visible:text-accent rounded-sm transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
             >
               {project.title}
             </Link>
@@ -94,8 +114,12 @@ export function WorkProjectCard({ project, emphasis }: WorkProjectCardProps) {
             href={`/work/${project.slug}`}
             variant="secondary"
             size="sm"
+            className="group"
           >
             View case study
+            <span aria-hidden className="link-arrow ms-1">
+              →
+            </span>
           </ButtonLink>
           {isConfiguredHttpUrl(project.repositoryUrl) ? (
             <ButtonLink

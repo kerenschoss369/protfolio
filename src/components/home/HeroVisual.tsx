@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useId,
   useRef,
   useState,
@@ -9,6 +10,11 @@ import {
 } from "react";
 
 import { cn } from "@/lib/cn";
+import {
+  getFinePointerMediaQuery,
+  getReducedMotionMediaQuery,
+  motionBudget,
+} from "@/lib/motion";
 
 const nodes = [
   {
@@ -17,6 +23,7 @@ const nodes = [
     detail: "Responsive layouts, states, and precise UI structure.",
     x: 18,
     y: 28,
+    paths: ["interface-systems", "interface-visual"],
   },
   {
     id: "systems",
@@ -24,6 +31,7 @@ const nodes = [
     detail: "Boundaries, contracts, and maintainable architecture.",
     x: 52,
     y: 18,
+    paths: ["interface-systems", "systems-ai", "systems-visual"],
   },
   {
     id: "ai",
@@ -31,6 +39,7 @@ const nodes = [
     detail: "Validated model output with human-review workflows.",
     x: 78,
     y: 36,
+    paths: ["systems-ai", "ai-visual"],
   },
   {
     id: "visual",
@@ -38,45 +47,75 @@ const nodes = [
     detail: "Composition, hierarchy, and photographic precision.",
     x: 40,
     y: 72,
+    paths: ["interface-visual", "systems-visual", "ai-visual"],
   },
 ] as const;
 
 type NodeId = (typeof nodes)[number]["id"];
 
 function subscribeFinePointer(onStoreChange: () => void) {
-  const media = window.matchMedia("(pointer: fine)");
+  const media = window.matchMedia(getFinePointerMediaQuery());
   media.addEventListener("change", onStoreChange);
   return () => media.removeEventListener("change", onStoreChange);
 }
 
 function getFinePointerSnapshot() {
-  return window.matchMedia("(pointer: fine)").matches;
+  return window.matchMedia(getFinePointerMediaQuery()).matches;
 }
 
 function getServerFinePointerSnapshot() {
   return false;
 }
 
+function subscribeReducedMotion(onStoreChange: () => void) {
+  const media = window.matchMedia(getReducedMotionMediaQuery());
+  media.addEventListener("change", onStoreChange);
+  return () => media.removeEventListener("change", onStoreChange);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia(getReducedMotionMediaQuery()).matches;
+}
+
+function getServerReducedMotionSnapshot() {
+  return false;
+}
+
 export function HeroVisual() {
   const [active, setActive] = useState<NodeId | null>(null);
-  const [pointer, setPointer] = useState({ x: 50, y: 50 });
+  const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const finePointer = useSyncExternalStore(
     subscribeFinePointer,
     getFinePointerSnapshot,
     getServerFinePointerSnapshot,
   );
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot,
+  );
   const frameRef = useRef<number | null>(null);
   const descriptionId = useId();
 
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, []);
+
   function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!finePointer) {
+    if (!finePointer || reducedMotion) {
       return;
     }
 
     const rect = event.currentTarget.getBoundingClientRect();
+    const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
     const next = {
-      x: ((event.clientX - rect.left) / rect.width) * 100,
-      y: ((event.clientY - rect.top) / rect.height) * 100,
+      x: Math.max(-1, Math.min(1, nx)) * motionBudget.heroParallaxPx,
+      y: Math.max(-1, Math.min(1, ny)) * motionBudget.heroParallaxPx,
     };
 
     if (frameRef.current) {
@@ -89,15 +128,17 @@ export function HeroVisual() {
   }
 
   const activeNode = nodes.find((node) => node.id === active) ?? null;
+  const activePaths = activeNode ? new Set(activeNode.paths) : null;
 
   return (
     <div
-      className="relative isolate overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[linear-gradient(160deg,var(--surface-1),var(--background)_45%,color-mix(in_srgb,var(--accent)_8%,var(--surface-2)))] shadow-[inset_0_1px_0_0_var(--steel-highlight)]"
+      className={cn(
+        "relative isolate overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[linear-gradient(160deg,var(--surface-1),var(--background)_45%,color-mix(in_srgb,var(--accent)_8%,var(--surface-2)))] shadow-[inset_0_1px_0_0_var(--steel-highlight)]",
+        !reducedMotion && "hero-compose",
+      )}
       onPointerMove={handlePointerMove}
       onPointerLeave={() => {
-        if (!active) {
-          setPointer({ x: 50, y: 50 });
-        }
+        setPointer({ x: 0, y: 0 });
       }}
     >
       <div
@@ -116,11 +157,10 @@ export function HeroVisual() {
 
       <div
         aria-hidden
-        className="pointer-events-none absolute size-40 rounded-full bg-[color-mix(in_srgb,var(--accent)_18%,transparent)] blur-3xl transition-transform duration-[var(--duration-slow)] ease-[var(--ease-standard)] max-md:hidden"
+        className="pointer-events-none absolute top-1/2 left-1/2 size-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[color-mix(in_srgb,var(--accent)_18%,transparent)] blur-3xl transition-transform duration-[var(--duration-slow)] ease-[var(--ease-standard)] max-md:hidden"
         style={{
-          left: `calc(${pointer.x}% - 5rem)`,
-          top: `calc(${pointer.y}% - 5rem)`,
-          opacity: finePointer ? 1 : 0.45,
+          transform: `translate(calc(-50% + ${pointer.x}px), calc(-50% + ${pointer.y}px))`,
+          opacity: finePointer && !reducedMotion ? 1 : 0.45,
         }}
       />
 
@@ -129,6 +169,13 @@ export function HeroVisual() {
         className="relative z-[1] aspect-[5/4] w-full max-md:aspect-[4/3]"
         role="img"
         aria-labelledby={descriptionId}
+        style={{
+          transform:
+            finePointer && !reducedMotion
+              ? `translate(${pointer.x * 0.35}px, ${pointer.y * 0.35}px)`
+              : undefined,
+          transition: "transform var(--duration-slow) var(--ease-standard)",
+        }}
       >
         <title id={descriptionId}>
           Editorial system diagram connecting interface, systems, AI, and visual
@@ -136,37 +183,51 @@ export function HeroVisual() {
         </title>
 
         <g aria-hidden className="stroke-[var(--steel)]">
-          <path
-            d="M18 28 C 34 12, 42 12, 52 18"
-            fill="none"
-            strokeWidth="0.35"
-            className="opacity-70"
-          />
-          <path
-            d="M52 18 C 64 24, 72 28, 78 36"
-            fill="none"
-            strokeWidth="0.35"
-            className="opacity-70"
-          />
-          <path
-            d="M18 28 C 24 52, 30 66, 40 72"
-            fill="none"
-            strokeWidth="0.35"
-            className="opacity-70"
-          />
-          <path
-            d="M78 36 C 68 54, 54 66, 40 72"
-            fill="none"
-            strokeWidth="0.35"
-            className="opacity-70"
-          />
-          <path
-            d="M52 18 C 48 40, 44 56, 40 72"
-            fill="none"
-            strokeWidth="0.3"
-            strokeDasharray="1.2 1.4"
-            className="opacity-50"
-          />
+          {(
+            [
+              {
+                id: "interface-systems",
+                d: "M18 28 C 34 12, 42 12, 52 18",
+              },
+              {
+                id: "systems-ai",
+                d: "M52 18 C 64 24, 72 28, 78 36",
+              },
+              {
+                id: "interface-visual",
+                d: "M18 28 C 24 52, 30 66, 40 72",
+              },
+              {
+                id: "ai-visual",
+                d: "M78 36 C 68 54, 54 66, 40 72",
+              },
+              {
+                id: "systems-visual",
+                d: "M52 18 C 48 40, 44 56, 40 72",
+                dashed: true,
+              },
+            ] as const
+          ).map((path) => {
+            const emphasized = activePaths?.has(path.id) ?? false;
+            const dashed = "dashed" in path && path.dashed;
+            return (
+              <path
+                key={path.id}
+                d={path.d}
+                fill="none"
+                strokeWidth={emphasized ? 0.55 : dashed ? 0.3 : 0.35}
+                strokeDasharray={dashed ? "1.2 1.4" : undefined}
+                className={cn(
+                  "transition-[stroke,opacity,stroke-width] duration-[var(--duration-base)] ease-[var(--ease-standard)]",
+                  emphasized
+                    ? "stroke-[var(--accent)] opacity-95"
+                    : dashed
+                      ? "opacity-50"
+                      : "opacity-70",
+                )}
+              />
+            );
+          })}
         </g>
 
         <g aria-hidden>
@@ -255,7 +316,7 @@ export function HeroVisual() {
               <button
                 type="button"
                 className={cn(
-                  "border-border-subtle flex min-h-[var(--touch-target)] w-full flex-col items-start justify-center rounded-[var(--radius-md)] border px-3 py-2 text-left transition-[background-color,border-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+                  "pressable border-border-subtle flex min-h-[var(--touch-target)] w-full flex-col items-start justify-center rounded-[var(--radius-md)] border px-3 py-2 text-left transition-[background-color,border-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                   isActive
                     ? "border-accent bg-accent-muted"
                     : "bg-background/70 hover:bg-surface-1",

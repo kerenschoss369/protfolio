@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Command, Menu } from "lucide-react";
 
@@ -30,6 +30,12 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
+  const navListRef = useRef<HTMLUListElement>(null);
+  const [indicator, setIndicator] = useState({
+    left: 0,
+    width: 0,
+    ready: false,
+  });
 
   const openCommandMenu = useCallback(() => {
     setMobileOpen(false);
@@ -53,11 +59,51 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const list = navListRef.current;
+    if (!list) {
+      return;
+    }
+
+    const activeLink = list.querySelector<HTMLElement>('[aria-current="page"]');
+
+    function update() {
+      if (!activeLink || !list) {
+        setIndicator((current) => ({ ...current, width: 0, ready: false }));
+        return;
+      }
+
+      const listRect = list.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      setIndicator({
+        left: linkRect.left - listRect.left,
+        width: linkRect.width,
+        ready: true,
+      });
+    }
+
+    update();
+
+    const observer =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
+    observer?.observe(list);
+    if (activeLink) {
+      observer?.observe(activeLink);
+    }
+
+    window.addEventListener("resize", update);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [pathname]);
+
   return (
     <>
       <header
+        data-theme-surface
         className={cn(
-          "sticky top-0 z-[var(--z-sticky)] transition-[background-color,border-color,box-shadow] duration-[var(--duration-base)] ease-[var(--ease-standard)]",
+          "sticky top-0 z-[var(--z-sticky)] transition-[background-color,border-color,box-shadow,backdrop-filter] duration-[var(--duration-base)] ease-[var(--ease-standard)]",
           scrolled
             ? "border-border-subtle border-b bg-[color-mix(in_srgb,var(--background)_92%,transparent)] shadow-[var(--shadow-sm)] backdrop-blur-md"
             : "border-b border-transparent bg-transparent",
@@ -71,7 +117,7 @@ export function SiteHeader() {
           >
             <span
               aria-hidden
-              className="border-border-subtle text-steel inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase"
+              className="border-border-subtle text-steel group-hover:border-border-strong group-focus-visible:border-accent inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase transition-[border-color] duration-[var(--duration-fast)] ease-[var(--ease-standard)]"
             >
               KS
             </span>
@@ -84,7 +130,7 @@ export function SiteHeader() {
             aria-label="Primary"
             className="hidden items-center gap-1 lg:flex"
           >
-            <ul className="flex items-center gap-1">
+            <ul ref={navListRef} className="relative flex items-center gap-1">
               {primaryNavItems.map((item) => {
                 const active = isActivePath(pathname, item.href);
                 return (
@@ -92,9 +138,9 @@ export function SiteHeader() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+                        "relative inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
                         active
-                          ? "bg-surface-2 text-foreground"
+                          ? "text-foreground"
                           : "text-muted hover:bg-surface-1 hover:text-foreground",
                       )}
                       aria-current={active ? "page" : undefined}
@@ -104,12 +150,23 @@ export function SiteHeader() {
                   </li>
                 );
               })}
+              <span
+                aria-hidden
+                className={cn(
+                  "bg-accent pointer-events-none absolute bottom-1 h-0.5 rounded-full transition-[transform,width,opacity] duration-[var(--duration-base)] ease-[var(--ease-emphasized)]",
+                  indicator.ready ? "opacity-100" : "opacity-0",
+                )}
+                style={{
+                  width: indicator.width,
+                  transform: `translateX(${indicator.left}px)`,
+                }}
+              />
             </ul>
 
             {links.cvPath ? (
               <a
                 href={links.cvPath}
-                className="text-muted hover:bg-surface-1 hover:text-foreground inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)]"
+                className="text-muted hover:bg-surface-1 hover:text-foreground inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] transition-colors duration-[var(--duration-fast)]"
               >
                 Download CV
               </a>

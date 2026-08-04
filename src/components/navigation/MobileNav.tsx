@@ -94,7 +94,7 @@ export function MobileNav({
     <div className="fixed inset-0 z-[var(--z-overlay)] lg:hidden">
       <button
         type="button"
-        className="absolute inset-0 bg-[var(--overlay)]"
+        className="absolute inset-0 bg-[var(--overlay)] motion-safe:animate-[overlay-in_var(--duration-fast)_var(--ease-exit)]"
         aria-label="Close navigation menu"
         onClick={() => onOpenChange(false)}
       />
@@ -104,6 +104,7 @@ export function MobileNav({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        data-theme-surface
         className="border-border-subtle bg-background absolute inset-y-0 right-0 flex w-full max-w-full flex-col border-l shadow-[var(--shadow-md)] motion-safe:animate-[nav-panel-in_var(--duration-base)_var(--ease-entrance)] sm:max-w-sm"
       >
         <div className="border-border-subtle flex items-center justify-between border-b px-[var(--space-gutter)] py-4">

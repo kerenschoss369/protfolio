@@ -161,7 +161,7 @@ function CommandMenuDialog({
     <div className="fixed inset-0 z-[var(--z-modal)] flex items-start justify-center px-3 pt-[12vh] sm:px-4">
       <button
         type="button"
-        className="absolute inset-0 bg-[var(--overlay)]"
+        className="absolute inset-0 bg-[var(--overlay)] motion-safe:animate-[overlay-in_var(--duration-fast)_var(--ease-exit)]"
         aria-label="Close command menu"
         onClick={() => onOpenChange(false)}
       />
@@ -171,7 +171,8 @@ function CommandMenuDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="border-border-subtle bg-background relative z-[1] flex max-h-[min(32rem,76vh)] w-full max-w-xl flex-col overflow-hidden rounded-[var(--radius-lg)] border shadow-[var(--shadow-md)]"
+        data-theme-surface
+        className="border-border-subtle bg-background relative z-[1] flex max-h-[min(32rem,76vh)] w-full max-w-xl flex-col overflow-hidden rounded-[var(--radius-lg)] border shadow-[var(--shadow-md)] motion-safe:animate-[dialog-in_var(--duration-base)_var(--ease-entrance)]"
       >
         <div className="border-border-subtle flex items-center gap-3 border-b px-4 py-3">
           <Search size={18} className="text-steel shrink-0" aria-hidden />
