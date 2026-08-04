@@ -211,22 +211,34 @@ Focus uses `--focus-ring` with `--focus-ring-width` and `--focus-ring-offset` gl
 
 ## 8. Navigation design
 
-Full sticky/mobile navigation belongs to Phase 3. Foundations ready:
+Implemented in Phase 3:
 
-- Theme toggle via `IconButton`
+- Sticky header: transparent at top; subtle surface, border, and blur after scroll (`--z-sticky`)
+- Desktop primary nav with `aria-current="page"` active state
+- Mobile full-height panel (`role="dialog"`, Escape, focus trap, scroll lock, focus restore)
+- Command menu (`Cmd/Ctrl + K`) as modal dialog with searchable actions
+- Theme toggle via `IconButton`; CV action only when `cvPath` is configured
 - Skip link uses `--z-skip-link`
-- Preview includes a mobile-panel sample (targets, hierarchy only)
+- Overlay/modal layers use `--z-overlay` / `--z-modal`
 
 ---
 
 ## 9. Project visual language
 
-Deferred compositions remain project-specific. Shared foundations:
+Homepage featured treatments (Phase 3) introduce distinct preview languages:
+
+- Clinical — note/action review surfaces, evidence, needs-review status, safety copy
+- AcademEase — schedule grid + multilingual/RTL metadata
+- Realtime GPT CLI — terminal/event rows, offline simulation label
+- TapTap — silent rhythm/timing marks (Perfect / Good / Miss)
+
+Shared foundations:
 
 - `Tag` — default / accent / steel / success / warning / danger
 - `ProjectMeta` — category, dates, stack as monospace metadata
+- `ButtonLink` — link styled with button variants for CTAs
 
-Clinical / AcademEase / CLI / TapTap treatments stay for later case-study and demo phases.
+Full case-study layouts and interactive demos remain for later phases.
 
 ---
 
@@ -299,6 +311,7 @@ Located in `src/components/ui/`:
 - `Surface`
 - `Divider`
 - `IconButton`
+- `ButtonLink` — internal/external CTAs using button variants
 
 No heavy UI library.
 

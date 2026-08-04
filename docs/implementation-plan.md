@@ -65,14 +65,14 @@ Intentionally **not** added: UI component library, CMS, database, auth, global s
 
 ### Route plan
 
-| Route          | Purpose                                | Status            |
-| -------------- | -------------------------------------- | ----------------- |
-| `/`            | Homepage shell                         | Present (minimal) |
-| `/work`        | Work index                             | Present           |
-| `/work/[slug]` | Project pages from typed data          | Present           |
-| `/about`       | About + skills/experience placeholders | Present           |
-| `/contact`     | Contact; hides unconfigured links      | Present           |
-| `not-found`    | Custom 404                             | Present           |
+| Route          | Purpose                                | Status  |
+| -------------- | -------------------------------------- | ------- |
+| `/`            | Homepage (full Phase 3 composition)    | Present |
+| `/work`        | Work index                             | Present |
+| `/work/[slug]` | Project pages from typed data          | Present |
+| `/about`       | About + skills/experience placeholders | Present |
+| `/contact`     | Contact; hides unconfigured links      | Present |
+| `not-found`    | Custom 404                             | Present |
 
 ### Data plan
 
@@ -108,7 +108,8 @@ Helpers:
 **Client Components:**
 
 - `ThemeProvider`, `ThemeToggle`
-- Future: navigation overlays, command menu, filters, demos, pointer-reactive hero, architecture controls
+- `SiteHeader`, `MobileNav`, `CommandMenu`, `HeroVisual` (scroll/overlay/pointer interaction)
+- Future: filters, demos, architecture controls, advanced motion
 
 ### State strategy
 
@@ -252,19 +253,14 @@ Owner prompt:
 
 - `docs/agents/03-homepage-navigation.md`
 
+Status: **complete**
+
 Deliverables:
 
-- Responsive navigation
-- Mobile menu
-- Command menu
-- Hero
-- Selected work
-- Experience preview
-- Engineering approach
-- Skills preview
-- Visual-background section
-- Contact CTA
-- Footer
+- Responsive sticky navigation with scroll surface, active route, CV gate, theme toggle, command trigger
+- Mobile navigation panel with focus trap, Escape, scroll lock, and focus restoration
+- Searchable `Cmd/Ctrl + K` command menu (projects, routes, theme, configured externals only)
+- Full homepage: hero + SVG system visual, selected work, distinct featured treatments, experience, approach, skills, visual background, additional work, contact CTA, footer
 
 Exit criteria:
 
@@ -446,6 +442,11 @@ Do not claim a command passed until it has actually been run.
 | 2026-08-04 | Content model  | Keep Abra / EL AL as `ProfessionalWork`, not a public project                          | Proprietary work must stay separate from repository/case-study presentation                                               | `src/data/experience.ts`                                                                             |
 | 2026-08-04 | Content model  | Reject `#`, `example.com`, and bracket placeholders in link helpers                    | Content-decisions forbid fake public actions                                                                              | `src/lib/links.ts`, `src/data/links.ts`                                                              |
 | 2026-08-04 | Content model  | Leave Clinical + Realtime GPT CLI as `pending-verification`                            | No repository ownership evidence yet                                                                                      | `src/data/projects.ts`, open questions                                                               |
+| 2026-08-04 | Homepage/nav   | Implement focus trap + scroll lock locally; no dialog library                          | Phase 3 forbids heavy overlay deps unless necessary; keeps bundle small                                                   | `src/lib/focus-trap.ts`, `MobileNav`, `CommandMenu`                                                  |
+| 2026-08-04 | Homepage/nav   | Simple substring command search over labels/keywords; no fuzzy library                 | Spec allows avoiding fuzzy deps; title/category/tech matching is enough                                                   | `src/lib/command-actions.ts`                                                                         |
+| 2026-08-04 | Homepage/nav   | Keep Motion for React deferred; CSS transitions + SVG static hero only                 | Phase 3 motion constraints; hero must work without JS animation                                                           | `HeroVisual`, `globals.css`                                                                          |
+| 2026-08-04 | Homepage/nav   | Distinct featured compositions per project; static previews only                       | Spec forbids identical cards; advanced demos belong to Phase 5                                                            | `src/components/home/FeaturedProjects.tsx`                                                           |
+| 2026-08-04 | Homepage/nav   | Hide CV/GitHub/LinkedIn/email actions when null                                        | Content-decisions: no fake links                                                                                          | Header, footer, hero, contact CTA, command menu                                                      |
 
 ---
 
