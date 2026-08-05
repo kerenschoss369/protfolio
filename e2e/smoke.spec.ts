@@ -50,7 +50,10 @@ test.describe("homepage and navigation", () => {
     await expect(
       page.getByRole("button", { name: "Open command menu" }).first(),
     ).toBeVisible();
-    await page.keyboard.press("Control+K");
+    await page
+      .getByRole("button", { name: "Open command menu" })
+      .first()
+      .click();
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
 
@@ -61,6 +64,12 @@ test.describe("homepage and navigation", () => {
 
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
+
+    await page.keyboard.press("Control+K");
+    await expect(
+      page.getByRole("dialog", { name: "Command menu" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
   });
 
   test("primary CTA navigates to work", async ({ page }) => {

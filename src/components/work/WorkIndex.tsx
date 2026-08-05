@@ -23,7 +23,7 @@ export function WorkIndex({ projects, experience }: WorkIndexProps) {
       />
       <div className="pt-[var(--space-section-sm)] pb-[var(--space-section)]">
         <Container className="space-y-12">
-          <header className="max-w-[42rem] space-y-4">
+          <header className="max-w-[36rem] space-y-4">
             <Text variant="meta" className="text-steel">
               Selected work
             </Text>
@@ -31,9 +31,8 @@ export function WorkIndex({ projects, experience }: WorkIndexProps) {
               Work
             </Heading>
             <Text variant="body-lg" className="text-pretty">
-              Case studies across full-stack products, AI-integrated systems,
-              game development, and engineering practice—alongside production
-              frontend work presented separately for confidentiality.
+              Case studies, practice, and research—with production work kept
+              separate for confidentiality.
             </Text>
           </header>
 

@@ -90,6 +90,10 @@ export const CLINICAL_SAFETY_NOTE = [
   "AI output is never automatically confirmed.",
 ].join(" ");
 
+/** Compact Level-1 safety line for homepage / work previews. Full note stays on the case study. */
+export const CLINICAL_SAFETY_COMPACT =
+  "Demo only · not for real patient data · human review required";
+
 export const clinicalSafetyGuarantees: ClinicalSafetyGuarantees = {
   demonstrationSystemOnly: true,
   clinicallyValidated: false,

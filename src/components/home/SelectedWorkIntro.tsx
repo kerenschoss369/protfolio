@@ -14,26 +14,18 @@ export function SelectedWorkIntro() {
     >
       <Container>
         <Reveal>
-          <div className="editorial-grid items-end gap-y-6">
-            <div className="col-span-full max-w-3xl space-y-4 lg:col-span-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl space-y-3">
               <Text variant="meta" className="text-steel">
                 Selected work
               </Text>
               <Heading as="h2" variant="section" id="selected-work-heading">
-                Projects that show how interfaces, systems, and AI boundaries
-                meet
+                Interfaces, systems, and AI — presented visually
               </Heading>
-              <Text variant="muted" className="max-w-[40rem] text-pretty">
-                Four featured compositions—each with its own visual language.
-                Open a case study for the full write-up and local interactive
-                simulation where available.
-              </Text>
             </div>
-            <div className="col-span-full lg:col-span-4 lg:justify-self-end">
-              <ButtonLink href="/work" variant="ghost" size="sm">
-                Browse all work
-              </ButtonLink>
-            </div>
+            <ButtonLink href="/work" variant="ghost" size="sm">
+              Browse all work
+            </ButtonLink>
           </div>
         </Reveal>
       </Container>

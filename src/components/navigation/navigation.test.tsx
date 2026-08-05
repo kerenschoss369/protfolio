@@ -197,11 +197,9 @@ describe("homepage content", () => {
       screen.getByRole("heading", { name: "TapTap Avengers" }),
     ).toBeInTheDocument();
 
-    expect(screen.getByText(/Demonstration system only/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/Not for medical decision-making/i),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/Static demonstration/i)).toBeInTheDocument();
+    expect(screen.getByText(/Demo only/i)).toBeInTheDocument();
+    expect(screen.getByText(/human review required/i)).toBeInTheDocument();
+    expect(screen.getByText(/not for real patient data/i)).toBeInTheDocument();
   });
 
   it("renders the professional confidentiality note", () => {

@@ -1,9 +1,21 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { createContext, useContext, type ReactNode } from "react";
 
 import { Surface } from "@/components/ui/Surface";
 import { Tag } from "@/components/ui/Tag";
 import { Text } from "@/components/ui/Text";
 import { cn } from "@/lib/cn";
+
+const EmbeddedVisualContext = createContext(false);
+
+export function EmbeddedVisualProvider({ children }: { children: ReactNode }) {
+  return (
+    <EmbeddedVisualContext.Provider value={true}>
+      {children}
+    </EmbeddedVisualContext.Provider>
+  );
+}
 
 type ProjectVisualFrameProps = {
   label: string;
@@ -25,6 +37,21 @@ export function ProjectVisualFrame({
   className,
   decorative = false,
 }: ProjectVisualFrameProps) {
+  const embedded = useContext(EmbeddedVisualContext);
+
+  if (embedded) {
+    return (
+      <div
+        className={cn("h-full overflow-auto p-4 sm:p-5", className)}
+        aria-hidden={decorative || undefined}
+      >
+        <p className="sr-only">{label}</p>
+        {children}
+        {caption ? <p className="sr-only">{caption}</p> : null}
+      </div>
+    );
+  }
+
   return (
     <figure className={cn("space-y-3", className)}>
       <Surface

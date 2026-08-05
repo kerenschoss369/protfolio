@@ -287,6 +287,14 @@
   .project-preview-atlas:focus-within {
     border-color: var(--border-strong);
   }
+
+  .featured-sticky-card:focus-within {
+    z-index: 2;
+  }
+
+  .featured-project-card {
+    box-shadow: 0 0 0 1px transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -7,7 +7,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    // Separate from `next dev` on 3000 so e2e always hits a fresh production server.
+    baseURL: "http://127.0.0.1:3010",
     trace: "on-first-retry",
   },
   projects: [
@@ -17,8 +18,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run start -- --hostname 127.0.0.1 --port 3000",
-    url: "http://127.0.0.1:3000",
+    command: "npm run start -- --hostname 127.0.0.1 --port 3010",
+    url: "http://127.0.0.1:3010",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

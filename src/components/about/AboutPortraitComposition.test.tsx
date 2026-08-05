@@ -32,10 +32,7 @@ describe("AboutPortraitComposition", () => {
     const image = screen.getByRole("img", {
       name: "Portrait of Keren Schoss",
     });
-    expect(image).toHaveAttribute(
-      "src",
-      "/about/keren-schoss-cutout.webp",
-    );
+    expect(image).toHaveAttribute("src", "/about/keren-schoss-cutout.webp");
     expect(image).toHaveAttribute("width", "632");
     expect(image).toHaveAttribute("height", "721");
   });

@@ -22,15 +22,15 @@ test.describe("work index and case studies", () => {
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: /Production frontend work/i }),
+      page.getByRole("heading", { name: /Frontend Developer/i }),
     ).toBeVisible();
     await expect(
       page.getByText(/Professional work is described at a high level/i),
     ).toBeVisible();
-    // Work index uses "Repository" labels; case studies use "View repository".
-    await expect(page.getByRole("link", { name: /Repository/i })).toHaveCount(
-      3,
-    );
+    // Featured cards may use Repository; case studies use View repository.
+    await expect(
+      page.getByRole("main").getByRole("link", { name: /Repository/i }),
+    ).toHaveCount(3);
     await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
   });
 

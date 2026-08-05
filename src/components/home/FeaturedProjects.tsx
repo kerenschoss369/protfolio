@@ -5,231 +5,217 @@ import {
   TerminalPreviewMotion,
 } from "@/components/motion/ProjectPreviewMotion";
 import { ViewTransitionLink } from "@/components/motion/ViewTransitionLink";
+import {
+  DeviceMockup,
+  deviceVariantForSlug,
+} from "@/components/projects/DeviceMockup";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Heading } from "@/components/ui/Heading";
-import { ProjectMeta } from "@/components/ui/ProjectMeta";
-import { Surface } from "@/components/ui/Surface";
+import { Tag } from "@/components/ui/Tag";
 import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
-import { CLINICAL_SAFETY_NOTE } from "@/data/projects";
-import { getCollaborationLabel } from "@/lib/project-utils";
+import { CLINICAL_SAFETY_COMPACT } from "@/data/projects";
+import { cn } from "@/lib/cn";
 import { projectTitleTransitionName } from "@/lib/view-transitions";
 
-type FeaturedProjectProps = {
+type FeaturedCardProps = {
   project: Project;
+  index: number;
+  stack?: readonly string[];
+  note?: string;
+  noteVariant?: "warning" | "steel";
 };
 
-export function FeaturedClinical({ project }: FeaturedProjectProps) {
-  return (
-    <article className="editorial-grid items-stretch gap-y-6 border-b border-[var(--border-subtle)] py-10 lg:py-14">
-      <div className="col-span-full space-y-5 lg:col-span-5">
-        <ProjectMeta
-          category={project.category}
-          dates={project.dates.display}
-          stack={["React", "Node.js", "FastAPI", "SQLite", "OpenAI SDK"]}
-        />
-        <Heading as="h3" variant="project">
-          <ViewTransitionLink
-            href={`/work/${project.slug}`}
-            className="hover:text-accent focus-visible:text-accent transition-colors"
-            style={{
-              viewTransitionName: projectTitleTransitionName(project.slug),
-            }}
-          >
-            {project.title}
-          </ViewTransitionLink>
-        </Heading>
-        <Text className="max-w-[36rem] text-pretty">
-          {project.shortDescription}
-        </Text>
-        <Text variant="small" className="text-muted max-w-[36rem] text-pretty">
-          {CLINICAL_SAFETY_NOTE}
-        </Text>
-        <Text variant="small" className="text-steel">
-          {getCollaborationLabel(project.collaboration)}
-        </Text>
-        <ButtonLink
-          href={`/work/${project.slug}`}
-          variant="secondary"
-          size="sm"
-          className="group"
-        >
-          View case study
-          <span aria-hidden className="link-arrow ms-1">
-            →
-          </span>
-        </ButtonLink>
-      </div>
+const FEATURED_STACK: Record<string, readonly string[]> = {
+  "clinical-follow-up-detector": [
+    "React",
+    "Node.js",
+    "FastAPI",
+    "SQLite",
+    "OpenAI",
+  ],
+  academease: ["React", "TypeScript", "FastAPI", "MongoDB"],
+  "realtime-gpt-cli": ["Go", "WebSockets", "Goroutines", "Channels"],
+  "taptap-avengers": ["Unity", "C#", "ShaderLab", "HLSL"],
+};
 
-      <div className="col-span-full lg:col-span-7">
-        <Surface
-          variant="raised"
-          border="steel"
-          className="project-preview-clinical interactive-surface overflow-hidden"
-        >
-          <ClinicalPreviewMotion />
-        </Surface>
+function FeaturedPreview({ slug }: { slug: string }) {
+  switch (slug) {
+    case "clinical-follow-up-detector":
+      return <ClinicalPreviewMotion />;
+    case "academease":
+      return <AcademEasePreviewMotion />;
+    case "realtime-gpt-cli":
+      return <TerminalPreviewMotion />;
+    case "taptap-avengers":
+      return <TapTapPreviewMotion />;
+    default:
+      return null;
+  }
+}
+
+export function FeaturedProjectCard({
+  project,
+  index,
+  stack,
+  note,
+  noteVariant = "steel",
+}: FeaturedCardProps) {
+  const techs =
+    stack ??
+    FEATURED_STACK[project.slug] ??
+    project.technologyStack.slice(0, 5);
+  const number = String(index + 1).padStart(2, "0");
+
+  return (
+    <article
+      className={cn(
+        "featured-project-card border-border-subtle relative overflow-hidden border",
+        "bg-background px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12",
+        `project-preview-${
+          project.slug === "clinical-follow-up-detector"
+            ? "clinical"
+            : project.slug === "academease"
+              ? "academease"
+              : project.slug === "realtime-gpt-cli"
+                ? "terminal"
+                : project.slug === "taptap-avengers"
+                  ? "taptap"
+                  : "default"
+        }`,
+      )}
+      data-project={project.slug}
+    >
+      <div className="editorial-grid items-center gap-y-8">
+        <div className="col-span-full space-y-5 lg:col-span-5">
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
+            <span
+              aria-hidden
+              className="text-accent font-mono text-[length:var(--text-section)] tracking-tight"
+            >
+              {number}
+            </span>
+            <Text variant="meta" className="text-steel">
+              {project.category}
+            </Text>
+          </div>
+
+          <Heading as="h3" variant="project" className="text-balance">
+            <ViewTransitionLink
+              href={`/work/${project.slug}`}
+              className="hover:text-accent focus-visible:text-accent transition-colors"
+              style={{
+                viewTransitionName: projectTitleTransitionName(project.slug),
+              }}
+            >
+              {project.title}
+            </ViewTransitionLink>
+          </Heading>
+
+          <Text className="max-w-[32rem] text-pretty">
+            {project.shortDescription}
+          </Text>
+
+          <ul className="flex flex-wrap gap-2" aria-label="Technologies">
+            {techs.map((tech) => (
+              <li key={tech}>
+                <Tag variant="steel">{tech}</Tag>
+              </li>
+            ))}
+          </ul>
+
+          {note ? (
+            <p
+              className={cn(
+                "max-w-[32rem] text-[length:var(--text-sm)] text-pretty",
+                noteVariant === "warning" ? "text-warning" : "text-muted",
+              )}
+            >
+              {note}
+            </p>
+          ) : null}
+
+          <ButtonLink
+            href={`/work/${project.slug}`}
+            variant="secondary"
+            size="sm"
+            className="group"
+          >
+            View case study
+            <span aria-hidden className="link-arrow ms-1">
+              →
+            </span>
+          </ButtonLink>
+        </div>
+
+        <div className="col-span-full lg:col-span-7">
+          <DeviceMockup
+            variant={deviceVariantForSlug(project.slug)}
+            caption={`Conceptual preview of ${project.title}`}
+          >
+            <FeaturedPreview slug={project.slug} />
+          </DeviceMockup>
+        </div>
       </div>
     </article>
   );
 }
 
-export function FeaturedAcademEase({ project }: FeaturedProjectProps) {
+export function FeaturedClinical({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
   return (
-    <article className="editorial-grid items-stretch gap-y-6 border-b border-[var(--border-subtle)] py-10 lg:py-14">
-      <div className="order-2 col-span-full space-y-5 lg:order-1 lg:col-span-7">
-        <Surface
-          variant="inset"
-          border="subtle"
-          className="project-preview-academease interactive-surface overflow-hidden"
-        >
-          <AcademEasePreviewMotion />
-        </Surface>
-      </div>
-
-      <div className="order-1 col-span-full space-y-5 lg:order-2 lg:col-span-5">
-        <ProjectMeta
-          category={project.category}
-          dates={project.dates.display}
-          stack={["React", "TypeScript", "FastAPI", "MongoDB"]}
-        />
-        <Heading as="h3" variant="project">
-          <ViewTransitionLink
-            href={`/work/${project.slug}`}
-            className="hover:text-accent focus-visible:text-accent transition-colors"
-            style={{
-              viewTransitionName: projectTitleTransitionName(project.slug),
-            }}
-          >
-            {project.title}
-          </ViewTransitionLink>
-        </Heading>
-        <Text className="max-w-[36rem] text-pretty">
-          {project.shortDescription}
-        </Text>
-        <Text variant="small" className="text-muted max-w-[36rem]">
-          Led frontend development after independently learning React, with
-          contributions across interface flows, backend work, and deployment.
-          Team project.
-        </Text>
-        <ButtonLink
-          href={`/work/${project.slug}`}
-          variant="secondary"
-          size="sm"
-          className="group"
-        >
-          View case study
-          <span aria-hidden className="link-arrow ms-1">
-            →
-          </span>
-        </ButtonLink>
-      </div>
-    </article>
+    <FeaturedProjectCard
+      project={project}
+      index={index}
+      note={CLINICAL_SAFETY_COMPACT}
+      noteVariant="warning"
+    />
   );
 }
 
-export function FeaturedRealtimeCli({ project }: FeaturedProjectProps) {
-  return (
-    <article className="editorial-grid items-stretch gap-y-6 border-b border-[var(--border-subtle)] py-10 lg:py-14">
-      <div className="col-span-full space-y-5 lg:col-span-5">
-        <ProjectMeta
-          category={project.category}
-          dates={project.dates.display}
-          stack={["Go", "WebSockets", "Goroutines", "Channels"]}
-        />
-        <Heading as="h3" variant="project">
-          <ViewTransitionLink
-            href={`/work/${project.slug}`}
-            className="hover:text-accent focus-visible:text-accent transition-colors"
-            style={{
-              viewTransitionName: projectTitleTransitionName(project.slug),
-            }}
-          >
-            {project.title}
-          </ViewTransitionLink>
-        </Heading>
-        <Text className="max-w-[36rem] text-pretty">
-          {project.shortDescription}
-        </Text>
-        <Text variant="small" className="text-muted max-w-[36rem]">
-          Deterministic portfolio preview only—no live AI connection and no API
-          key exposure.
-        </Text>
-        <ButtonLink
-          href={`/work/${project.slug}`}
-          variant="secondary"
-          size="sm"
-          className="group"
-        >
-          View case study
-          <span aria-hidden className="link-arrow ms-1">
-            →
-          </span>
-        </ButtonLink>
-      </div>
+export function FeaturedAcademEase({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  return <FeaturedProjectCard project={project} index={index} />;
+}
 
-      <div className="col-span-full lg:col-span-7">
-        <Surface
-          variant="inset"
-          border="steel"
-          className="project-preview-terminal interactive-surface overflow-hidden"
-        >
-          <TerminalPreviewMotion />
-        </Surface>
-      </div>
-    </article>
+export function FeaturedRealtimeCli({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  return (
+    <FeaturedProjectCard
+      project={project}
+      index={index}
+      note="Offline portfolio simulation"
+    />
   );
 }
 
-export function FeaturedTapTap({ project }: FeaturedProjectProps) {
+export function FeaturedTapTap({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
   return (
-    <article className="editorial-grid items-stretch gap-y-6 py-10 lg:py-14">
-      <div className="order-2 col-span-full space-y-5 lg:order-1 lg:col-span-7">
-        <Surface
-          variant="raised"
-          border="subtle"
-          className="project-preview-taptap interactive-surface overflow-hidden"
-        >
-          <TapTapPreviewMotion />
-        </Surface>
-      </div>
-
-      <div className="order-1 col-span-full space-y-5 lg:order-2 lg:col-span-5">
-        <ProjectMeta
-          category={project.category}
-          dates={project.dates.display}
-          stack={["Unity", "C#", "ShaderLab", "HLSL"]}
-        />
-        <Heading as="h3" variant="project">
-          <ViewTransitionLink
-            href={`/work/${project.slug}`}
-            className="hover:text-accent focus-visible:text-accent transition-colors"
-            style={{
-              viewTransitionName: projectTitleTransitionName(project.slug),
-            }}
-          >
-            {project.title}
-          </ViewTransitionLink>
-        </Heading>
-        <Text className="max-w-[36rem] text-pretty">
-          {project.shortDescription}
-        </Text>
-        <Text variant="small" className="text-muted max-w-[36rem]">
-          Team-built rhythm systems with audio synchronization, beat mapping,
-          and shader work. No copyrighted imagery or audio in this preview.
-        </Text>
-        <ButtonLink
-          href={`/work/${project.slug}`}
-          variant="secondary"
-          size="sm"
-          className="group"
-        >
-          View case study
-          <span aria-hidden className="link-arrow ms-1">
-            →
-          </span>
-        </ButtonLink>
-      </div>
-    </article>
+    <FeaturedProjectCard
+      project={project}
+      index={index}
+      note="Team project · silent preview"
+    />
   );
 }

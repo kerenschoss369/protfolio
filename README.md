@@ -45,7 +45,7 @@ src/
 - Static content stays in Server Components.
 - Client Components are limited to theme, navigation overlays, filters, reveals, hero pointer enhancement, signature motion islands, and demos.
 - Heavy demos load only on matching `/work/[slug]` routes via `next/dynamic`.
-- Playwright e2e uses `npm run start` (run `npm run build` first when the server is not already up).
+- Playwright e2e uses `npm run start` on port **3010** (avoids colliding with `next dev` on 3000). Run `npm run build` first when the server is not already up.
 
 ## Routes
 
@@ -54,7 +54,7 @@ src/
 | `/`                | Homepage                                     |
 | `/work`            | Work index + professional experience section |
 | `/work/[slug]`     | Project case studies                         |
-| `/about`           | About, background, skills                    |
+| `/about`           | About + portrait (concise)                   |
 | `/contact`         | Contact (configured methods only)            |
 | Custom `not-found` | Accessible 404                               |
 | `/design-system`   | **Development only** — 404 in production     |
@@ -64,9 +64,10 @@ src/
 Central configuration lives in `src/data/`:
 
 - `portfolio.ts` — name, title, positioning, about
+- `capabilities.ts` — homepage capability groups (short)
 - `projects.ts` — verified projects (keep URLs `null` until real)
 - `experience.ts` — Abra / EL AL professional work (proprietary)
-- `skills.ts` — skill groups (no percentages)
+- `skills.ts` — full skill vocabulary for case-study tech grouping
 - `links.ts` — GitHub, LinkedIn, email, CV, site URL
 - `missing-content.ts` — unresolved checklist
 
@@ -95,10 +96,10 @@ Rules:
 
 ### About portrait
 
-| Asset | Path |
-| --- | --- |
+| Asset               | Path                                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
 | Original photograph | `public/about/keren-schoss-original.jpg` (also retained as `public/keren-schoss-original.jpeg`) |
-| Transparent cutout | `public/about/keren-schoss-cutout.webp` (PNG twin: `public/about/keren-schoss-cutout.png`) |
+| Transparent cutout  | `public/about/keren-schoss-cutout.webp` (PNG twin: `public/about/keren-schoss-cutout.png`)      |
 
 Background removal was performed locally as a one-time development step. The site loads the processed asset only — no external rembg runtime service. Edge-refinement notes: `public/about/CUTOUT-NOTES.md`.
 
@@ -163,16 +164,16 @@ npm start
 
 Observed strategy (not invented Lighthouse scores):
 
-| Budget              | Target                                                                |
-| ------------------- | --------------------------------------------------------------------- |
-| Shared client JS    | Keep minimal — theme, header/overlays, filters, reveal enhancer only  |
-| Demo code           | Route-local async chunks; homepage must not load demo implementations |
-| Third-party runtime | None (no analytics, no trackers)                                      |
-| Layout shift        | Reserve demo/loading dimensions; no late-injected hero media          |
-| Motion              | CSS-first for simple UI; Motion for React for springs/layout; pause offscreen; RM alternatives |
-| Shared client growth| LazyMotion + route-local demos; do not load case-study demo chunks on `/`                      |
-| Fonts               | `next/font` with `display: "swap"`; latin subsets only                                        |
-| Media               | No autoplay audio/video; no oversized placeholders                                            |
+| Budget               | Target                                                                        |
+| -------------------- | ----------------------------------------------------------------------------- |
+| Shared client JS     | Keep minimal — theme, header/overlays, filters, sticky stack, reveal enhancer |
+| Demo code            | Route-local async chunks; homepage must not load demo implementations         |
+| Third-party runtime  | `motion` only (no analytics, no trackers, no second animation library)        |
+| Layout shift         | Reserve demo/loading/mockup dimensions; no late-injected hero media           |
+| Motion               | CSS-first for simple UI; Motion for React for springs/layout/sticky scale     |
+| Shared client growth | LazyMotion + route-local demos; sticky stack is homepage Client island only   |
+| Fonts                | `next/font` with `display: "swap"`; latin subsets only                        |
+| Media                | Optimized portrait cutout; no autoplay audio; no fabricated screenshots       |
 
 Inspect client chunks after `npm run build` (Next.js route/chunk summary). Do not add a permanent heavy analyzer unless it provides ongoing value.
 
@@ -218,7 +219,8 @@ Hosting platform is not selected in-repo yet. Add platform config only when the 
 ## Reduced-motion strategy
 
 - Duration tokens collapse under `prefers-reduced-motion: reduce`
-- Route enter, reveals, parallax, and theme color transitions simplify or disable
+- Route enter, reveals, parallax, sticky card scaling, and theme color transitions simplify or disable
+- Featured project sticky stack falls back to a normal stacked layout
 - TapTap switches to intentional step mode
 - Essential content never depends on animation completion
 
@@ -226,9 +228,15 @@ Hosting platform is not selected in-repo yet. Add platform config only when the 
 
 - Server Components by default
 - Dynamic demo imports with project-specific loading fallbacks and error boundaries
-- CSS-first motion (Motion for React not installed)
+- Motion for React in focused Client islands only (LazyMotion); CSS for simple UI state
 - Passive listeners / IntersectionObservers / rAF cleaned up on unmount
 - Theme boot script prevents incorrect theme flash without external requests
+
+## Visual redesign
+
+See `docs/visual-redesign-plan.md` for the copy-reduction audit and MotionSites-inspired presentation plan.
+
+Homepage focuses on a minimal hero, sticky featured project cards with device mockups, a compact experience strip, about preview with portrait, capability groups (not skill walls), and a short contact CTA.
 
 ## Security and privacy constraints
 

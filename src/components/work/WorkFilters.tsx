@@ -157,12 +157,13 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                   <Tag variant="steel">{featured.length} projects</Tag>
                 </div>
                 <ul className="space-y-0">
-                  {featured.map((project) =>
+                  {featured.map((project, index) =>
                     reducedMotion ? (
                       <li key={project.slug}>
                         <WorkProjectCard
                           project={project}
                           emphasis="featured"
+                          index={index}
                         />
                       </li>
                     ) : (
@@ -176,6 +177,7 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                         <WorkProjectCard
                           project={project}
                           emphasis="featured"
+                          index={index}
                         />
                       </m.li>
                     ),
@@ -199,10 +201,14 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                   <Tag variant="steel">{additional.length} entries</Tag>
                 </div>
                 <ul className="space-y-0">
-                  {additional.map((project) =>
+                  {additional.map((project, index) =>
                     reducedMotion ? (
                       <li key={project.slug}>
-                        <WorkProjectCard project={project} emphasis="compact" />
+                        <WorkProjectCard
+                          project={project}
+                          emphasis="compact"
+                          index={featured.length + index}
+                        />
                       </li>
                     ) : (
                       <m.li
@@ -212,7 +218,11 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={springs.layout}
                       >
-                        <WorkProjectCard project={project} emphasis="compact" />
+                        <WorkProjectCard
+                          project={project}
+                          emphasis="compact"
+                          index={featured.length + index}
+                        />
                       </m.li>
                     ),
                   )}

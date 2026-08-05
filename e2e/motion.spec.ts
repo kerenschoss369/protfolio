@@ -11,7 +11,7 @@ test.describe("motion refinements", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: /Projects that show how interfaces/,
+        name: /Interfaces, systems, and AI/,
       }),
     ).toBeVisible();
     await expect(
@@ -19,7 +19,7 @@ test.describe("motion refinements", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: /Conversations about frontend/,
+        name: /precise, useful, and memorable/,
       }),
     ).toBeVisible();
   });
@@ -198,11 +198,17 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.goto("/about");
-    await expect(page.getByText(/Composition → interface/i)).toBeVisible();
-    await page.getByRole("button", { name: /Systems/i }).click();
+    await expect(
+      page.getByText(/Composition becomes interface/i).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("img", { name: /Portrait of Keren Schoss/i }),
+    ).toBeVisible();
 
     await page.goto("/contact");
-    await expect(page.getByRole("heading", { name: "Contact" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Contact", exact: true }),
+    ).toBeVisible();
     await expect(page.getByText(/Frontend/i).first()).toBeVisible();
   });
 

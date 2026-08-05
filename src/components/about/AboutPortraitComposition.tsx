@@ -92,7 +92,11 @@ export function AboutPortraitComposition({
         transition={
           reducedMotion
             ? { duration: 0 }
-            : { duration: durations.slow, ease: easings.emphasized, delay: 0.25 }
+            : {
+                duration: durations.slow,
+                ease: easings.emphasized,
+                delay: 0.25,
+              }
         }
         style={{ transformOrigin: "50% 40%" }}
       >
@@ -251,7 +255,7 @@ export function AboutPortraitComposition({
             }
           >
             <span className="text-steel block">{item.photo}</span>
-            <span className="text-accent mt-0.5 block normal-case tracking-normal">
+            <span className="text-accent mt-0.5 block tracking-normal normal-case">
               {item.frontend}
             </span>
           </m.li>

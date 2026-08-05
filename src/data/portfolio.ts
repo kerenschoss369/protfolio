@@ -5,16 +5,15 @@ export const portfolio = {
   title: "Frontend & Full-Stack Developer",
   location: "Tel Aviv, Israel",
   heroStatement:
-    "I build precise, scalable digital products—combining production frontend experience, full-stack engineering, AI integration, and a photographer’s eye for composition.",
+    "I build polished digital products through frontend engineering, full-stack systems, AI integration, and a strong visual eye.",
   supportingStatement:
-    "I develop production features in a large Angular/Nx web platform, build full-stack products with React, Node.js, Python, and AI integrations, and bring visual precision from professional fashion photography.",
+    "Production Angular work, full-stack products, and AI integrations—shaped by a photographer’s sense of composition.",
   about: {
     summary:
-      "Frontend and Full-Stack Developer focused on maintainable architecture, usable interfaces, and precise implementation.",
+      "I care about maintainable architecture, usable interfaces, and precise implementation.",
     paragraphs: [
-      "I work on production Angular and TypeScript interfaces in a large Nx monorepo, integrating frontend behavior with backend APIs and debugging complex reactive flows.",
-      "Across personal and team projects I have built full-stack systems with React, Node.js, Python, FastAPI, MongoDB, SQLite, Go, and OpenAI integrations—always distinguishing verified behavior from portfolio simulations.",
-      "From 2014 to 2020 I worked as a professional fashion photographer. That background shapes how I think about composition, hierarchy, spacing, color relationships, visual rhythm, and pixel-precise collaboration with design.",
+      "I develop production features in a large Angular/Nx platform, integrating frontend behavior with backend APIs and debugging complex reactive flows. Across team and personal work I build full-stack systems with React, Node.js, Python, and OpenAI integrations—always separating verified behavior from portfolio simulations.",
+      "From 2014 to 2020 I worked as a professional fashion photographer. That craft still guides composition, hierarchy, spacing, and pixel-precise collaboration with design.",
     ],
     photographyConnections: [
       "Composition",

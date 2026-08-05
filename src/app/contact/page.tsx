@@ -5,7 +5,6 @@ import { Section } from "@/components/ui/Section";
 import { Text } from "@/components/ui/Text";
 import { TextLink } from "@/components/ui/TextLink";
 import { getConfiguredExternalLinks } from "@/data/links";
-import { portfolio } from "@/data/portfolio";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
@@ -24,62 +23,64 @@ export default function ContactPage() {
   return (
     <Section spacing="default" aria-labelledby="contact-heading">
       <Container>
-        <header className="max-w-[var(--prose-max)] space-y-5">
-          <Text variant="meta" className="text-steel">
-            Contact
-          </Text>
-          <Heading as="h1" variant="page" id="contact-heading">
-            Contact
-          </Heading>
-          <Text variant="muted" className="text-pretty">
-            Open to conversations about frontend development, full-stack
-            development, product engineering, and complex UI work.
-          </Text>
-        </header>
+        <div className="mx-auto max-w-2xl space-y-12 text-center">
+          <header className="space-y-5">
+            <Text variant="meta" className="text-steel">
+              Contact
+            </Text>
+            <Heading as="h1" variant="page" id="contact-heading">
+              Contact
+            </Heading>
+            <Text
+              variant="body-lg"
+              className="font-serif text-[length:var(--text-project)] leading-[var(--leading-snug)] text-pretty"
+            >
+              Let’s build something precise, useful, and memorable.
+            </Text>
+            <Text variant="muted" className="text-pretty">
+              Frontend, full-stack, and complex UI work.
+            </Text>
+          </header>
 
-        <section
-          className="mt-10 max-w-[var(--prose-max)] space-y-4"
-          aria-label="Contact methods"
-        >
-          <ContactConverge email={links.email}>
-            {hasAnyLink ? (
-              <ul className="space-y-3 text-[length:var(--text-body)]">
-                {links.email ? (
-                  <li>
-                    <TextLink href={`mailto:${links.email}`}>
-                      Email {portfolio.name}
-                    </TextLink>
-                  </li>
-                ) : null}
-                {links.linkedinUrl ? (
-                  <li>
-                    <TextLink href={links.linkedinUrl} external>
-                      LinkedIn
-                    </TextLink>
-                  </li>
-                ) : null}
-                {links.githubUrl ? (
-                  <li>
-                    <TextLink href={links.githubUrl} external>
-                      GitHub
-                    </TextLink>
-                  </li>
-                ) : null}
-                {links.cvPath ? (
-                  <li>
-                    <TextLink href={links.cvPath}>Download CV</TextLink>
-                  </li>
-                ) : null}
-              </ul>
-            ) : (
-              <Text variant="small" className="text-muted text-pretty">
-                Contact methods are not configured yet. Verified email,
-                LinkedIn, GitHub, and CV links will appear here when available —
-                no placeholder actions are shown.
-              </Text>
-            )}
-          </ContactConverge>
-        </section>
+          <section aria-label="Contact methods">
+            <ContactConverge email={links.email}>
+              {hasAnyLink ? (
+                <ul className="flex flex-col items-center gap-4 text-[length:var(--text-body-lg)] sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-8">
+                  {links.email ? (
+                    <li>
+                      <TextLink href={`mailto:${links.email}`}>
+                        Email Keren Schoss
+                      </TextLink>
+                    </li>
+                  ) : null}
+                  {links.linkedinUrl ? (
+                    <li>
+                      <TextLink href={links.linkedinUrl} external>
+                        LinkedIn
+                      </TextLink>
+                    </li>
+                  ) : null}
+                  {links.githubUrl ? (
+                    <li>
+                      <TextLink href={links.githubUrl} external>
+                        GitHub
+                      </TextLink>
+                    </li>
+                  ) : null}
+                  {links.cvPath ? (
+                    <li>
+                      <TextLink href={links.cvPath}>Download CV</TextLink>
+                    </li>
+                  ) : null}
+                </ul>
+              ) : (
+                <Text variant="small" className="text-muted text-pretty">
+                  Contact methods appear here when configured.
+                </Text>
+              )}
+            </ContactConverge>
+          </section>
+        </div>
       </Container>
     </Section>
   );
