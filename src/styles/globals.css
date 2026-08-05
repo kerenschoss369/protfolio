@@ -366,3 +366,81 @@
     background-size: 100% 1px;
   }
 }
+
+/* About portrait — theme-aware atmosphere around a transparent cutout */
+.portrait-backdrop {
+  background:
+    radial-gradient(
+      58% 52% at 46% 40%,
+      color-mix(in srgb, #ebe4d8 94%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, #e8e0d4 90%, var(--accent) 6%),
+      color-mix(in srgb, var(--surface-2) 65%, transparent)
+    );
+}
+
+.portrait-depth {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+[data-theme="dark"] .portrait-backdrop {
+  background:
+    radial-gradient(
+      58% 52% at 46% 40%,
+      color-mix(in srgb, #2a3038 90%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, #1e242c 88%, var(--steel) 12%),
+      color-mix(in srgb, var(--surface-2) 55%, transparent)
+    );
+}
+
+[data-theme="dark"] .portrait-depth {
+  background: color-mix(in srgb, #000000 35%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .portrait-backdrop {
+    background:
+      radial-gradient(
+        58% 52% at 46% 40%,
+        color-mix(in srgb, #2a3038 90%, transparent) 0%,
+        transparent 70%
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, #1e242c 88%, var(--steel) 12%),
+        color-mix(in srgb, var(--surface-2) 55%, transparent)
+      );
+  }
+
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .portrait-depth {
+    background: color-mix(in srgb, #000000 35%, transparent);
+  }
+}
+
+.portrait-edge-separation {
+  filter: drop-shadow(
+    0 1px 0 color-mix(in srgb, var(--background) 55%, transparent)
+  );
+}
+
+[data-theme="dark"] .portrait-edge-separation {
+  filter: drop-shadow(
+    0 0 0.6px color-mix(in srgb, var(--steel) 35%, transparent)
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"])
+    .portrait-edge-separation {
+    filter: drop-shadow(
+      0 0 0.6px color-mix(in srgb, var(--steel) 35%, transparent)
+    );
+  }
+}

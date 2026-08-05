@@ -88,10 +88,19 @@ Rules:
 
 ## Replacing media
 
-- Place assets under `public/projects/<slug>/`
+- Place project assets under `public/projects/<slug>/`
 - Prefer `next/image` with explicit dimensions when real media is added
 - Do not fabricate screenshots, stock headshots, EL AL UI replicas, or copyrighted game art
 - Abstract HTML/CSS/SVG previews are intentional until real assets exist
+
+### About portrait
+
+| Asset | Path |
+| --- | --- |
+| Original photograph | `public/about/keren-schoss-original.jpg` (also retained as `public/keren-schoss-original.jpeg`) |
+| Transparent cutout | `public/about/keren-schoss-cutout.webp` (PNG twin: `public/about/keren-schoss-cutout.png`) |
+
+Background removal was performed locally as a one-time development step. The site loads the processed asset only — no external rembg runtime service. Edge-refinement notes: `public/about/CUTOUT-NOTES.md`.
 
 ## Configuring links
 

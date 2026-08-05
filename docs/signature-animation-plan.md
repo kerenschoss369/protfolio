@@ -112,7 +112,8 @@ src/
     ViewTransitionLink.tsx   # Navigation wrapped in runViewTransition
     ProjectPreviewMotion/    # Per-project homepage preview systems
     WorkAtlasMotion.tsx      # Work filter layout motion
-    AboutNarrative.tsx       # Photography → UI grid narrative
+    AboutPortraitComposition.tsx  # Real portrait cutout + crop marks / grid
+    AboutNarrative.tsx            # Optional abstract photography → UI narrative
     ContactConverge.tsx      # Discipline lines → CTA
     NotFoundReconnect.tsx    # Disconnected node → recovery paths
   hooks/

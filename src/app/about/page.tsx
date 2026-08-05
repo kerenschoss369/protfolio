@@ -1,5 +1,5 @@
+import { AboutPortraitComposition } from "@/components/about/AboutPortraitComposition";
 import { ConfidentialityNotice } from "@/components/case-study/ConfidentialityNotice";
-import { AboutNarrative } from "@/components/motion/AboutNarrative";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
@@ -20,33 +20,44 @@ export const metadata = createPageMetadata({
 
 export default function AboutPage() {
   const primaryExperience = experience[0];
+  const editorialStatement =
+    "Composition becomes interface — hierarchy, spacing, and precise implementation.";
 
   return (
     <Section spacing="default" aria-labelledby="about-heading">
       <Container>
-        <header className="max-w-[var(--prose-max)] space-y-5">
-          <Text variant="meta" className="text-steel">
-            Profile
-          </Text>
-          <Heading as="h1" variant="page" id="about-heading">
-            About
-          </Heading>
-          <Text variant="body-lg" className="text-pretty">
-            {portfolio.name} is a {portfolio.title} based in{" "}
-            {portfolio.location}.
-          </Text>
-          <Text variant="muted" className="text-pretty">
-            {portfolio.about.summary}
-          </Text>
-          {portfolio.about.paragraphs.map((paragraph) => (
-            <Text key={paragraph} variant="muted" className="text-pretty">
-              {paragraph}
-            </Text>
-          ))}
-        </header>
+        <div className="grid items-start gap-[var(--space-section-sm)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
+          <AboutPortraitComposition
+            statement={editorialStatement}
+            className="order-1 min-h-[22rem] sm:min-h-[26rem] lg:sticky lg:top-24 lg:order-none lg:min-h-[32rem]"
+          />
 
-        <div className="mt-[var(--space-section-sm)] max-w-[48rem]">
-          <AboutNarrative />
+          <header className="order-2 max-w-[var(--prose-max)] space-y-5 lg:order-none lg:pt-2">
+            <Text variant="meta" className="text-steel">
+              Profile
+            </Text>
+            <Heading as="h1" variant="page" id="about-heading">
+              About
+            </Heading>
+            <Text
+              variant="body-lg"
+              className="font-serif text-pretty text-[length:var(--text-project)] leading-[var(--leading-snug)] lg:hidden"
+            >
+              {editorialStatement}
+            </Text>
+            <Text variant="body-lg" className="text-pretty">
+              {portfolio.name} is a {portfolio.title} based in{" "}
+              {portfolio.location}.
+            </Text>
+            <Text variant="muted" className="text-pretty">
+              {portfolio.about.summary}
+            </Text>
+            {portfolio.about.paragraphs.map((paragraph) => (
+              <Text key={paragraph} variant="muted" className="text-pretty">
+                {paragraph}
+              </Text>
+            ))}
+          </header>
         </div>
 
         {primaryExperience ? (
