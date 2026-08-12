@@ -2,16 +2,11 @@ import { render, screen } from "@testing-library/react";
 import type { ReactElement, ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { AboutPreview } from "@/components/home/AboutPreview";
-import { CapabilitiesSection } from "@/components/home/CapabilitiesSection";
-import { FeaturedWorkSection } from "@/components/home/FeaturedWorkSection";
-import { HeroSection } from "@/components/home/HeroSection";
-import { StickyFeaturedStack } from "@/components/home/StickyFeaturedStack";
+import { LandingAboutSection } from "@/components/landing/LandingAboutSection";
+import { LandingHeroSection } from "@/components/landing/LandingHeroSection";
+import { LandingWorkSection } from "@/components/landing/LandingWorkSection";
 import { MotionProvider } from "@/components/motion/MotionProvider";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { capabilityGroups } from "@/data/capabilities";
-import { portfolio } from "@/data/portfolio";
-import { getFeaturedProjects } from "@/lib/project-utils";
+import { StickyFeaturedStack } from "@/components/home/StickyFeaturedStack";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
@@ -36,69 +31,56 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-vi.mock("next/dynamic", () => ({
-  default: () => {
-    function DynamicStub() {
-      return <div data-testid="hero-visual-stub" />;
-    }
-    return DynamicStub;
+vi.mock("next/image", () => ({
+  default: (props: {
+    alt: string;
+    priority?: boolean;
+  } & React.ImgHTMLAttributes<HTMLImageElement>) => {
+    const { alt, priority, ...rest } = props;
+    void priority;
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img alt={alt} {...rest} />;
   },
 }));
 
-vi.mock("next/image", () => ({
-  default: ({
-    alt,
-    ...props
-  }: {
-    alt: string;
-  } & React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} {...props} />
-  ),
-}));
-
-function renderWithProviders(ui: ReactElement) {
-  return render(
-    <ThemeProvider>
-      <MotionProvider>{ui}</MotionProvider>
-    </ThemeProvider>,
-  );
+function renderWithMotion(ui: ReactElement) {
+  return render(<MotionProvider>{ui}</MotionProvider>);
 }
 
-describe("visual redesign — homepage", () => {
-  it("shows hero identity and positioning immediately", () => {
-    renderWithProviders(<HeroSection />);
+describe("landing homepage", () => {
+  it("shows hero identity and portrait", () => {
+    renderWithMotion(<LandingHeroSection />);
 
     expect(
-      screen.getByRole("heading", { name: "Keren Schoss" }),
+      screen.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Frontend & Full-Stack Developer"),
+      screen.getByRole("img", { name: /Portrait of Keren Schoss/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(portfolio.heroStatement)).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "View selected work" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", { name: "GitHub" }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Contact Me" })).toHaveAttribute(
+      "href",
+      "#contact",
+    );
   });
 
-  it("keeps featured project summaries concise", () => {
-    renderWithProviders(
-      <FeaturedWorkSection projects={getFeaturedProjects()} />,
-    );
-
-    for (const project of getFeaturedProjects()) {
-      expect(
-        screen.getByRole("heading", { name: project.title }),
-      ).toBeInTheDocument();
-      expect(screen.getByText(project.shortDescription)).toBeInTheDocument();
-    }
+  it("lists selected projects in order", () => {
+    renderWithMotion(<LandingWorkSection />);
 
     expect(
-      screen.queryByText(/Led frontend development after independently/i),
-    ).toBeNull();
+      screen.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Realtime GPT-4o-mini CLI" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "AcademEase" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "TapTap Avengers" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Frontend Developer" }),
+    ).toBeInTheDocument();
   });
 
   it("renders sticky stack fallback markup", () => {
@@ -115,25 +97,17 @@ describe("visual redesign — homepage", () => {
     expect(screen.getByText("Card two")).toBeInTheDocument();
   });
 
-  it("shows compact capability groups instead of skill walls", () => {
-    renderWithProviders(<CapabilitiesSection groups={capabilityGroups} />);
+  it("shows about section copy", () => {
+    renderWithMotion(<LandingAboutSection />);
 
     expect(
-      screen.getByRole("heading", { name: "How the work shows up" }),
+      screen.getByRole("heading", { name: /Between logic/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Frontend systems")).toBeInTheDocument();
-    expect(screen.getByText("AI integration")).toBeInTheDocument();
-    expect(screen.queryByText("Reactive Forms")).toBeNull();
-  });
-
-  it("includes about preview with portrait", () => {
-    renderWithProviders(<AboutPreview />);
-
+    expect(
+      screen.getByText(/somewhere between logic and creativity/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("img", { name: /Portrait of Keren Schoss/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /More about me/i }),
-    ).toHaveAttribute("href", "/about");
   });
 });

@@ -1,32 +1,26 @@
-import { AboutPreview } from "@/components/home/AboutPreview";
-import { CapabilitiesSection } from "@/components/home/CapabilitiesSection";
-import { ContactCtaSection } from "@/components/home/ContactCtaSection";
-import { ExperiencePreview } from "@/components/home/ExperiencePreview";
-import { FeaturedWorkSection } from "@/components/home/FeaturedWorkSection";
-import { HeroSection } from "@/components/home/HeroSection";
-import { SelectedWorkIntro } from "@/components/home/SelectedWorkIntro";
-import { capabilityGroups } from "@/data/capabilities";
-import { experience } from "@/data/experience";
-import { createPageMetadata } from "@/lib/metadata";
-import { getFeaturedProjects } from "@/lib/project-utils";
+import { LandingAboutSection } from "@/components/landing/LandingAboutSection";
+import { LandingContactSection } from "@/components/landing/LandingContactSection";
+import { LandingHeroSection } from "@/components/landing/LandingHeroSection";
+import { LandingWorkSection } from "@/components/landing/LandingWorkSection";
+import type { Metadata } from "next";
 
-export const metadata = createPageMetadata();
+import "@/styles/landing.css";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Keren Schoss - Software Developer",
+  },
+  description:
+    "Software developer portfolio — polished interfaces, full-stack systems, and AI-integrated products.",
+};
 
 export default function HomePage() {
-  const featured = getFeaturedProjects();
-  const primaryExperience = experience[0];
-
   return (
-    <>
-      <HeroSection />
-      <SelectedWorkIntro />
-      <FeaturedWorkSection projects={featured} />
-      {primaryExperience ? (
-        <ExperiencePreview experience={primaryExperience} />
-      ) : null}
-      <AboutPreview />
-      <CapabilitiesSection groups={capabilityGroups} />
-      <ContactCtaSection />
-    </>
+    <div className="landing-root">
+      <LandingHeroSection />
+      <LandingWorkSection />
+      <LandingAboutSection />
+      <LandingContactSection />
+    </div>
   );
 }

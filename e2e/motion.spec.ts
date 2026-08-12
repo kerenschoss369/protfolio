@@ -7,20 +7,16 @@ test.describe("motion refinements", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Keren Schoss" }),
+      page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", {
-        name: /Interfaces, systems, and AI/,
-      }),
+      page.getByRole("heading", { name: /Selected/i }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", {
-        name: /precise, useful, and memorable/,
-      }),
+      page.getByRole("heading", { name: /Let'?s\s*Talk/i }),
     ).toBeVisible();
   });
 
@@ -28,14 +24,8 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/");
+    await page.goto("/work");
 
-    await page
-      .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Work", exact: true })
-      .click();
-
-    await expect(page).toHaveURL(/\/work$/);
     await expect(
       page.getByRole("heading", { name: "Work", exact: true }),
     ).toBeVisible();
@@ -63,15 +53,15 @@ test.describe("motion refinements", () => {
       .getByRole("link", { name: "About", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/\/about$/);
-    await expect(page.locator("#main-content")).toBeVisible();
-    await expect(page.getByRole("heading").first()).toBeVisible();
+    await expect(page).toHaveURL(/#about/);
+    await expect(page.locator("#about")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Between logic/i })).toBeVisible();
   });
 
   test("theme switching remains accessible and updates theme attribute", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/work");
 
     const toggle = page
       .getByRole("button", { name: /Switch to dark theme/i })
@@ -92,7 +82,7 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
+    await page.goto("/work");
 
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     const menu = page.getByRole("dialog", { name: "Menu" });
@@ -153,18 +143,19 @@ test.describe("motion refinements", () => {
     ).toBeVisible();
   });
 
-  test("hero nodes remain keyboard selectable", async ({ page }) => {
+  test("hero portrait remains visible and focusable magnet target", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
 
-    const interfaceNode = page.getByRole("button", {
-      name: /^Interface$/i,
+    const portrait = page.getByRole("img", {
+      name: /Portrait of Keren Schoss/i,
     });
-    await interfaceNode.focus();
-    await expect(interfaceNode).toBeFocused();
-    await interfaceNode.click();
-    await expect(interfaceNode).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByText(/User-facing experience/i)).toBeVisible();
+    await expect(portrait).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Contact Me" }).first(),
+    ).toBeVisible();
   });
 
   test("browser back keeps content visible after case-study navigation", async ({

@@ -1,43 +1,38 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("visual redesign", () => {
-  test("homepage five-second signals and reduced copy density", async ({
-    page,
-  }) => {
+  test("landing five-second signals", async ({ page }) => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Keren Schoss" }),
+      page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
-      page.getByText("Frontend & Full-Stack Developer", { exact: true }),
-    ).toBeVisible();
-    await expect(page.getByText(/polished digital products/i)).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: "View selected work" }),
-    ).toBeVisible();
-
-    await expect(
-      page.getByRole("heading", { name: /Build for real flows/i }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByRole("heading", {
-        name: /Visual precision, applied to software/i,
-      }),
+      page.getByRole("img", { name: /Portrait of Keren Schoss/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "How the work shows up" }),
+      page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Between logic/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Let'?s\s*Talk/i }),
     ).toBeVisible();
   });
 
-  test("sticky stack disabled under reduced motion", async ({ page }) => {
+  test("selected projects remain visible under reduced motion", async ({
+    page,
+  }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
 
-    await expect(page.locator('[data-sticky-stack="off"]')).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "TapTap Avengers" }),
     ).toBeVisible();
   });
 
@@ -83,6 +78,7 @@ test.describe("visual redesign", () => {
         document.documentElement.clientWidth + 1
       );
     });
+
     expect(hasOverflow).toBe(false);
   });
 });

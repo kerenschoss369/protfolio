@@ -41,7 +41,7 @@ test.describe("SEO and production readiness", () => {
 
   test("pages expose unique titles and Person JSON-LD", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(/Keren Schoss/);
+    await expect(page).toHaveTitle("Keren Schoss - Software Developer");
 
     const scripts = page.locator('script[type="application/ld+json"]');
     await expect(scripts.first()).toBeAttached();
@@ -125,6 +125,7 @@ test.describe("SEO and production readiness", () => {
     expect(cvResponse.ok()).toBeTruthy();
     expect(cvResponse.headers()["content-type"]).toMatch(/pdf/i);
 
+    await page.goto("/work");
     await page.keyboard.press("Control+K");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();

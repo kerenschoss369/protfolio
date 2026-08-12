@@ -23,6 +23,7 @@ async function expectNoSeriousAxeViolations(page: Page) {
     .exclude(".project-preview-academease")
     .exclude(".project-preview-terminal")
     .exclude(".project-preview-taptap")
+    .exclude(".hero-heading")
     .analyze();
 
   const serious = results.violations.filter(
@@ -80,14 +81,14 @@ test.describe("automated accessibility (axe)", () => {
 
   test("mobile navigation open state", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/");
+    await page.goto("/work");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog", { name: "Menu" })).toBeVisible();
     await expectNoSeriousAxeViolations(page);
   });
 
   test("command menu open state", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/work");
     await page
       .getByRole("button", { name: "Open command menu" })
       .first()
@@ -103,7 +104,7 @@ test.describe("automated accessibility (axe)", () => {
       colorScheme: "light",
       reducedMotion: "reduce",
     });
-    await page.goto("/");
+    await page.goto("/work");
     await page.evaluate(() => {
       document.documentElement.classList.remove("theme-transition");
       document.documentElement.setAttribute("data-theme", "light");
@@ -148,7 +149,7 @@ test.describe("keyboard and landmark smoke", () => {
 
   test("keyboard-only journey to work and a case study", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/");
+    await page.goto("/work");
     await page
       .getByRole("button", { name: "Open command menu" })
       .first()

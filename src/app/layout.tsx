@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import { Geist, Geist_Mono, Kanit, Source_Serif_4 } from "next/font/google";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { kerenHand } from "@/lib/landing-fonts";
 import { createPageMetadata } from "@/lib/metadata";
 import { buildPersonJsonLd, buildWebsiteJsonLd } from "@/lib/structured-data";
 import "@/styles/globals.css";
@@ -23,6 +24,13 @@ const serif = Source_Serif_4({
 const mono = Geist_Mono({
   variable: "--font-mono-family",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const kanit = Kanit({
+  variable: "--font-kanit",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -52,7 +60,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${sans.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable} ${kanit.variable} ${kerenHand.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

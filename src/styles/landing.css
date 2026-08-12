@@ -1,0 +1,36 @@
+/* Landing page — dark editorial skin */
+
+.landing-root {
+  background: #0c0c0c;
+  color: #d7e2ea;
+  font-family: var(--font-kanit), "Kanit", sans-serif;
+  overflow-x: clip;
+  min-height: 100%;
+}
+
+body:has(.landing-root) {
+  background: #0c0c0c;
+  color: #d7e2ea;
+}
+
+html:has(.landing-root) {
+  background: #0c0c0c;
+}
+
+.landing-root *,
+.landing-root *::before,
+.landing-root *::after {
+  box-sizing: border-box;
+}
+
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.about-hand-copy {
+  font-family: var(--font-keren-hand), cursive;
+}

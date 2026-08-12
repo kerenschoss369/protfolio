@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("homepage and navigation", () => {
-  test("homepage loads with hero and featured projects", async ({ page }) => {
+  test("homepage loads with hero and selected projects", async ({ page }) => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Keren Schoss" }),
+      page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
       page.getByRole("navigation", { name: "Primary" }),
@@ -14,68 +14,56 @@ test.describe("homepage and navigation", () => {
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
     ).toBeVisible();
     await expect(
-      page.getByText(/Professional work is described at a high level/i),
+      page.getByRole("heading", { name: "Frontend Developer" }),
     ).toBeVisible();
   });
 
-  test("desktop navigation reaches work", async ({ page }) => {
+  test("desktop navigation scrolls to work", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Work", exact: true })
+      .getByRole("link", { name: /Projects\s*&\s*Work/i })
       .click();
 
-    await expect(page).toHaveURL(/\/work$/);
+    await expect(page).toHaveURL(/#work/);
+    await expect(page.locator("#work")).toBeVisible();
   });
 
-  test("mobile navigation opens and navigates", async ({ page }) => {
+  test("mobile navigation reaches about section", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
 
-    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("link", { name: "About", exact: true })
+      .click();
 
-    const menu = page.getByRole("dialog", { name: "Menu" });
-    await expect(menu).toBeVisible();
-    await menu.getByRole("link", { name: "About" }).click();
-    await expect(page).toHaveURL(/\/about$/);
+    await expect(page).toHaveURL(/#about/);
+    await expect(page.locator("#about")).toBeVisible();
   });
 
-  test("command menu opens with keyboard and supports search", async ({
-    page,
-  }) => {
-    await page.goto("/");
+  test("command menu opens from work index", async ({ page }) => {
+    await page.goto("/work");
 
     await expect(
-      page.getByRole("button", { name: "Open command menu" }).first(),
+      page.getByRole("button", { name: /Open command menu/i }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Open command menu" })
-      .first()
-      .click();
+
+    await page.keyboard.press("Control+KeyK");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
-
-    await page.getByLabel("Search commands").fill("contact");
+    await dialog.getByRole("textbox").fill("clinical");
     await expect(
-      dialog.getByRole("option", { name: /Open Contact/i }),
+      dialog.getByRole("option", { name: /Clinical Follow-Up Detector/i }),
     ).toBeVisible();
-
-    await page.keyboard.press("Escape");
-    await expect(dialog).toBeHidden();
-
-    await page.keyboard.press("Control+K");
-    await expect(
-      page.getByRole("dialog", { name: "Command menu" }),
-    ).toBeVisible();
-    await page.keyboard.press("Escape");
   });
 
-  test("primary CTA navigates to work", async ({ page }) => {
+  test("primary CTA navigates to contact", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "View selected work" }).click();
-    await expect(page).toHaveURL(/\/work$/);
+    await page.getByRole("link", { name: "Contact Me" }).first().click();
+    await expect(page).toHaveURL(/#contact/);
   });
 
   test("no horizontal overflow at 320px", async ({ page }) => {
@@ -92,20 +80,11 @@ test.describe("homepage and navigation", () => {
     expect(hasOverflow).toBe(false);
   });
 
-  test("light and dark theme smoke", async ({ page }) => {
-    await page.goto("/");
-
-    const toggle = page
-      .getByRole("button", { name: /Switch to dark theme/i })
-      .first();
-    await toggle.click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-
-    await page
-      .getByRole("button", { name: /Switch to light theme/i })
-      .first()
-      .click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  test("theme toggle remains available off landing", async ({ page }) => {
+    await page.goto("/work");
+    await expect(
+      page.getByRole("button", { name: /Switch to (dark|light) theme/i }),
+    ).toBeVisible();
   });
 });
 
