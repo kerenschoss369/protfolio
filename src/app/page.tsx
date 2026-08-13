@@ -1,26 +1,23 @@
 import { LandingAboutSection } from "@/components/landing/LandingAboutSection";
 import { LandingContactSection } from "@/components/landing/LandingContactSection";
 import { LandingHeroSection } from "@/components/landing/LandingHeroSection";
+import { LandingRoot } from "@/components/landing/LandingRoot";
 import { LandingWorkSection } from "@/components/landing/LandingWorkSection";
-import type { Metadata } from "next";
+import { portfolio } from "@/data/portfolio";
+import { createPageMetadata } from "@/lib/metadata";
 
-import "@/styles/landing.css";
-
-export const metadata: Metadata = {
-  title: {
-    absolute: "Keren Schoss - Software Developer",
-  },
-  description:
-    "Software developer portfolio — polished interfaces, full-stack systems, and AI-integrated products.",
-};
+export const metadata = createPageMetadata({
+  description: portfolio.heroStatement,
+  path: "/",
+});
 
 export default function HomePage() {
   return (
-    <div className="landing-root">
+    <LandingRoot>
       <LandingHeroSection />
       <LandingWorkSection />
       <LandingAboutSection />
       <LandingContactSection />
-    </div>
+    </LandingRoot>
   );
 }

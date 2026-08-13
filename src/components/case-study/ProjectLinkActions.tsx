@@ -1,4 +1,4 @@
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { LiveProjectButton } from "@/components/landing/LiveProjectButton";
 import { isConfiguredHttpUrl } from "@/lib/links";
 import type { ConfigurableUrl } from "@/data/content-types";
 
@@ -25,14 +25,21 @@ export function ProjectLinkActions({
   return (
     <div className="flex flex-wrap gap-3">
       {hasRepository ? (
-        <ButtonLink href={repositoryUrl} external variant="secondary" size="sm">
-          View repository
-        </ButtonLink>
+        <LiveProjectButton
+          href={repositoryUrl}
+          label="View repository ↗"
+          external
+        />
       ) : null}
       {hasLive ? (
-        <ButtonLink href={liveUrl} external variant="primary" size="sm">
-          Live demo
-        </ButtonLink>
+        <a
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="landing-case-link-btn landing-case-link-btn-filled"
+        >
+          Live demo ↗
+        </a>
       ) : null}
     </div>
   );

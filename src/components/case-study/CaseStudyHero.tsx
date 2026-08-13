@@ -2,8 +2,6 @@ import Link from "next/link";
 
 import { CaseStudyMetadata } from "@/components/case-study/CaseStudyMetadata";
 import { ProjectLinkActions } from "@/components/case-study/ProjectLinkActions";
-import { Heading } from "@/components/ui/Heading";
-import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
 import { projectTitleTransitionName } from "@/lib/view-transitions";
 import type { ReactNode } from "react";
@@ -15,16 +13,13 @@ type CaseStudyHeroProps = {
 
 export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
   return (
-    <header className="space-y-8">
+    <header className="space-y-8 md:space-y-10">
       <p>
         <Link
           href="/work"
-          className="text-muted hover:text-foreground focus-visible:outline-focus-ring group inline-flex min-h-[var(--touch-target)] items-center text-[length:var(--text-sm)] transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+          className="text-muted inline-flex min-h-11 items-center text-xs tracking-[0.16em] uppercase transition-opacity hover:opacity-100 focus-visible:opacity-100 sm:text-sm"
         >
-          <span
-            aria-hidden
-            className="link-arrow me-1 inline-block -scale-x-100"
-          >
+          <span aria-hidden className="me-2 inline-block -scale-x-100">
             →
           </span>
           All work
@@ -35,7 +30,7 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
         className={
           visual
             ? "editorial-grid items-start gap-y-8"
-            : "max-w-[44rem] space-y-6"
+            : "max-w-[48rem] space-y-6"
         }
       >
         <div
@@ -43,19 +38,19 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
             visual ? "col-span-full space-y-6 lg:col-span-5" : "space-y-6"
           }
         >
+          <p className="landing-case-kicker">Case study</p>
           <CaseStudyMetadata project={project} />
-          <Heading
-            as="h1"
-            variant="page"
+          <h1
+            className="hero-heading landing-case-title text-balance"
             style={{
               viewTransitionName: projectTitleTransitionName(project.slug),
             }}
           >
             {project.title}
-          </Heading>
-          <Text variant="body-lg" className="max-w-[40rem] text-pretty">
+          </h1>
+          <p className="text-foreground max-w-[40rem] text-base leading-relaxed text-pretty sm:text-lg md:text-xl">
             {project.shortDescription}
-          </Text>
+          </p>
           <ProjectLinkActions
             repositoryUrl={project.repositoryUrl}
             liveUrl={project.liveUrl}

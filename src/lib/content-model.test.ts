@@ -253,6 +253,7 @@ describe("portfolio content model", () => {
     expect(byId["email"]).toBe("resolved");
     expect(byId["cv-pdf"]).toBe("resolved");
     expect(byId["education-dates"]).toBe("resolved");
+    expect(byId["profile-photograph"]).toBe("resolved");
     expect(byId["domain"]).toBe("unresolved");
     expect(byId["public-repository-links"]).toBe("unresolved");
   });

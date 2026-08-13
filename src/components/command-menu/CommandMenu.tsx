@@ -11,7 +11,6 @@ import {
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
-import { useTheme } from "@/components/theme/ThemeProvider";
 import {
   buildCommandActions,
   filterCommandActions,
@@ -44,7 +43,6 @@ function CommandMenuDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const router = useRouter();
-  const { toggleTheme } = useTheme();
   const dialogRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -63,12 +61,6 @@ function CommandMenuDialog({
 
   const runAction = useCallback(
     (action: CommandAction) => {
-      if (action.kind === "theme") {
-        toggleTheme();
-        onOpenChange(false);
-        return;
-      }
-
       if (!action.href) {
         return;
       }
@@ -92,7 +84,7 @@ function CommandMenuDialog({
 
       router.push(action.href);
     },
-    [onOpenChange, router, toggleTheme],
+    [onOpenChange, router],
   );
 
   useEffect(() => {
@@ -174,7 +166,6 @@ function CommandMenuDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        data-theme-surface
         className="border-border-subtle bg-background relative z-[1] flex max-h-[min(32rem,76vh)] w-full max-w-xl flex-col overflow-hidden rounded-[var(--radius-lg)] border shadow-[var(--shadow-md)] motion-safe:animate-[dialog-in_var(--duration-base)_var(--ease-entrance)]"
       >
         <div className="border-border-subtle flex items-center gap-3 border-b px-4 py-3">

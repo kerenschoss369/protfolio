@@ -2,7 +2,7 @@ import { getConfiguredExternalLinks } from "@/data/links";
 import { projects } from "@/data/projects";
 import { primaryNavItems } from "@/data/navigation";
 
-export type CommandActionKind = "route" | "external" | "theme" | "download";
+export type CommandActionKind = "route" | "external" | "download";
 
 export type CommandAction = {
   id: string;
@@ -64,14 +64,6 @@ export function buildCommandActions(): CommandAction[] {
       href: item.href,
     });
   }
-
-  actions.push({
-    id: "switch-theme",
-    label: "Switch theme",
-    keywords: ["theme", "dark", "light", "appearance", "mode"],
-    group: "Actions",
-    kind: "theme",
-  });
 
   if (links.githubUrl) {
     actions.push({

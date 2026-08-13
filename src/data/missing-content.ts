@@ -24,7 +24,7 @@ export const missingContentChecklist: MissingContentItem[] = [
   {
     id: "profile-photograph",
     label: "Optional profile photograph",
-    status: "unresolved",
+    status: "resolved",
   },
   {
     id: "employment-dates",

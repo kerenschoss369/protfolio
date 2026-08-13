@@ -28,7 +28,7 @@ describe("createPageMetadata", () => {
   });
 
   it("never invents example.com or localhost canonicals", () => {
-    const metadata = createPageMetadata({ path: "/work" });
+    const metadata = createPageMetadata({ path: "/about" });
     const serialized = JSON.stringify(metadata);
     expect(serialized).not.toMatch(/example\.com/i);
     expect(serialized).not.toMatch(/localhost/i);
@@ -52,6 +52,7 @@ describe("site routes", () => {
         "/work/atlas-research",
       ]),
     );
+    expect(paths).toContain("/work");
     expect(paths).toHaveLength(4 + projects.length);
   });
 
@@ -108,15 +109,10 @@ describe("structured data", () => {
   it("builds breadcrumbs matching visible work navigation", () => {
     const crumbs = buildBreadcrumbJsonLd([
       { name: "Home", path: "/" },
-      { name: "Work", path: "/work" },
       { name: "AcademEase", path: "/work/academease" },
     ]);
     expect(crumbs["@type"]).toBe("BreadcrumbList");
     const items = crumbs.itemListElement as Array<{ name: string }>;
-    expect(items.map((item) => item.name)).toEqual([
-      "Home",
-      "Work",
-      "AcademEase",
-    ]);
+    expect(items.map((item) => item.name)).toEqual(["Home", "AcademEase"]);
   });
 });

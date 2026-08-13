@@ -92,7 +92,7 @@ export const CLINICAL_SAFETY_NOTE = [
 
 /** Compact Level-1 safety line for homepage / work previews. Full note stays on the case study. */
 export const CLINICAL_SAFETY_COMPACT =
-  "Demo only · not for real patient data · human review required";
+  "Demo only · not clinically validated · not for medical decisions or real patient data · not HIPAA compliant · human review required · AI never auto-confirmed";
 
 export const clinicalSafetyGuarantees: ClinicalSafetyGuarantees = {
   demonstrationSystemOnly: true,
@@ -107,7 +107,7 @@ export const clinicalSafetyGuarantees: ClinicalSafetyGuarantees = {
     staticOnly: true,
     acceptsArbitraryMedicalInput: false,
     sendsOpenAIRequests: false,
-    label: "Static portfolio demonstration only",
+    label: "Static portfolio demonstration only — no OpenAI requests",
   },
   notices: CLINICAL_SAFETY_NOTICES,
 };

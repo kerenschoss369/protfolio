@@ -105,6 +105,20 @@ export function isConfiguredCvPath(
   return value.startsWith("/") && !value.includes(" ");
 }
 
+/**
+ * Accepts E.164-ish values or tel: URIs. Hidden when null.
+ */
+export function isConfiguredPhone(
+  value: string | null | undefined,
+): value is string {
+  if (!isConfiguredUrl(value)) {
+    return false;
+  }
+
+  const digits = value.replace(/^tel:/i, "").replace(/[()\s.-]/g, "");
+  return /^\+?[0-9]{8,15}$/.test(digits);
+}
+
 export function assertValidConfiguredUrl(
   value: string | null | undefined,
   label: string,

@@ -99,6 +99,7 @@ export function collectConfiguredContentUrls(projects: readonly Project[]): {
     { label: "linkedinUrl", value: externalLinks.linkedinUrl, kind: "http" },
     { label: "email", value: externalLinks.email, kind: "email" },
     { label: "cvPath", value: externalLinks.cvPath, kind: "cv" },
+    { label: "phone", value: externalLinks.phone, kind: "any" },
     { label: "siteUrl", value: externalLinks.siteUrl, kind: "http" },
   ];
 

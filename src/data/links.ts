@@ -7,6 +7,7 @@ import {
   isConfiguredCvPath,
   isConfiguredEmail,
   isConfiguredHttpUrl,
+  isConfiguredPhone,
   isConfiguredUrl,
   isFakePlaceholderValue,
 } from "@/lib/links";
@@ -20,6 +21,11 @@ export const externalLinks = {
   linkedinUrl: "https://www.linkedin.com/in/kerenschoss/" as ConfigurableUrl,
   email: "kerenschoss369@gmail.com" as ConfigurableUrl,
   cvPath: "/cv/keren-schoss-cv.pdf" as ConfigurableUrl,
+  /**
+   * Public phone number. Null until explicitly approved as canonical
+   * contact information in docs/content-decisions.md.
+   */
+  phone: null as ConfigurableUrl,
   /** Set when the production domain is known. */
   siteUrl: null as ConfigurableUrl,
 } as const;
@@ -39,6 +45,7 @@ export function getConfiguredExternalLinks() {
     cvPath: isConfiguredCvPath(externalLinks.cvPath)
       ? externalLinks.cvPath
       : null,
+    phone: isConfiguredPhone(externalLinks.phone) ? externalLinks.phone : null,
     siteUrl: isConfiguredHttpUrl(externalLinks.siteUrl)
       ? externalLinks.siteUrl
       : null,

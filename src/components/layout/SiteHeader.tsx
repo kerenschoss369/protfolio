@@ -5,10 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Command, Menu } from "lucide-react";
 
-import {
-  CommandMenu,
-  useCommandMenuShortcut,
-} from "@/components/command-menu/CommandMenu";
+import { useCommandMenu } from "@/components/command-menu/CommandMenuHost";
 import { MobileNav } from "@/components/navigation/MobileNav";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { IconButton } from "@/components/ui/IconButton";
@@ -27,9 +24,9 @@ function isActivePath(pathname: string, href: string) {
 export function SiteHeader() {
   const pathname = usePathname();
   const links = getConfiguredExternalLinks();
+  const { openCommandMenu } = useCommandMenu();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [commandOpen, setCommandOpen] = useState(false);
   const navListRef = useRef<HTMLUListElement>(null);
   const [indicator, setIndicator] = useState({
     left: 0,
@@ -37,17 +34,10 @@ export function SiteHeader() {
     ready: false,
   });
 
-  const openCommandMenu = useCallback(() => {
+  const openHeaderCommandMenu = useCallback(() => {
     setMobileOpen(false);
-    setCommandOpen(true);
-  }, []);
-
-  useCommandMenuShortcut(
-    useCallback(() => {
-      setMobileOpen(false);
-      setCommandOpen((current) => !current);
-    }, []),
-  );
+    openCommandMenu();
+  }, [openCommandMenu]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -101,7 +91,6 @@ export function SiteHeader() {
   return (
     <>
       <header
-        data-theme-surface
         className={cn(
           "sticky top-0 z-[var(--z-sticky)] transition-[background-color,border-color,box-shadow,backdrop-filter] duration-[var(--duration-base)] ease-[var(--ease-standard)]",
           scrolled
@@ -176,7 +165,7 @@ export function SiteHeader() {
 
             <IconButton
               label="Open command menu"
-              onClick={openCommandMenu}
+              onClick={openHeaderCommandMenu}
               aria-keyshortcuts="Meta+K Control+K"
             >
               <Command size={18} aria-hidden />
@@ -187,7 +176,7 @@ export function SiteHeader() {
             <ThemeToggle />
             <IconButton
               label="Open command menu"
-              onClick={openCommandMenu}
+              onClick={openHeaderCommandMenu}
               aria-keyshortcuts="Meta+K Control+K"
             >
               <Command size={18} aria-hidden />
@@ -209,11 +198,9 @@ export function SiteHeader() {
           open={mobileOpen}
           onOpenChange={setMobileOpen}
           cvPath={links.cvPath}
-          onOpenCommandMenu={openCommandMenu}
+          onOpenCommandMenu={openHeaderCommandMenu}
         />
       </div>
-
-      <CommandMenu open={commandOpen} onOpenChange={setCommandOpen} />
     </>
   );
 }
