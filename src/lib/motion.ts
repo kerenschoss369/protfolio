@@ -29,7 +29,6 @@ export const motionBudget = {
   revealOffsetRem: 0.75,
   staggerStepMs: 60,
   staggerMaxMs: 280,
-  themeTransitionMs: signatureBudget.themeTransitionMs,
   routeEnterMs: signatureBudget.routeEnterMs,
   heroParallaxPx: signatureBudget.heroParallaxPx,
   pointerDepthMaxPx: signatureBudget.distances.pointerDepthMaxPx,

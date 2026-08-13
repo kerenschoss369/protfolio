@@ -4,6 +4,8 @@ import { m, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import { CLINICAL_FICTIONAL_NOTE } from "@/components/demos/clinical/clinical-data";
+import { useElementInView } from "@/hooks/useElementInView";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
 import { cn } from "@/lib/cn";
 
 const ACTIONS = [
@@ -14,38 +16,51 @@ const ACTIONS = [
 
 export function ClinicalCardVisual() {
   const reduced = useReducedMotion();
+  const pageVisible = usePageVisibility();
+  const [ref, inView] = useElementInView<HTMLDivElement>({
+    once: false,
+    threshold: 0.25,
+  });
   const [step, setStep] = useState(0);
+  const active = !reduced && pageVisible && inView;
 
   useEffect(() => {
-    if (reduced) return;
+    if (!active) {
+      return;
+    }
     const id = window.setInterval(() => {
-      setStep((s) => (s + 1) % (ACTIONS.length + 1));
+      setStep((current) => (current + 1) % (ACTIONS.length + 1));
     }, 2200);
     return () => window.clearInterval(id);
-  }, [reduced]);
+  }, [active]);
 
   return (
-    <div className="flex h-full flex-col gap-4 rounded-[28px] border border-[#D7E2EA]/25 bg-[#121212] p-4 sm:p-5">
-      <p className="text-[10px] font-medium tracking-widest text-[#D7E2EA]/55 uppercase">
+    <div
+      ref={ref}
+      className="border-border-subtle bg-surface-1 flex h-full flex-col gap-4 rounded-[28px] border p-4 sm:p-5"
+    >
+      <p className="text-muted text-xs font-medium tracking-widest uppercase">
         Fictional note → structured actions
       </p>
-      <div className="relative flex-1 overflow-hidden rounded-2xl border border-[#D7E2EA]/15 bg-[#0C0C0C] p-4 text-sm leading-relaxed text-[#D7E2EA]/85">
+      <div className="border-border-subtle bg-background text-foreground relative flex-1 rounded-2xl border p-4 text-sm leading-relaxed">
         <p>
           {CLINICAL_FICTIONAL_NOTE.split(" ").map((word, i) => {
             const highlight =
               step > 0 &&
-              ACTIONS.slice(0, step).some((a) =>
-                a.evidence
+              ACTIONS.slice(0, step).some((action) =>
+                action.evidence
                   .toLowerCase()
                   .split(" ")
-                  .some((w) => word.toLowerCase().includes(w.toLowerCase())),
+                  .some((token) =>
+                    word.toLowerCase().includes(token.toLowerCase()),
+                  ),
               );
             return (
               <span
                 key={`${word}-${i}`}
                 className={cn(
                   "transition-colors duration-500",
-                  highlight && "bg-[#D7E2EA]/20 text-[#D7E2EA]",
+                  highlight && "bg-accent-muted text-foreground",
                 )}
               >
                 {word}{" "}
@@ -59,17 +74,17 @@ export function ClinicalCardVisual() {
           <m.li
             key={action.label}
             animate={{
-              opacity: reduced || step > index ? 1 : 0.25,
+              opacity: reduced || step > index ? 1 : 0.45,
               x: reduced || step > index ? 0 : 12,
             }}
-            className="flex items-center justify-between rounded-full border border-[#D7E2EA]/20 px-4 py-2 text-xs tracking-wider uppercase"
+            className="border-border-subtle flex items-center justify-between rounded-full border px-4 py-2 text-xs tracking-wider uppercase"
           >
             <span>{action.label}</span>
-            <span className="text-[#D7E2EA]/45">{action.evidence}</span>
+            <span className="text-muted">{action.evidence}</span>
           </m.li>
         ))}
       </ul>
-      <div className="flex flex-wrap gap-2 text-[10px] tracking-widest text-[#D7E2EA]/50 uppercase">
+      <div className="text-muted flex flex-wrap gap-2 text-xs tracking-widest uppercase">
         <span>React / TypeScript</span>
         <span aria-hidden>↓</span>
         <span>Node / Express</span>

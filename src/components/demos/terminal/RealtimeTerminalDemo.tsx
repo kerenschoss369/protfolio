@@ -76,7 +76,7 @@ function applyCommand(state: TerminalState, raw: string): TerminalState {
   }
 
   const result = executeTerminalCommand(raw);
-  const history = [...state.history, raw.trim()];
+  const history = [...state.history, raw.trim()].slice(-100);
 
   if (result.type === "clear") {
     return {
@@ -92,7 +92,7 @@ function applyCommand(state: TerminalState, raw: string): TerminalState {
 
   return {
     ...state,
-    entries: [...state.entries, ...result.entries],
+    entries: [...state.entries, ...result.entries].slice(-100),
     status: result.status,
     exited: result.exited,
     history,

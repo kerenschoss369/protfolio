@@ -69,7 +69,6 @@ export const motionBudget = {
   packageName: "motion",
   /** Hero depth depth (CSS px) */
   heroParallaxPx: 6,
-  themeTransitionMs: 420,
   routeEnterMs: 280,
   continuousLoopsMax: 3,
 } as const;

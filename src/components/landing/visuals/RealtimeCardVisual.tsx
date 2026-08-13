@@ -3,6 +3,9 @@
 import { m, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 
+import { useElementInView } from "@/hooks/useElementInView";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
+
 const SCRIPT = [
   { type: "in", text: "> hi" },
   { type: "out", text: "hello — realtime session ready" },
@@ -16,27 +19,38 @@ const SCRIPT = [
 
 export function RealtimeCardVisual() {
   const reduced = useReducedMotion();
+  const pageVisible = usePageVisibility();
+  const [ref, inView] = useElementInView<HTMLDivElement>({
+    once: false,
+    threshold: 0.25,
+  });
   const [visible, setVisible] = useState(reduced ? SCRIPT.length : 1);
+  const active = !reduced && pageVisible && inView;
 
   useEffect(() => {
-    if (reduced) return;
+    if (!active) {
+      return;
+    }
     const id = window.setInterval(() => {
-      setVisible((v) => (v >= SCRIPT.length ? 1 : v + 1));
+      setVisible((current) => (current >= SCRIPT.length ? 1 : current + 1));
     }, 1400);
     return () => window.clearInterval(id);
-  }, [reduced]);
+  }, [active]);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[28px] border border-[#D7E2EA]/25 bg-[#101010]">
-      <div className="flex items-center gap-2 border-b border-[#D7E2EA]/15 px-4 py-3">
-        <span className="size-2 rounded-full bg-[#D7E2EA]/35" />
-        <span className="size-2 rounded-full bg-[#D7E2EA]/35" />
-        <span className="size-2 rounded-full bg-[#D7E2EA]/35" />
-        <span className="ms-2 text-[10px] tracking-widest text-[#D7E2EA]/50 uppercase">
+    <div
+      ref={ref}
+      className="border-border-subtle bg-surface-1 flex h-full flex-col rounded-[28px] border"
+    >
+      <div className="border-border-subtle flex items-center gap-2 border-b px-4 py-3">
+        <span className="bg-muted size-2 rounded-full" />
+        <span className="bg-muted size-2 rounded-full" />
+        <span className="bg-muted size-2 rounded-full" />
+        <span className="text-muted ms-2 text-xs tracking-widest uppercase">
           realtime-gpt-cli · simulation
         </span>
       </div>
-      <div className="flex-1 space-y-2 overflow-hidden p-4 font-mono text-sm text-[#D7E2EA]">
+      <div className="text-foreground flex-1 space-y-2 p-4 font-mono text-sm">
         {SCRIPT.slice(0, visible).map((line, index) => (
           <m.p
             key={`${line.text}-${index}`}
@@ -44,18 +58,18 @@ export function RealtimeCardVisual() {
             animate={{ opacity: 1, y: 0 }}
             className={
               line.type === "event"
-                ? "text-[11px] tracking-wider text-[#D7E2EA]/45 uppercase"
+                ? "text-muted text-xs tracking-wider uppercase"
                 : line.type === "in"
-                  ? "text-[#D7E2EA]"
-                  : "text-[#BBCCD7]"
+                  ? "text-foreground"
+                  : "text-accent"
             }
           >
             {line.text}
           </m.p>
         ))}
-        <span className="inline-block h-4 w-2 animate-pulse bg-[#D7E2EA]/70" />
+        <span className="bg-muted inline-block h-4 w-2 animate-pulse" />
       </div>
-      <div className="border-t border-[#D7E2EA]/15 px-4 py-3 text-[10px] tracking-widest text-[#D7E2EA]/45 uppercase">
+      <div className="border-border-subtle text-muted border-t px-4 py-3 text-xs tracking-widest uppercase">
         CLI → OpenAI realtime → WebSocket → goroutine → channel → output
       </div>
     </div>
