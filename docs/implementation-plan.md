@@ -702,7 +702,24 @@ These should be resolved from repository evidence or later real data, not guesse
 | Clinical safety     | Case study, demo, homepage, work index, structured data, and clinical meta/OG all communicate demonstration-only constraints               |
 | Confidentiality     | Abra / EL AL stays high-level with mandatory proprietary note; no repo/live URLs                                                           |
 | Accessibility       | Overlay inert landmarks; visual-frame AT access; AcademEase lang scoping; command empty option role; new-tab disclosure; touch-target `sm` |
-| Fallbacks           | Route `error.tsx` + `loading.tsx`; not-found uses design-system CTAs                                                                       |
+| Fallbacks           | Route `error.tsx`; root `loading.tsx` removed so no-JS SSR is the page, not a skeleton                                                     |
 | Remaining           | External links, media, domain/hosting still unresolved by design                                                                           |
+
+---
+
+### 9.8 QA remediation (post senior audit)
+
+Stabilization after the immersive landing rewrite. Full mapping: `docs/qa-remediation-report.md`.
+
+| Area     | Result                                                                                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Content  | Landing derives from `src/data/*`. Title `Frontend & Full-Stack Developer`. Abra `2025–Present`. No unverified IDF role. Education uses graduation date only. |
+| IA       | Public routes `/`, `/work`, `/work/[slug]`, `/about`, `/contact`. Permanent `/work` redirect removed.                                                         |
+| Chrome   | `CommandMenuHost` in `AppShell`. Theme toggle on landing and standard chrome. Invalid project slugs use 404 + SiteHeader.                                     |
+| A11y     | Landing semantic tokens; ~44px nav targets; mobile hero flow layout; axe serious/critical gated in e2e.                                                       |
+| Motion   | `FadeIn` SSR-visible; sticky stack gated on reduced motion; preview timers/rAF pause offscreen and hidden.                                                    |
+| Perf     | WebP portraits; Kanit scoped to landing; homepage lightweight previews (no full demo engines).                                                                |
+| Tests    | Vitest threads + serialized files; Playwright Chromium + mobile-chrome + WebKit smoke; GitHub Actions CI.                                                     |
+| Deferred | `siteUrl: null` until a real domain exists (NEXT-003 / SEO-001). Further RSC split of landing sections (ARCH-003).                                            |
 
 ---

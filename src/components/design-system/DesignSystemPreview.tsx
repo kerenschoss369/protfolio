@@ -1,7 +1,6 @@
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Divider } from "@/components/ui/Divider";
@@ -119,13 +118,6 @@ export function DesignSystemPreview() {
           Internal preview of typography, color roles, surfaces, controls, and
           interaction foundations. Not part of the public portfolio.
         </Text>
-        <div className="flex flex-wrap items-center gap-3">
-          <ThemeToggle />
-          <Text variant="small" className="text-muted">
-            Theme respects system preference, persists overrides, and avoids
-            flash via the boot script.
-          </Text>
-        </div>
       </header>
 
       <Divider className="my-12" tone="steel" />
@@ -154,7 +146,7 @@ export function DesignSystemPreview() {
 
         <PreviewBlock
           title="Color roles"
-          description="Warm off-white light theme and deep graphite dark theme share one accent family. Status is never color-only."
+          description="Deep graphite palette with one accent family. Status is never color-only."
         >
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {colorRoles.map((role) => (

@@ -49,6 +49,21 @@ Use:
 
 Implemented direction: warm paper light theme + deep graphite dark theme, restrained metallic borders, fluid type, editorial serif for key titles only.
 
+Immersive landing and valid case studies use a **landing-scoped** token overlay in `src/styles/landing.css` under `.landing-root`. Those variables remap semantic roles (`--background`, `--foreground`, `--muted`, …) so React components do not hardcode landing hex. `/about`, `/contact`, `/work`, and 404 keep the global theme tokens.
+
+| Landing token       | Value     | Role                                      |
+| ------------------- | --------- | ----------------------------------------- |
+| `--landing-bg`      | `#0c0c0c` | Immersive page ground                     |
+| `--landing-fg`      | `#d7e2ea` | Primary text                              |
+| `--landing-muted`   | `#a9b9c6` | Secondary text (solid, not opacity hacks) |
+| `--landing-kicker`  | `#9aadb8` | Eyebrow / metadata                        |
+| `--landing-number`  | `#8a9cab` | Large decorative numerals (large-text AA) |
+| `--landing-border`  | `#3d4a53` | Hairlines                                 |
+| `--landing-surface` | `#161616` | Card / panel surface                      |
+| `--landing-accent`  | `#bbccd7` | Landing accent                            |
+
+`ConfidentialityNotice` and other shared components use semantic `text-muted` / `bg-surface-1` so they remain readable in both the landing skin and the light/dark About theme.
+
 ---
 
 ## 3. Color system

@@ -51,6 +51,7 @@ export const externalLinks = {
   linkedinUrl: "https://www.linkedin.com/in/kerenschoss/",
   email: "kerenschoss369@gmail.com",
   cvPath: "/cv/keren-schoss-cv.pdf",
+  phone: null, // unpublished until explicitly approved as canonical public contact
   siteUrl: null, // production domain not set yet
 } as const;
 ```
@@ -532,18 +533,19 @@ Resolved:
 - Email — kerenschoss369@gmail.com
 - CV PDF — `/cv/keren-schoss-cv.pdf`
 - Confirmed education dates — B.Sc. graduated Oct 2024; Alpha research 2015–2018
+- Profile photographs — live hero (`/images/fullbody.webp`), About wink (`/images/aboutme.webp`), About cutout (`/about/keren-schoss-cutout.webp`)
 
 Partially resolved:
 
 - Public repository links — Clinical, Realtime GPT CLI, and TapTap configured; AcademEase still pending
+- Employment dates — public display is `2025–Present` (Keren currently employed at Abra). CV still shows 2025–2026; keep `pending-verification` until a more precise start date is supplied.
 
 Still unresolved:
 
-- Domain / site URL
+- Domain / site URL (`siteUrl` remains `null` until a real production domain exists)
+- Public phone number (`externalLinks.phone` is `null`; do not hardcode PII)
 - AcademEase public repository link
 - Live demos
 - Project screenshots
-- Optional profile photograph
-- Confirmed employment dates (CV shows 2025–2026; site currently uses 2025–Present pending confirmation)
 - Confirmation of public/private repository status
 - Confirmation of ownership / individual attribution for the clinical and Go repositories

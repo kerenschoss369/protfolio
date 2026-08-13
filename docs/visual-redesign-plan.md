@@ -2,6 +2,8 @@
 
 > Audit and redesign plan for the MotionSites-inspired visual storytelling phase.
 > Written before implementation. Verified facts, safety language, confidentiality rules, and interactive demos remain intact.
+>
+> **Status (QA remediation):** The immersive landing is live on `/`. `/work` is restored as the canonical work index. Homepage `#work` / `#about` / `#contact` are previews, not substitutes. Do not revert to the retired `src/components/home/*` architecture. See `docs/qa-remediation-report.md`.
 
 ---
 

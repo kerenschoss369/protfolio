@@ -99,23 +99,11 @@ Avoid: generic fade-up walls, cyberpunk glow, scroll hijacking, content delayed 
 src/
   components/motion/
     MotionProvider.tsx       # LazyMotion + reduced-motion context bridge
-    AnimatedSection.tsx      # In-view section choreography (replaces/extends Reveal uses selectively)
-    AnimatedText.tsx         # Masked phrase/line reveals (SSR text intact)
-    SplitText.tsx            # Phrase-level split only (never slow character typing)
-    HeroSystemVisual.tsx     # Expanded Interface/Systems/AI/Visual system
-    HeroBackground.tsx       # Structural grid / crop marks
-    MagneticAction.tsx       # Subtle ≤4px spring toward pointer (fine pointer only)
-    PointerDepth.tsx         # Transform-only depth layers
-    MotionLink.tsx           # Link with shared VT name helpers
     ScrollProgress.tsx       # Thin page progress (desktop+)
-    StaggerGroup.tsx         # Shared stagger variants
-    ViewTransitionLink.tsx   # Navigation wrapped in runViewTransition
-    ProjectPreviewMotion/    # Per-project homepage preview systems
-    WorkAtlasMotion.tsx      # Work filter layout motion
+    # Landing motion lives next to the landing UI:
+    # FadeIn.tsx (SSR-visible, enhance after hydration)
+    # Magnet.tsx (≤4px, fine pointer, disabled on small screens)
     AboutPortraitComposition.tsx  # Real portrait cutout + crop marks / grid
-    AboutNarrative.tsx            # Optional abstract photography → UI narrative
-    ContactConverge.tsx      # Discipline lines → CTA
-    NotFoundReconnect.tsx    # Disconnected node → recovery paths
   hooks/
     useReducedMotionPreference.ts
     useFinePointer.ts

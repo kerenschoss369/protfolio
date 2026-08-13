@@ -28,18 +28,18 @@ src/
   components/
     layout/            # Shell, header, footer, skip link
     navigation/        # Mobile nav
-    command-menu/      # Cmd/Ctrl+K
-    home/              # Homepage sections
+    command-menu/      # Cmd/Ctrl+K (mounted at AppShell)
+    landing/           # Immersive homepage + case-study chrome
     work/              # Work index + filters
     case-study/        # Case-study primitives + visuals
     demos/             # Route-local interactive simulations
     seo/               # JSON-LD helper
     ui/                # Design-system primitives
-    motion/            # Signature motion architecture (LazyMotion provider, previews, VT links)
+    motion/            # LazyMotion provider, scroll progress, VT helpers
   data/                # Typed verified content + null link placeholders
   hooks/               # Reduced-motion, fine-pointer, in-view, pointer, visibility
   lib/                 # Links, metadata, motion, animation-config, structured data, contrast
-  styles/              # Tokens + globals
+  styles/              # Tokens + globals + landing-scoped semantic skin
 ```
 
 - Static content stays in Server Components.
@@ -63,12 +63,12 @@ src/
 
 Central configuration lives in `src/data/`:
 
-- `portfolio.ts` — name, title, positioning, about
-- `capabilities.ts` — homepage capability groups (short)
+- `portfolio.ts` — name, title, positioning, about, education
+- `capabilities.ts` — capability groups (retained for compact presentation; not currently on the immersive homepage)
 - `projects.ts` — verified projects (keep URLs `null` until real)
 - `experience.ts` — Abra / EL AL professional work (proprietary)
 - `skills.ts` — full skill vocabulary for case-study tech grouping
-- `links.ts` — GitHub, LinkedIn, email, CV, site URL
+- `links.ts` — GitHub, LinkedIn, email, CV, phone, site URL
 - `missing-content.ts` — unresolved checklist
 
 Rules:
@@ -113,6 +113,7 @@ export const externalLinks = {
   linkedinUrl: "https://www.linkedin.com/in/kerenschoss/",
   email: "kerenschoss369@gmail.com",
   cvPath: "/cv/keren-schoss-cv.pdf",
+  phone: null, // unpublished until explicitly approved
   siteUrl: null, // required for absolute canonicals, sitemap host, and OG absolute URLs
 } as const;
 ```
@@ -147,8 +148,8 @@ npm run typecheck
 
 ```bash
 npm run test          # Vitest unit/integration
-npm run test:e2e      # Playwright (Chromium)
-npm run test:a11y     # Axe-focused Playwright suite
+npm run test:e2e      # Playwright: Chromium + mobile-chrome + WebKit smoke
+npm run test:a11y     # Axe-focused Playwright suite (subset of e2e)
 ```
 
 Coverage includes navigation, command menu, filters, demos, reduced motion, missing-link safety, metadata/canonical behavior, sitemap/robots, structured data, and axe checks on major routes and open overlays.
@@ -164,16 +165,16 @@ npm start
 
 Observed strategy (not invented Lighthouse scores):
 
-| Budget               | Target                                                                        |
-| -------------------- | ----------------------------------------------------------------------------- |
-| Shared client JS     | Keep minimal — theme, header/overlays, filters, sticky stack, reveal enhancer |
-| Demo code            | Route-local async chunks; homepage must not load demo implementations         |
-| Third-party runtime  | `motion` only (no analytics, no trackers, no second animation library)        |
-| Layout shift         | Reserve demo/loading/mockup dimensions; no late-injected hero media           |
-| Motion               | CSS-first for simple UI; Motion for React for springs/layout/sticky scale     |
-| Shared client growth | LazyMotion + route-local demos; sticky stack is homepage Client island only   |
-| Fonts                | `next/font` with `display: "swap"`; latin subsets only                        |
-| Media                | Optimized portrait cutout; no autoplay audio; no fabricated screenshots       |
+| Budget               | Target                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| Shared client JS     | Keep minimal — theme, header/overlays, filters, sticky stack, reveal enhancer        |
+| Demo code            | Route-local async chunks; homepage must not load demo implementations                |
+| Third-party runtime  | `motion` only (no analytics, no trackers, no second animation library)               |
+| Layout shift         | Reserve demo/loading/mockup dimensions; no late-injected hero media                  |
+| Motion               | CSS-first for simple UI; Motion for React for springs/layout/sticky scale            |
+| Shared client growth | LazyMotion + route-local demos; sticky stack is homepage Client island only          |
+| Fonts                | Geist/serif/mono globally; Kanit 300/400/700/900 + handwriting on landing/case only  |
+| Media                | Optimized WebP portraits; About cutout; no autoplay audio; no fabricated screenshots |
 
 Inspect client chunks after `npm run build` (Next.js route/chunk summary). Do not add a permanent heavy analyzer unless it provides ongoing value.
 
@@ -236,7 +237,7 @@ Hosting platform is not selected in-repo yet. Add platform config only when the 
 
 See `docs/visual-redesign-plan.md` for the copy-reduction audit and MotionSites-inspired presentation plan.
 
-Homepage focuses on a minimal hero, sticky featured project cards with device mockups, a compact experience strip, about preview with portrait, capability groups (not skill walls), and a short contact CTA.
+Homepage is an immersive MotionSites-inspired landing: large typography, portrait, sticky featured project cards with lightweight previews, compact experience, about preview, and a contact CTA. Canonical pages remain `/work`, `/about`, and `/contact`. See `docs/qa-remediation-report.md` for the post-audit stabilization.
 
 ## Security and privacy constraints
 
@@ -280,7 +281,7 @@ Unresolved items (also tracked in `src/data/missing-content.ts`):
 - [ ] Public repository links (Clinical, Realtime GPT CLI, TapTap set; AcademEase still pending)
 - [ ] Live demo links
 - [ ] Project screenshots
-- [ ] Optional profile photograph
+- [x] Optional profile photograph (hero full-body, About wink, About cutout)
 - [ ] Confirm employment dates (education dates resolved from CV)
 - [ ] Confirm repository visibility / ownership (including Clinical and Go repositories)
 - [ ] Hosting platform selection
@@ -288,4 +289,4 @@ Unresolved items (also tracked in `src/data/missing-content.ts`):
 
 Do not mark remaining items complete until real values are supplied. Null placeholders must remain hidden in the UI.
 
-See `docs/` for the product specification, content decisions, design system, and phased implementation plan.
+See `docs/` for the product specification, content decisions, design system, phased implementation plan, and `docs/qa-remediation-report.md` for the post-audit stabilization map.
