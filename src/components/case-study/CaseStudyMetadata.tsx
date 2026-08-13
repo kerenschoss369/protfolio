@@ -21,6 +21,7 @@ export function CaseStudyMetadata({ project }: CaseStudyMetadataProps) {
         category={project.category}
         dates={project.dates.display}
         stack={project.technologyStack.slice(0, 6)}
+        className="text-muted"
       />
       <div className="flex flex-wrap items-center gap-2">
         <Tag

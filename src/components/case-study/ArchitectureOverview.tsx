@@ -27,7 +27,7 @@ export function ArchitectureOverview({
           {highlights.map((item) => (
             <li
               key={item}
-              className="border-border-subtle rounded-[var(--radius-md)] border p-4 text-[length:var(--text-sm)] text-pretty"
+              className="landing-case-panel text-foreground p-4 text-sm text-pretty"
             >
               {item}
             </li>

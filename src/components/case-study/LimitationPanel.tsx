@@ -1,4 +1,3 @@
-import { Surface } from "@/components/ui/Surface";
 import { Text } from "@/components/ui/Text";
 import type { KnownLimitation } from "@/data/content-types";
 
@@ -12,20 +11,17 @@ export function LimitationPanel({ limitations }: LimitationPanelProps) {
   }
 
   return (
-    <Surface variant="inset" border="subtle" padded className="space-y-3">
-      <Text variant="meta" className="text-muted">
+    <div className="landing-case-panel space-y-3 p-5 sm:p-6">
+      <Text variant="meta" className="landing-case-kicker">
         Known limitations
       </Text>
       <ul className="space-y-3">
         {limitations.map((item) => (
-          <li
-            key={item.id}
-            className="text-[length:var(--text-sm)] text-pretty"
-          >
+          <li key={item.id} className="text-foreground text-sm text-pretty">
             {item.detail}
           </li>
         ))}
       </ul>
-    </Surface>
+    </div>
   );
 }

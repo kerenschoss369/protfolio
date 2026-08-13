@@ -5,7 +5,6 @@ import { useEffect, useId, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { IconButton } from "@/components/ui/IconButton";
 import { primaryNavItems } from "@/data/navigation";
 import { portfolio } from "@/data/portfolio";
@@ -107,7 +106,6 @@ export function MobileNav({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        data-theme-surface
         className="border-border-subtle bg-background absolute inset-y-0 right-0 flex w-full max-w-full flex-col border-l shadow-[var(--shadow-md)] motion-safe:animate-[nav-panel-in_var(--duration-base)_var(--ease-entrance)] sm:max-w-sm"
       >
         <div className="border-border-subtle flex items-center justify-between border-b px-[var(--space-gutter)] py-4">
@@ -178,7 +176,6 @@ export function MobileNav({
             {portfolio.name}
           </p>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <button
               type="button"
               className="border-border-subtle bg-surface-1 text-foreground inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] border px-3 text-[length:var(--text-sm)]"

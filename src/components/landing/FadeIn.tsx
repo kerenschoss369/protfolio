@@ -1,9 +1,11 @@
 "use client";
 
-import { m, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
+import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import { cn } from "@/lib/cn";
+
+type FadeInTag = "div" | "nav" | "header" | "section" | "p" | "ul" | "li";
 
 type FadeInProps = {
   children: ReactNode;
@@ -12,12 +14,14 @@ type FadeInProps = {
   x?: number;
   y?: number;
   className?: string;
-  as?: "div" | "nav" | "header" | "section" | "p" | "ul";
+  as?: FadeInTag;
   "aria-label"?: string;
 };
 
-const EASE: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
-
+/**
+ * Progressive-enhancement fade. SSR and no-JS render at full opacity.
+ * After hydration, only below-fold entries animate in.
+ */
 export function FadeIn({
   children,
   delay = 0,
@@ -28,51 +32,61 @@ export function FadeIn({
   className,
   "aria-label": ariaLabel,
 }: FadeInProps) {
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotionPreference();
+  const ref = useRef<HTMLElement | null>(null);
+  const Tag = as;
   const a11y = ariaLabel ? { "aria-label": ariaLabel } : {};
 
-  if (reducedMotion) {
-    switch (as) {
-      case "nav":
-        return (
-          <nav className={className} {...a11y}>
-            {children}
-          </nav>
-        );
-      case "header":
-        return <header className={className}>{children}</header>;
-      case "section":
-        return <section className={className}>{children}</section>;
-      case "p":
-        return <p className={className}>{children}</p>;
-      case "ul":
-        return <ul className={className}>{children}</ul>;
-      default:
-        return <div className={className}>{children}</div>;
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || reducedMotion) {
+      return;
     }
-  }
 
-  const motionProps = {
-    className: cn(className),
-    initial: { opacity: 0, x, y },
-    whileInView: { opacity: 1, x: 0, y: 0 },
-    viewport: { once: true, margin: "50px" as const, amount: 0 as const },
-    transition: { delay, duration, ease: EASE },
-    ...a11y,
+    const markVisible = () => {
+      el.classList.add("is-visible");
+      el.classList.remove("fade-pending");
+    };
+
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inView) {
+      markVisible();
+      return;
+    }
+
+    el.classList.add("fade-pending");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          markVisible();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "50px", threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [reducedMotion]);
+
+  const setRef = (node: HTMLElement | null) => {
+    ref.current = node;
   };
 
-  switch (as) {
-    case "nav":
-      return <m.nav {...motionProps}>{children}</m.nav>;
-    case "header":
-      return <m.header {...motionProps}>{children}</m.header>;
-    case "section":
-      return <m.section {...motionProps}>{children}</m.section>;
-    case "p":
-      return <m.p {...motionProps}>{children}</m.p>;
-    case "ul":
-      return <m.ul {...motionProps}>{children}</m.ul>;
-    default:
-      return <m.div {...motionProps}>{children}</m.div>;
-  }
+  return (
+    <Tag
+      ref={setRef}
+      className={cn(className)}
+      style={{
+        ["--fade-delay" as string]: `${delay}s`,
+        ["--fade-duration" as string]: `${duration}s`,
+        ["--fade-x" as string]: `${x}px`,
+        ["--fade-y" as string]: `${y}px`,
+      }}
+      {...a11y}
+    >
+      {children}
+    </Tag>
+  );
 }

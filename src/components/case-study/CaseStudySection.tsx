@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import { Heading } from "@/components/ui/Heading";
 import { cn } from "@/lib/cn";
 
 type CaseStudySectionProps = {
@@ -23,17 +22,16 @@ export function CaseStudySection({
     <section
       id={id}
       aria-labelledby={`${id}-heading`}
-      className={cn("scroll-mt-28 space-y-4", className)}
+      className={cn("scroll-mt-24 space-y-5", className)}
     >
-      <div className="max-w-[40rem] space-y-2">
-        <Heading as="h2" variant="section" id={`${id}-heading`}>
+      <div className="max-w-[42rem] space-y-2">
+        <h2
+          id={`${id}-heading`}
+          className="hero-heading landing-case-section-title"
+        >
           {title}
-        </Heading>
-        {lead ? (
-          <p className="text-muted text-[length:var(--text-sm)] text-pretty">
-            {lead}
-          </p>
-        ) : null}
+        </h2>
+        {lead ? <p className="text-muted text-sm text-pretty">{lead}</p> : null}
       </div>
       {children}
     </section>

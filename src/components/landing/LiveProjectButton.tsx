@@ -16,7 +16,7 @@ export function LiveProjectButton({
   external = false,
 }: LiveProjectButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center rounded-full border-2 border-[#D7E2EA] px-8 py-3 text-sm font-medium tracking-widest text-[#D7E2EA] uppercase transition-colors duration-200 hover:bg-[#D7E2EA]/10 sm:px-10 sm:py-3.5 sm:text-base",
+    "inline-flex min-h-11 shrink-0 items-center justify-center rounded-full border-2 border-foreground px-5 py-2 text-xs font-medium tracking-widest text-foreground uppercase transition-colors duration-200 hover:bg-foreground/10 focus-visible:bg-foreground/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)] sm:px-10 sm:py-3.5 sm:text-base",
     className,
   );
 

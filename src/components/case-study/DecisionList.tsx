@@ -22,7 +22,7 @@ export function DecisionList({ items }: DecisionListProps) {
           key={item.title}
           className="border-border-subtle border-b pb-4 last:border-b-0 last:pb-0"
         >
-          <Text as="h3" className="font-medium">
+          <Text as="h3" className="text-foreground font-medium">
             {item.title}
           </Text>
           <Text

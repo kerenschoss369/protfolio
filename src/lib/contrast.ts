@@ -59,20 +59,8 @@ export function meetsWcagAa(
   return contrastRatio(foreground, background) >= minimum;
 }
 
-/** Solid theme palette samples used for automated contrast checks. */
+/** Solid palette samples used for automated contrast checks. */
 export const themeContrastPairs = {
-  light: {
-    background: "#f5f2ec",
-    foreground: "#12141a",
-    muted: "#5a5751",
-    accent: "#1b4fd8",
-    accentContrast: "#f5f2ec",
-    success: "#1a6b42",
-    warning: "#745000",
-    danger: "#a91d2f",
-    focusRing: "#1b4fd8",
-    steel: "#555c66",
-  },
   dark: {
     background: "#121417",
     foreground: "#f1eee7",
@@ -85,4 +73,15 @@ export const themeContrastPairs = {
     focusRing: "#6b8aff",
     steel: "#9aa3ae",
   },
+} as const;
+
+/** Immersive landing palette — solid colors, no opacity hacks. */
+export const landingContrastPairs = {
+  background: "#0c0c0c",
+  foreground: "#d7e2ea",
+  muted: "#a9b9c6",
+  kicker: "#9aadb8",
+  number: "#8a9cab",
+  accent: "#bbccd7",
+  headingStop: "#8b929c",
 } as const;

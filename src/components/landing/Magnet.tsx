@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
@@ -12,23 +13,28 @@ import { useFinePointer } from "@/hooks/useFinePointer";
 import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import { cn } from "@/lib/cn";
 
+const DEFAULT_MAX_OFFSET = 4;
+
 type MagnetProps = {
   children: ReactNode;
   className?: string;
   padding?: number;
   strength?: number;
+  maxOffset?: number;
   activeTransition?: string;
   inactiveTransition?: string;
 };
 
 /**
- * Magnetic hover: translate toward pointer when within padding of the element.
+ * Magnetic hover: translate toward pointer, capped so the target does not
+ * escape. Disabled for coarse pointers, reduced motion, and small viewports.
  */
 export function Magnet({
   children,
   className,
   padding = 150,
   strength = 3,
+  maxOffset = DEFAULT_MAX_OFFSET,
   activeTransition = "transform 0.3s ease-out",
   inactiveTransition = "transform 0.6s ease-in-out",
 }: MagnetProps) {
@@ -36,7 +42,16 @@ export function Magnet({
   const reducedMotion = useReducedMotionPreference();
   const ref = useRef<HTMLDivElement>(null);
   const active = useRef(false);
-  const enabled = finePointer && !reducedMotion;
+  const [wideEnough, setWideEnough] = useState(false);
+  const enabled = finePointer && !reducedMotion && wideEnough;
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 48rem)");
+    const sync = () => setWideEnough(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
 
   const reset = useCallback(() => {
     const el = ref.current;
@@ -70,9 +85,11 @@ export function Magnet({
         el.style.transition = activeTransition;
       }
 
-      el.style.transform = `translate3d(${dx / strength}px, ${dy / strength}px, 0)`;
+      const tx = Math.max(-maxOffset, Math.min(maxOffset, dx / strength));
+      const ty = Math.max(-maxOffset, Math.min(maxOffset, dy / strength));
+      el.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
     },
-    [activeTransition, enabled, padding, reset, strength],
+    [activeTransition, enabled, maxOffset, padding, reset, strength],
   );
 
   useEffect(() => {
@@ -89,7 +106,6 @@ export function Magnet({
       className={cn("will-change-transform", className)}
       onPointerMove={onMove}
       onPointerLeave={reset}
-      style={{ willChange: "transform" }}
     >
       {children}
     </div>

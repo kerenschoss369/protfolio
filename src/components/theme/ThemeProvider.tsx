@@ -48,7 +48,7 @@ function applyTheme(theme: Theme, options?: { animate?: boolean }) {
     root.classList.add(THEME_TRANSITION_CLASS);
     window.setTimeout(() => {
       root.classList.remove(THEME_TRANSITION_CLASS);
-    }, motionBudget.themeTransitionMs);
+    }, motionBudget.routeEnterMs);
   } else {
     root.classList.remove(THEME_TRANSITION_CLASS);
   }

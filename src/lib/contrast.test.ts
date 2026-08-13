@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { contrastRatio, meetsWcagAa, themeContrastPairs } from "@/lib/contrast";
+import {
+  contrastRatio,
+  landingContrastPairs,
+  meetsWcagAa,
+  themeContrastPairs,
+} from "@/lib/contrast";
 
 describe("theme contrast (WCAG 2.2 AA)", () => {
   for (const [themeName, palette] of Object.entries(themeContrastPairs)) {
@@ -41,4 +46,26 @@ describe("theme contrast (WCAG 2.2 AA)", () => {
       });
     });
   }
+
+  describe("landing immersive palette", () => {
+    const palette = landingContrastPairs;
+
+    it("foreground and muted text meet AA on landing background", () => {
+      expect(meetsWcagAa(palette.foreground, palette.background)).toBe(true);
+      expect(meetsWcagAa(palette.muted, palette.background)).toBe(true);
+      expect(meetsWcagAa(palette.kicker, palette.background)).toBe(true);
+      expect(meetsWcagAa(palette.accent, palette.background)).toBe(true);
+    });
+
+    it("large decorative numbers and heading stops meet large-text AA", () => {
+      expect(
+        meetsWcagAa(palette.number, palette.background, { largeText: true }),
+      ).toBe(true);
+      expect(
+        meetsWcagAa(palette.headingStop, palette.background, {
+          largeText: true,
+        }),
+      ).toBe(true);
+    });
+  });
 });
