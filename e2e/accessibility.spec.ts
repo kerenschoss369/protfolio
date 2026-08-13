@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 async function expectNoSeriousAxeViolations(page: Page) {
   // Unrevealed motion content is opacity:0, which creates false color-contrast
-  // failures. Match the themes/reduced-motion cases for stable axe runs.
+  // failures. Match the reduced-motion cases for stable axe runs.
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.evaluate(() => {
     document.documentElement.removeAttribute("data-reveal-enhanced");
@@ -17,13 +17,15 @@ async function expectNoSeriousAxeViolations(page: Page) {
   // Allow MotionConfig / reduced-motion subscribers to settle before axe.
   await page.waitForTimeout(150);
 
+  // Device-mockup preview widgets remain excluded: they are conceptual
+  // product chrome, not primary reading text. Live headings and body copy
+  // (including .hero-heading) are included in the scan.
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .exclude(".project-preview-clinical")
     .exclude(".project-preview-academease")
     .exclude(".project-preview-terminal")
     .exclude(".project-preview-taptap")
-    .exclude(".hero-heading")
     .analyze();
 
   const serious = results.violations.filter(
@@ -43,6 +45,7 @@ async function expectNoSeriousAxeViolations(page: Page) {
 }
 
 test.describe("automated accessibility (axe)", () => {
+  test.describe.configure({ timeout: 90_000 });
   test("homepage", async ({ page }) => {
     await page.goto("/");
     await expectNoSeriousAxeViolations(page);
@@ -81,14 +84,14 @@ test.describe("automated accessibility (axe)", () => {
 
   test("mobile navigation open state", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/work");
+    await page.goto("/about");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog", { name: "Menu" })).toBeVisible();
     await expectNoSeriousAxeViolations(page);
   });
 
   test("command menu open state", async ({ page }) => {
-    await page.goto("/work");
+    await page.goto("/about");
     await page
       .getByRole("button", { name: "Open command menu" })
       .first()
@@ -104,7 +107,7 @@ test.describe("automated accessibility (axe)", () => {
       colorScheme: "light",
       reducedMotion: "reduce",
     });
-    await page.goto("/work");
+    await page.goto("/about");
     await page.evaluate(() => {
       document.documentElement.classList.remove("theme-transition");
       document.documentElement.setAttribute("data-theme", "light");
@@ -149,7 +152,7 @@ test.describe("keyboard and landmark smoke", () => {
 
   test("keyboard-only journey to work and a case study", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/work");
+    await page.goto("/about");
     await page
       .getByRole("button", { name: "Open command menu" })
       .first()

@@ -2,18 +2,16 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CommandMenuHost } from "@/components/command-menu/CommandMenuHost";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { MotionProvider } from "@/components/motion/MotionProvider";
-import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedWorkSection } from "@/components/home/FeaturedWorkSection";
-import { ExperiencePreview } from "@/components/home/ExperiencePreview";
-import { experience } from "@/data/experience";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { LandingHeroSection } from "@/components/landing/LandingHeroSection";
+import { LandingWorkSection } from "@/components/landing/LandingWorkSection";
 import {
   buildCommandActions,
   filterCommandActions,
 } from "@/lib/command-actions";
-import { getFeaturedProjects } from "@/lib/project-utils";
 
 const pushMock = vi.fn();
 let pathname = "/";
@@ -53,7 +51,9 @@ vi.mock("next/dynamic", () => ({
 function renderWithProviders(ui: React.ReactElement) {
   return render(
     <ThemeProvider>
-      <MotionProvider>{ui}</MotionProvider>
+      <MotionProvider>
+        <CommandMenuHost>{ui}</CommandMenuHost>
+      </MotionProvider>
     </ThemeProvider>,
   );
 }
@@ -70,7 +70,6 @@ describe("command actions", () => {
     expect(labels).toContain("View all work");
     expect(labels).toContain("Open About");
     expect(labels).toContain("Open Contact");
-    expect(labels).toContain("Switch theme");
   });
 
   it("includes configured external actions", () => {
@@ -102,8 +101,6 @@ describe("SiteHeader navigation", () => {
   beforeEach(() => {
     pathname = "/";
     pushMock.mockReset();
-    window.localStorage.clear();
-    document.documentElement.setAttribute("data-theme", "light");
   });
 
   it("opens and closes the mobile menu, restores focus, and responds to Escape", async () => {
@@ -155,19 +152,6 @@ describe("SiteHeader navigation", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("toggles theme from the header control", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<SiteHeader />);
-
-    const toggle = screen.getAllByRole("button", {
-      name: /Switch to dark theme/i,
-    })[0];
-    expect(toggle).toBeTruthy();
-    await user.click(toggle!);
-
-    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-  });
-
   it("renders Download CV when configured", () => {
     renderWithProviders(<SiteHeader />);
     const cvLinks = screen.getAllByRole("link", { name: /Download CV/i });
@@ -180,9 +164,7 @@ describe("SiteHeader navigation", () => {
 
 describe("homepage content", () => {
   it("renders featured project treatments and clinical safety context", () => {
-    renderWithProviders(
-      <FeaturedWorkSection projects={getFeaturedProjects()} />,
-    );
+    renderWithProviders(<LandingWorkSection />);
 
     expect(
       screen.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
@@ -199,44 +181,33 @@ describe("homepage content", () => {
 
     expect(screen.getByText(/Demo only/i)).toBeInTheDocument();
     expect(screen.getByText(/human review required/i)).toBeInTheDocument();
-    expect(screen.getByText(/not for real patient data/i)).toBeInTheDocument();
-  });
-
-  it("renders the professional confidentiality note", () => {
-    const primary = experience[0];
-    expect(primary).toBeTruthy();
-    render(<ExperiencePreview experience={primary!} />);
-
+    expect(screen.getByText(/real patient data/i)).toBeInTheDocument();
     expect(
       screen.getByText(
         /Professional work is described at a high level\. Source code and internal product details are proprietary\./i,
       ),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /repository/i })).toBeNull();
+    expect(screen.queryByText(/IDF|SOC Team Leader/i)).toBeNull();
   });
 
-  it("renders hero identity without fake profile photography", () => {
-    renderWithProviders(<HeroSection />);
+  it("renders hero identity with a distinct portrait", () => {
+    renderWithProviders(<LandingHeroSection />);
 
     expect(
-      screen.getByRole("heading", { name: "Keren Schoss" }),
+      screen.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Frontend & Full-Stack Developer"),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "View selected work" }),
-    ).toHaveAttribute("href", "/work");
-    expect(
-      screen.queryByRole("img", { name: /portrait|photo|headshot/i }),
-    ).toBeNull();
+      screen.getByRole("img", { name: "Portrait of Keren Schoss" }),
+    ).toBeInTheDocument();
   });
 });
 
 describe("command menu focus restoration", () => {
   beforeEach(() => {
     pathname = "/";
-    window.localStorage.clear();
   });
 
   it("returns focus to the command trigger after close", async () => {

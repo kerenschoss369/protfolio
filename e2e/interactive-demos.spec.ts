@@ -25,7 +25,6 @@ test.describe("interactive project demos", () => {
     await expect(demo.locator('input[type="file"]')).toHaveCount(0);
 
     const extracted = demo.getByRole("button", { name: /Extracted actions/i });
-    await extracted.scrollIntoViewIfNeeded();
     await extracted.click();
     await expect(extracted).toHaveAttribute("aria-pressed", "true");
     await expect(
@@ -53,7 +52,6 @@ test.describe("interactive project demos", () => {
     await expect(demo.getByLabel(/api key/i)).toHaveCount(0);
 
     const multiply = demo.getByRole("button", { name: "6*7" });
-    await multiply.scrollIntoViewIfNeeded();
     await multiply.click();
     await expect(demo.getByText(/local multiply\(6,\s*7\).*42/i)).toBeVisible({
       timeout: 10_000,
@@ -72,7 +70,6 @@ test.describe("interactive project demos", () => {
     ).toBeVisible({ timeout: 15_000 });
 
     const scheduleB = demo.getByRole("button", { name: /Schedule B/i });
-    await scheduleB.scrollIntoViewIfNeeded();
     await scheduleB.click();
     await expect(scheduleB).toHaveAttribute("aria-pressed", "true");
     await expect(demo.getByText("08:00").first()).toBeVisible();
@@ -91,7 +88,6 @@ test.describe("interactive project demos", () => {
     ).toBeVisible({ timeout: 15_000 });
 
     const start = demo.getByRole("button", { name: /^Start$/i });
-    await start.scrollIntoViewIfNeeded();
     await start.click();
     await expect(start).toBeDisabled();
     await expect(demo.getByText(/Playing|Step /i).first()).toBeVisible();
@@ -113,7 +109,6 @@ test.describe("interactive project demos", () => {
     ).toBeVisible({ timeout: 20_000 });
 
     const actions = demo.getByRole("button", { name: /Extracted actions/i });
-    await actions.scrollIntoViewIfNeeded();
     await actions.focus();
     await expect(actions).toBeFocused();
     // Prefer Enter on narrow viewports: Space can be claimed by scroll containers

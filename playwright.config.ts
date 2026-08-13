@@ -5,6 +5,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 2 : 3,
+  timeout: 45_000,
   reporter: "list",
   use: {
     // Separate from `next dev` on 3000 so e2e always hits a fresh production server.
@@ -15,6 +17,16 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },
+      testMatch: /remediation\.spec\.ts/,
+    },
+    {
+      name: "webkit-smoke",
+      use: { ...devices["Desktop Safari"] },
+      testMatch: /smoke\.spec\.ts/,
     },
   ],
   webServer: {

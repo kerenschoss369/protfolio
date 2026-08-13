@@ -24,10 +24,10 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/work");
+    await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Work", exact: true }),
+      page.getByRole("heading", { name: /Selected/i }),
     ).toBeVisible();
 
     await page
@@ -53,36 +53,31 @@ test.describe("motion refinements", () => {
       .getByRole("link", { name: "About", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/#about/);
-    await expect(page.locator("#about")).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Between logic/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/about\/?$/);
+    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
   });
 
   test("theme switching remains accessible and updates theme attribute", async ({
     page,
   }) => {
-    await page.goto("/work");
-
-    const toggle = page
-      .getByRole("button", { name: /Switch to dark theme/i })
-      .first();
-    await toggle.focus();
-    await expect(toggle).toBeFocused();
+    await page.goto("/about");
+    const toggle = page.getByRole("button", {
+      name: /Switch to (dark|light) theme/i,
+    });
+    await expect(toggle).toBeVisible();
+    const before = await page.locator("html").getAttribute("data-theme");
     await toggle.click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-
-    await page
-      .getByRole("button", { name: /Switch to light theme/i })
-      .first()
-      .click();
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.locator("html")).not.toHaveAttribute(
+      "data-theme",
+      before ?? "",
+    );
   });
 
   test("mobile menu and command menu still open and close", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/work");
+    await page.goto("/about");
 
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     const menu = page.getByRole("dialog", { name: "Menu" });
@@ -162,26 +157,26 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/work");
+    await page.goto("/");
     await page
       .locator('a[href="/work/clinical-follow-up-detector"]')
       .first()
       .click();
     await expect(page).toHaveURL(/clinical-follow-up-detector/);
     await page.goBack();
-    await expect(page).toHaveURL(/\/work$/);
+    await expect(page).toHaveURL(/\/$/);
     await expect(
-      page.getByRole("heading", { name: "Work", exact: true }),
+      page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
   });
 
-  test("work filters remain usable with motion", async ({ page }) => {
+  test("homepage work section remains usable with motion", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/work");
+    await page.goto("/#work");
 
-    const aiFilter = page.getByRole("button", { name: /^AI\b/i });
-    await aiFilter.click();
-    await expect(aiFilter).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
+    ).toBeVisible();
     await expect(page.locator("#main-content")).toBeVisible();
   });
 

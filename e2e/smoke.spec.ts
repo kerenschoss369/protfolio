@@ -18,20 +18,22 @@ test.describe("homepage and navigation", () => {
     ).toBeVisible();
   });
 
-  test("desktop navigation scrolls to work", async ({ page }) => {
+  test("desktop navigation opens the work index", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: /Projects\s*&\s*Work/i })
+      .getByRole("link", { name: "Work", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/#work/);
-    await expect(page.locator("#work")).toBeVisible();
+    await expect(page).toHaveURL(/\/work\/?$/);
+    await expect(
+      page.getByRole("heading", { name: "Work", exact: true }),
+    ).toBeVisible();
   });
 
-  test("mobile navigation reaches about section", async ({ page }) => {
+  test("mobile navigation reaches about page", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
 
@@ -40,21 +42,22 @@ test.describe("homepage and navigation", () => {
       .getByRole("link", { name: "About", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/#about/);
-    await expect(page.locator("#about")).toBeVisible();
+    await expect(page).toHaveURL(/\/about\/?$/);
+    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
   });
 
-  test("command menu opens from work index", async ({ page }) => {
-    await page.goto("/work");
+  test("command menu opens from about page", async ({ page }) => {
+    await page.goto("/about");
 
-    await expect(
-      page.getByRole("button", { name: /Open command menu/i }),
-    ).toBeVisible();
+    const trigger = page
+      .getByRole("button", { name: /Open command menu/i })
+      .first();
+    await expect(trigger).toBeVisible();
+    await trigger.click();
 
-    await page.keyboard.press("Control+KeyK");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
-    await dialog.getByRole("textbox").fill("clinical");
+    await page.getByLabel("Search commands").fill("clinical");
     await expect(
       dialog.getByRole("option", { name: /Clinical Follow-Up Detector/i }),
     ).toBeVisible();
@@ -81,7 +84,7 @@ test.describe("homepage and navigation", () => {
   });
 
   test("theme toggle remains available off landing", async ({ page }) => {
-    await page.goto("/work");
+    await page.goto("/about");
     await expect(
       page.getByRole("button", { name: /Switch to (dark|light) theme/i }),
     ).toBeVisible();

@@ -1,16 +1,23 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { CaseStudyArticle } from "@/components/case-study/CaseStudyArticle";
+import { CommandMenuHost } from "@/components/command-menu/CommandMenuHost";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getProjectBySlug } from "@/lib/project-utils";
 
+vi.mock("@/components/demos/ProjectDemoSection", () => ({
+  ProjectDemoSection: () => <div data-testid="project-demo-stub" />,
+}));
+
 function renderWithProviders(ui: ReactElement) {
   return render(
     <ThemeProvider>
-      <MotionProvider>{ui}</MotionProvider>
+      <MotionProvider>
+        <CommandMenuHost>{ui}</CommandMenuHost>
+      </MotionProvider>
     </ThemeProvider>,
   );
 }

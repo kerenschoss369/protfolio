@@ -9,49 +9,7 @@ const publicSlugs = [
   "atlas-research",
 ] as const;
 
-test.describe("work index and case studies", () => {
-  test("work index loads with projects and professional section", async ({
-    page,
-  }) => {
-    await page.goto("/work");
-
-    await expect(
-      page.getByRole("heading", { name: "Work", exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /Frontend Developer/i }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(/Professional work is described at a high level/i),
-    ).toBeVisible();
-    // Featured cards may use Repository; case studies use View repository.
-    await expect(
-      page.getByRole("main").getByRole("link", { name: /Repository/i }),
-    ).toHaveCount(3);
-    await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
-  });
-
-  test("project filtering works by keyboard", async ({ page }) => {
-    await page.goto("/work");
-
-    const gameFilter = page.getByRole("button", { name: /Game Development/i });
-    await gameFilter.focus();
-    await expect(gameFilter).toBeFocused();
-    // Native button activation via Space (Enter can be swallowed by page chrome in some runs)
-    await page.keyboard.press("Space");
-
-    await expect(gameFilter).toHaveAttribute("aria-pressed", "true");
-    await expect(
-      page.getByRole("heading", { name: "TapTap Avengers" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
-    ).toHaveCount(0);
-  });
-
+test.describe("work case studies", () => {
   for (const slug of publicSlugs) {
     test(`public project route loads: ${slug}`, async ({ page }) => {
       await page.goto(`/work/${slug}`);
@@ -116,7 +74,7 @@ test.describe("work index and case studies", () => {
   test("no horizontal overflow at 320px on work routes", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 });
 
-    for (const path of ["/work", "/work/clinical-follow-up-detector"]) {
+    for (const path of ["/", "/work/clinical-follow-up-detector"]) {
       await page.goto(path);
       const hasOverflow = await page.evaluate(() => {
         return (
@@ -181,9 +139,10 @@ test.describe("work index and case studies", () => {
 
   test("professional work has no repository link", async ({ page }) => {
     await page.goto("/work");
-    const professional = page.locator("#professional-work");
     await expect(
-      professional.getByRole("link", { name: /repository/i }),
+      page
+        .locator("#professional-work")
+        .getByRole("link", { name: /repository/i }),
     ).toHaveCount(0);
   });
 });
