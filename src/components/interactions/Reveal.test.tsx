@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -9,6 +9,9 @@ import {
 
 afterEach(() => {
   document.documentElement.removeAttribute(revealTestIds.enhanced);
+  document.querySelectorAll(`[${revealTestIds.attr}]`).forEach((node) => {
+    node.removeAttribute(revealTestIds.revealed);
+  });
   vi.restoreAllMocks();
 });
 
@@ -58,5 +61,35 @@ describe("Reveal progressive enhancement", () => {
     expect(document.documentElement.hasAttribute(revealTestIds.enhanced)).toBe(
       false,
     );
+  });
+
+  it("marks in-view nodes revealed before or when enhancement activates", async () => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    render(
+      <>
+        <RevealEnhancer />
+        <Reveal>
+          <p>Above the fold</p>
+        </Reveal>
+      </>,
+    );
+
+    const host = screen.getByText("Above the fold").parentElement;
+    await waitFor(() => {
+      expect(host?.hasAttribute(revealTestIds.revealed)).toBe(true);
+    });
   });
 });

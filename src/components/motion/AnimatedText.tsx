@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "motion/react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import { distances, durations, easings, stagger } from "@/lib/animation-config";
@@ -18,7 +18,8 @@ type AnimatedTextProps = {
 
 /**
  * Editorial entrance for a single phrase/line.
- * SSR HTML remains present and crawlable; animation is progressive enhancement.
+ * SSR and first paint stay fully visible; Motion only enhances after mount
+ * so Safari/WebKit never leave brand copy or CTAs stuck invisible.
  */
 export function AnimatedText({
   children,
@@ -28,10 +29,16 @@ export function AnimatedText({
   masked = true,
 }: AnimatedTextProps) {
   const reducedMotion = useReducedMotionPreference();
-  const Tag = m[as];
+  const [enhance, setEnhance] = useState(false);
 
-  if (reducedMotion) {
-    const Static = as;
+  useEffect(() => {
+    setEnhance(true);
+  }, []);
+
+  const Tag = m[as];
+  const Static = as;
+
+  if (reducedMotion || !enhance) {
     return <Static className={className}>{children}</Static>;
   }
 
@@ -82,8 +89,13 @@ export function StaggerGroup({
   delayChildren = 0.04,
 }: StaggerGroupProps) {
   const reducedMotion = useReducedMotionPreference();
+  const [enhance, setEnhance] = useState(false);
 
-  if (reducedMotion) {
+  useEffect(() => {
+    setEnhance(true);
+  }, []);
+
+  if (reducedMotion || !enhance) {
     return <div className={className}>{children}</div>;
   }
 
@@ -115,8 +127,13 @@ export function StaggerItem({
   className?: string;
 }) {
   const reducedMotion = useReducedMotionPreference();
+  const [enhance, setEnhance] = useState(false);
 
-  if (reducedMotion) {
+  useEffect(() => {
+    setEnhance(true);
+  }, []);
+
+  if (reducedMotion || !enhance) {
     return <div className={className}>{children}</div>;
   }
 
@@ -124,7 +141,8 @@ export function StaggerItem({
     <m.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: distances.settleRem * 12 },
+        // Keep a readable floor opacity in case animation never commits.
+        hidden: { opacity: 0.01, y: distances.settleRem * 12 },
         visible: {
           opacity: 1,
           y: 0,

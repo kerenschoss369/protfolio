@@ -61,6 +61,8 @@ export function HeroSection() {
               linear-gradient(to bottom, color-mix(in srgb, var(--border-subtle) 55%, transparent) 1px, transparent 1px)
             `,
             backgroundSize: "72px 72px",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, black 0%, transparent 75%)",
             maskImage: "linear-gradient(to bottom, black 0%, transparent 75%)",
           }}
         />
