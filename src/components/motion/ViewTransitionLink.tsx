@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  startTransition,
   useCallback,
   type ComponentProps,
   type MouseEvent,
@@ -22,6 +23,7 @@ type ViewTransitionLinkProps = Omit<ComponentProps<typeof Link>, "onClick"> & {
 /**
  * Client navigation wrapped in View Transitions when supported.
  * Falls back to normal Next.js navigation under reduced motion / unsupported browsers.
+ * Uses React startTransition so Safari's View Transitions API cooperates with App Router.
  */
 export function ViewTransitionLink({
   href,
@@ -58,11 +60,13 @@ export function ViewTransitionLink({
 
       navigateWithViewTransition(
         () => {
-          if (replace) {
-            router.replace(url, { scroll });
-          } else {
-            router.push(url, { scroll });
-          }
+          startTransition(() => {
+            if (replace) {
+              router.replace(url, { scroll });
+            } else {
+              router.push(url, { scroll });
+            }
+          });
         },
         { reducedMotion },
       );

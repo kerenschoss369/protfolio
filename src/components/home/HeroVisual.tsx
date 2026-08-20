@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "motion/react";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 
 import { useElementInView } from "@/hooks/useElementInView";
 import { usePointerPosition } from "@/hooks/usePointerPosition";
@@ -65,6 +65,7 @@ const PATHS = [
 
 export function HeroVisual() {
   const [active, setActive] = useState<NodeId | null>(null);
+  const [supportsOffsetPath, setSupportsOffsetPath] = useState(false);
   const [containerRef, inView] = useElementInView<HTMLDivElement>({
     once: true,
     threshold: 0.15,
@@ -76,6 +77,14 @@ export function HeroVisual() {
     handlers,
   } = usePointerPosition(distances.pointerDepthMaxPx);
   const descriptionId = useId();
+
+  useEffect(() => {
+    setSupportsOffsetPath(
+      typeof CSS !== "undefined" &&
+        typeof CSS.supports === "function" &&
+        CSS.supports("offset-path", "path('M0 0')"),
+    );
+  }, []);
 
   const activeNode = useMemo(
     () => nodes.find((node) => node.id === active) ?? null,
@@ -159,7 +168,10 @@ export function HeroVisual() {
                   }}
                   className={emphasized ? "stroke-[var(--accent)]" : undefined}
                 />
-                {!reducedMotion && inView && (emphasized || !active) ? (
+                {!reducedMotion &&
+                inView &&
+                (emphasized || !active) &&
+                supportsOffsetPath ? (
                   <m.circle
                     key={`${path.id}-pulse`}
                     r="0.85"
@@ -323,6 +335,8 @@ function HeroStructuralBackground({ active }: { active: NodeId | null }) {
             linear-gradient(to bottom, color-mix(in srgb, var(--border-subtle) 70%, transparent) 1px, transparent 1px)
           `,
           backgroundSize: "48px 48px",
+          WebkitMaskImage:
+            "radial-gradient(circle at 50% 40%, black 20%, transparent 78%)",
           maskImage:
             "radial-gradient(circle at 50% 40%, black 20%, transparent 78%)",
         }}

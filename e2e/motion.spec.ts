@@ -9,19 +9,24 @@ test.describe("motion refinements", () => {
     await expect(
       page.getByRole("heading", { name: "Keren Schoss" }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", {
-        name: /Projects that show how interfaces/,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", {
-        name: /Conversations about frontend/,
-      }),
-    ).toBeVisible();
+
+    const selectedWork = page.getByRole("heading", {
+      name: /Projects that show how interfaces/,
+    });
+    await selectedWork.scrollIntoViewIfNeeded();
+    await expect(selectedWork).toBeVisible();
+
+    const featured = page.getByRole("heading", {
+      name: "Clinical Follow-Up Detector",
+    });
+    await featured.scrollIntoViewIfNeeded();
+    await expect(featured).toBeVisible();
+
+    const contact = page.getByRole("heading", {
+      name: /Conversations about frontend/,
+    });
+    await contact.scrollIntoViewIfNeeded();
+    await expect(contact).toBeVisible();
   });
 
   test("route navigation remains immediate and content stays visible", async ({

@@ -20,6 +20,9 @@ const REVEAL_ATTR = "data-reveal";
 const REVEALED_ATTR = "data-revealed";
 const ENHANCED_ATTR = "data-reveal-enhanced";
 
+/** Rescue visible nodes if IntersectionObserver misses (Safari/iOS). */
+const VISIBLE_RESCUE_MS = 1200;
+
 type RevealProps = {
   children: ReactNode;
   className?: string;
@@ -28,10 +31,31 @@ type RevealProps = {
   as?: "div" | "section" | "article" | "li" | "header";
 };
 
+function isAlreadyVisible(node: HTMLElement): boolean {
+  const rect = node.getBoundingClientRect();
+  // jsdom and pre-layout nodes report an empty box — treat as visible so we
+  // never hide content before geometry is real.
+  if (rect.width === 0 && rect.height === 0) {
+    return true;
+  }
+  // In the viewport, or already scrolled past (so reverse-scroll stays readable).
+  return rect.top < window.innerHeight * 0.98;
+}
+
+function revealVisiblePending() {
+  document.querySelectorAll<HTMLElement>(`[${REVEAL_ATTR}]`).forEach((node) => {
+    if (!node.hasAttribute(REVEALED_ATTR) && isAlreadyVisible(node)) {
+      node.setAttribute(REVEALED_ATTR, "");
+    }
+  });
+}
+
 /**
  * Progressive section reveal.
  * Server markup stays visible. Enhancement only activates after layout when
  * reduced motion is off; in-view nodes are marked revealed before hiding others.
+ * Safari/WebKit: pixel rootMargin, threshold 0, deferred enhance, and a
+ * visibility rescue so in-view content never stays stuck at opacity 0.
  */
 export function Reveal({
   children,
@@ -53,6 +77,57 @@ export function Reveal({
 
     let cancelled = false;
     let observer: IntersectionObserver | null = null;
+    let rescueTimer = 0;
+
+    function markRevealed() {
+      node?.setAttribute(REVEALED_ATTR, "");
+      if (rescueTimer) {
+        window.clearTimeout(rescueTimer);
+        rescueTimer = 0;
+      }
+    }
+
+    function attachObserver() {
+      if (cancelled || !node || observer) {
+        return;
+      }
+
+      if (typeof IntersectionObserver === "undefined") {
+        markRevealed();
+        return;
+      }
+
+      // Pixel margins avoid Safari percentage rootMargin quirks.
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting || entry.intersectionRatio > 0) {
+              entry.target.setAttribute(REVEALED_ATTR, "");
+              observer?.unobserve(entry.target);
+              if (rescueTimer) {
+                window.clearTimeout(rescueTimer);
+                rescueTimer = 0;
+              }
+            }
+          }
+        },
+        {
+          root: null,
+          rootMargin: "0px 0px -48px 0px",
+          threshold: 0,
+        },
+      );
+
+      observer.observe(node);
+
+      rescueTimer = window.setTimeout(() => {
+        if (!cancelled && node && !node.hasAttribute(REVEALED_ATTR)) {
+          if (isAlreadyVisible(node)) {
+            markRevealed();
+          }
+        }
+      }, VISIBLE_RESCUE_MS);
+    }
 
     function enhance() {
       if (cancelled || !node) {
@@ -60,47 +135,23 @@ export function Reveal({
       }
 
       if (getReducedMotionSnapshot()) {
-        node.setAttribute(REVEALED_ATTR, "");
+        markRevealed();
         return;
       }
 
-      const root = document.documentElement;
-      if (!root.hasAttribute(ENHANCED_ATTR)) {
+      if (isAlreadyVisible(node) || node.hasAttribute(REVEALED_ATTR)) {
+        markRevealed();
         return;
       }
 
-      const rect = node.getBoundingClientRect();
-      const alreadyVisible =
-        rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
-
-      if (alreadyVisible) {
-        node.setAttribute(REVEALED_ATTR, "");
-        return;
-      }
-
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.setAttribute(REVEALED_ATTR, "");
-              observer?.unobserve(entry.target);
-            }
-          }
-        },
-        {
-          root: null,
-          rootMargin: "0px 0px -6% 0px",
-          threshold: 0.08,
-        },
-      );
-
-      observer.observe(node);
+      // Attach observers immediately; CSS hiding waits for data-reveal-enhanced.
+      attachObserver();
     }
 
     enhance();
     const unsubscribe = subscribeReducedMotion(() => {
       if (getReducedMotionSnapshot()) {
-        node.setAttribute(REVEALED_ATTR, "");
+        markRevealed();
         observer?.disconnect();
         observer = null;
         document.documentElement.removeAttribute(ENHANCED_ATTR);
@@ -111,6 +162,9 @@ export function Reveal({
       cancelled = true;
       unsubscribe();
       observer?.disconnect();
+      if (rescueTimer) {
+        window.clearTimeout(rescueTimer);
+      }
     };
   }, []);
 
@@ -133,10 +187,17 @@ export function Reveal({
 /**
  * Enables reveal CSS only after marking above-the-fold targets as revealed.
  * Mount once near the document root (AppShell).
+ * Defers the enhanced flag one frame so observers can attach first (Safari).
  */
 export function RevealEnhancer() {
   useLayoutEffect(() => {
     const root = document.documentElement;
+    let frame = 0;
+    let cancelled = false;
+
+    function onScrollOrResize() {
+      revealVisiblePending();
+    }
 
     function sync() {
       const reduced =
@@ -152,17 +213,36 @@ export function RevealEnhancer() {
 
       const nodes = document.querySelectorAll<HTMLElement>(`[${REVEAL_ATTR}]`);
       nodes.forEach((node) => {
-        const rect = node.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) {
+        if (isAlreadyVisible(node)) {
           node.setAttribute(REVEALED_ATTR, "");
         }
       });
 
-      root.setAttribute(ENHANCED_ATTR, "");
+      // Defer hiding until after the next paint so individual Reveal effects
+      // can attach IntersectionObservers before opacity is forced to 0.
+      frame = window.requestAnimationFrame(() => {
+        frame = window.requestAnimationFrame(() => {
+          if (cancelled) {
+            return;
+          }
+          revealVisiblePending();
+          root.setAttribute(ENHANCED_ATTR, "");
+        });
+      });
     }
 
     sync();
-    return subscribeReducedMotion(sync);
+    const unsubscribe = subscribeReducedMotion(sync);
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
   }, []);
 
   return null;
@@ -173,4 +253,5 @@ export const revealTestIds = {
   attr: REVEAL_ATTR,
   revealed: REVEALED_ATTR,
   enhanced: ENHANCED_ATTR,
+  visibleRescueMs: VISIBLE_RESCUE_MS,
 } as const;
