@@ -81,6 +81,7 @@ export function HeroVisual() {
   useEffect(() => {
     setSupportsOffsetPath(
       typeof CSS !== "undefined" &&
+        typeof CSS.supports === "function" &&
         CSS.supports("offset-path", "path('M0 0')"),
     );
   }, []);

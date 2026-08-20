@@ -33,7 +33,13 @@ type RevealProps = {
 
 function isAlreadyVisible(node: HTMLElement): boolean {
   const rect = node.getBoundingClientRect();
-  return rect.top < window.innerHeight * 0.98 && rect.bottom > 0;
+  // jsdom and pre-layout nodes report an empty box — treat as visible so we
+  // never hide content before geometry is real.
+  if (rect.width === 0 && rect.height === 0) {
+    return true;
+  }
+  // In the viewport, or already scrolled past (so reverse-scroll stays readable).
+  return rect.top < window.innerHeight * 0.98;
 }
 
 function revealVisiblePending() {
@@ -83,6 +89,11 @@ export function Reveal({
 
     function attachObserver() {
       if (cancelled || !node || observer) {
+        return;
+      }
+
+      if (typeof IntersectionObserver === "undefined") {
+        markRevealed();
         return;
       }
 
