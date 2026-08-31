@@ -9,6 +9,7 @@ import { useCommandMenu } from "@/components/command-menu/CommandMenuHost";
 import { MobileNav } from "@/components/navigation/MobileNav";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { IconButton } from "@/components/ui/IconButton";
+import { HomeSectionLink } from "@/components/navigation/HomeSectionLink";
 import { getConfiguredExternalLinks } from "@/data/links";
 import { primaryNavItems } from "@/data/navigation";
 import { portfolio } from "@/data/portfolio";
@@ -121,21 +122,32 @@ export function SiteHeader() {
           >
             <ul ref={navListRef} className="relative flex items-center gap-1">
               {primaryNavItems.map((item) => {
-                const active = isActivePath(pathname, item.href);
+                const section = "section" in item ? item.section : undefined;
+                const active = section
+                  ? false
+                  : isActivePath(pathname, item.href);
+                const className = cn(
+                  "relative inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
+                  active
+                    ? "text-foreground"
+                    : "text-muted hover:bg-surface-1 hover:text-foreground",
+                );
+
                 return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "relative inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-sm)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-standard)]",
-                        active
-                          ? "text-foreground"
-                          : "text-muted hover:bg-surface-1 hover:text-foreground",
-                      )}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      {item.label}
-                    </Link>
+                  <li key={item.label}>
+                    {section ? (
+                      <HomeSectionLink section={section} className={className}>
+                        {item.label}
+                      </HomeSectionLink>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={className}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

@@ -13,6 +13,8 @@ import {
   getAllProjects,
   getProjectBySlug,
   getProjectFilterIds,
+  getPublicCaseStudySlugs,
+  hasPublicCaseStudyPage,
   projectMatchesFilter,
   WORK_FILTERS,
 } from "@/lib/project-utils";
@@ -83,7 +85,7 @@ describe("case-study route data", () => {
       next: getProjectBySlug("academease"),
     });
     expect(getAdjacentProjects("atlas-research")).toEqual({
-      previous: getProjectBySlug("overthewire-bandit"),
+      previous: getProjectBySlug("taptap-avengers"),
       next: null,
     });
     expect(getAdjacentProjects("academease").previous?.slug).toBe(
@@ -92,6 +94,23 @@ describe("case-study route data", () => {
     expect(getAdjacentProjects("academease").next?.slug).toBe(
       "realtime-gpt-cli",
     );
+    expect(getAdjacentProjects("taptap-avengers").next?.slug).toBe(
+      "atlas-research",
+    );
+    expect(getAdjacentProjects("overthewire-bandit")).toEqual({
+      previous: null,
+      next: null,
+    });
+  });
+
+  it("omits engineering practice from public case-study routes", () => {
+    expect(getPublicCaseStudySlugs()).not.toContain("overthewire-bandit");
+    expect(
+      hasPublicCaseStudyPage(getProjectBySlug("overthewire-bandit")!),
+    ).toBe(false);
+    expect(
+      hasPublicCaseStudyPage(getProjectBySlug("atlas-research")!),
+    ).toBe(true);
   });
 
   it("omits unconfigured live demos and keeps null repository links hidden", () => {

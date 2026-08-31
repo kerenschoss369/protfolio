@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { BackToTopButton } from "@/components/landing/BackToTopButton";
+import { LandingScrollRestore } from "@/components/landing/LandingScrollRestore";
 import { kanit, kerenHand } from "@/lib/landing-fonts";
 import { cn } from "@/lib/cn";
 
@@ -18,6 +20,7 @@ export function LandingRoot({
 }: LandingRootProps) {
   return (
     <div
+      id="top"
       className={cn(
         "landing-root",
         variant === "case" && "landing-case",
@@ -27,6 +30,8 @@ export function LandingRoot({
       )}
     >
       {children}
+      <LandingScrollRestore />
+      <BackToTopButton />
     </div>
   );
 }

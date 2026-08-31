@@ -187,7 +187,7 @@ export function DesignSystemPreview() {
               <TextLink href="/work">Internal text link to work</TextLink>
             </p>
             <p>
-              <TextLink href="/about" muted>
+              <TextLink href="/" muted>
                 Muted text link
               </TextLink>
             </p>

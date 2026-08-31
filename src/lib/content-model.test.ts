@@ -99,7 +99,7 @@ describe("portfolio content model", () => {
       next: getProjectBySlug("realtime-gpt-cli"),
     });
     expect(getAdjacentProjects("atlas-research")).toEqual({
-      previous: getProjectBySlug("overthewire-bandit"),
+      previous: getProjectBySlug("taptap-avengers"),
       next: null,
     });
     expect(getAdjacentProjects("unknown")).toEqual({
@@ -165,8 +165,11 @@ describe("portfolio content model", () => {
   });
 
   it("requires professional confidentiality content without public repos", () => {
-    expect(experience).toHaveLength(1);
+    expect(experience).toHaveLength(2);
     const abra = experience[0]!;
+    const soc = experience[1]!;
+    expect(soc.role).toBe("SOC Team Leader & IT");
+    expect(hasRequiredProfessionalConfidentiality(soc)).toBe(true);
     expect(hasRequiredProfessionalConfidentiality(abra)).toBe(true);
     expect(abra.kind).toBe("professional-work");
     expect(abra.confidentialityNote).toBe(PROFESSIONAL_CONFIDENTIALITY_NOTE);

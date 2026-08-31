@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { CommandMenuHost } from "@/components/command-menu/CommandMenuHost";
+import { CustomCursor } from "@/components/cursor/CustomCursor";
 import { RevealEnhancer } from "@/components/interactions/Reveal";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -13,7 +14,7 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { getProjectBySlug } from "@/lib/project-utils";
 
 function usesLandingChrome(pathname: string) {
-  if (pathname === "/") {
+  if (pathname === "/" || pathname === "/work") {
     return true;
   }
 
@@ -40,6 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {children}
         </main>
         {!isLandingChrome ? <SiteFooter /> : null}
+        <CustomCursor />
       </CommandMenuHost>
     </MotionProvider>
   );

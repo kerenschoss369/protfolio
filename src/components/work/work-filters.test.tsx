@@ -29,6 +29,20 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+vi.mock("next/image", () => ({
+  default: (
+    props: {
+      alt: string;
+      priority?: boolean;
+    } & React.ImgHTMLAttributes<HTMLImageElement>,
+  ) => {
+    const { alt, priority, ...rest } = props;
+    void priority;
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img alt={alt} {...rest} />;
+  },
+}));
+
 vi.spyOn(window, "matchMedia").mockImplementation((query: string) => {
   return {
     matches: query.includes("prefers-reduced-motion"),
@@ -65,6 +79,9 @@ describe("WorkFilters", () => {
     expect(
       screen.getByRole("heading", { name: "OverTheWire Bandit" }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /OverTheWire Bandit/i }),
+    ).not.toBeInTheDocument();
 
     const gameFilter = screen.getByRole("button", {
       name: /Game Development/i,

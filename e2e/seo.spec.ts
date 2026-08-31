@@ -11,19 +11,20 @@ test.describe("SEO and production readiness", () => {
     for (const path of [
       "/",
       "/work",
-      "/about",
-      "/contact",
       "/work/clinical-follow-up-detector",
       "/work/academease",
       "/work/realtime-gpt-cli",
       "/work/taptap-avengers",
-      "/work/overthewire-bandit",
       "/work/atlas-research",
     ]) {
       expect(body).toContain(`<loc>${path}</loc>`);
     }
 
+    expect(body).not.toContain("/work/overthewire-bandit");
+
     expect(body).toContain("<loc>/work</loc>");
+    expect(body).not.toContain("<loc>/about</loc>");
+    expect(body).not.toContain("<loc>/contact</loc>");
     expect(body).not.toContain("/design-system");
     expect(body).not.toContain("example.com");
     expect(body).not.toContain("localhost");
@@ -88,12 +89,12 @@ test.describe("SEO and production readiness", () => {
   test("contact exposes configured methods without fake placeholders", async ({
     page,
   }) => {
-    await page.goto("/contact");
+    await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Contact", exact: true }),
+      page.getByRole("heading", { name: /Let'?s\s*Talk/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Email Keren Schoss/i }),
+      page.getByRole("link", { name: /kerenschoss369@gmail\.com/i }),
     ).toHaveAttribute("href", "mailto:kerenschoss369@gmail.com");
     await expect(
       page.getByRole("main").getByRole("link", { name: /LinkedIn/i }),
@@ -128,11 +129,8 @@ test.describe("SEO and production readiness", () => {
     expect(cvResponse.ok()).toBeTruthy();
     expect(cvResponse.headers()["content-type"]).toMatch(/pdf/i);
 
-    await page.goto("/about");
-    await page
-      .getByRole("button", { name: /Open command menu/i })
-      .first()
-      .click();
+    await page.goto("/work");
+    await page.keyboard.press("Control+K");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
     await page.getByLabel("Search commands").fill("cv");
@@ -186,7 +184,7 @@ test.describe("SEO and production readiness", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 320, height: 720 });
-    for (const path of ["/", "/about", "/contact", "/work/academease"]) {
+    for (const path of ["/", "/work", "/work/academease"]) {
       await page.goto(path);
       const hasOverflow = await page.evaluate(() => {
         return (

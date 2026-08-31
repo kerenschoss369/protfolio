@@ -2,13 +2,12 @@ import { Kanit } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
- * Landing/case-study display fonts. Loaded only by immersive routes so
- * `/about`, `/contact`, and `/work` do not pay for unused weights.
+ * Landing, work index, and case-study display fonts.
  */
 export const kanit = Kanit({
   variable: "--font-kanit",
   subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { HomeSectionLink } from "@/components/navigation/HomeSectionLink";
 import { NotFoundReconnect } from "@/components/motion/NotFoundReconnect";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
@@ -43,9 +44,12 @@ export default function NotFound() {
             <ButtonLink href="/work" variant="secondary">
               Work
             </ButtonLink>
-            <ButtonLink href="/contact" variant="ghost">
+            <HomeSectionLink
+              section="contact"
+              className="pressable inline-flex min-h-[var(--touch-target)] items-center justify-center rounded-[var(--radius-md)] bg-transparent px-4 text-[length:var(--text-body)] font-medium text-foreground hover:bg-surface-1 active:bg-surface-2 focus-visible:outline-focus-ring focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+            >
               Contact
-            </ButtonLink>
+            </HomeSectionLink>
           </div>
         </div>
       </Container>

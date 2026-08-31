@@ -10,7 +10,7 @@ test.describe("motion refinements", () => {
       page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: /Selected/i }),
+      page.getByRole("heading", { name: /^Projects$/i }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
@@ -27,7 +27,7 @@ test.describe("motion refinements", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: /Selected/i }),
+      page.getByRole("heading", { name: /^Projects$/i }),
     ).toBeVisible();
 
     await page
@@ -50,17 +50,17 @@ test.describe("motion refinements", () => {
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "About", exact: true })
+      .getByRole("button", { name: "About", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/\/about\/?$/);
-    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
+    await expect(page).not.toHaveURL(/#/);
+    await expect(page.locator("#about")).toBeInViewport();
   });
 
   test("theme switching remains accessible and updates theme attribute", async ({
     page,
   }) => {
-    await page.goto("/about");
+    await page.goto("/missing-route-for-chrome");
     const toggle = page.getByRole("button", {
       name: /Switch to (dark|light) theme/i,
     });
@@ -77,7 +77,7 @@ test.describe("motion refinements", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/about");
+    await page.goto("/missing-route-for-chrome");
 
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     const menu = page.getByRole("dialog", { name: "Menu" });
@@ -149,7 +149,7 @@ test.describe("motion refinements", () => {
     });
     await expect(portrait).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Contact Me" }).first(),
+      page.getByRole("button", { name: /^Contact$/ }).first(),
     ).toBeVisible();
   });
 
@@ -172,7 +172,7 @@ test.describe("motion refinements", () => {
 
   test("homepage work section remains usable with motion", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/#work");
+    await page.goto("/");
 
     await expect(
       page.getByRole("heading", { name: "Clinical Follow-Up Detector" }),
@@ -180,20 +180,19 @@ test.describe("motion refinements", () => {
     await expect(page.locator("#main-content")).toBeVisible();
   });
 
-  test("about narrative and contact converge remain readable", async ({
+  test("homepage about and contact remain readable", async ({
     page,
   }) => {
-    await page.goto("/about");
+    await page.goto("/");
     await expect(
-      page.getByText(/Composition becomes interface/i).first(),
+      page.getByRole("heading", { name: /Between logic/i }),
     ).toBeVisible();
     await expect(
-      page.getByRole("img", { name: /Portrait of Keren Schoss/i }),
+      page.getByText(/My work sits somewhere between logic and creativity/i),
     ).toBeVisible();
 
-    await page.goto("/contact");
     await expect(
-      page.getByRole("heading", { name: "Contact", exact: true }),
+      page.getByRole("heading", { name: /Let'?s\s*Talk/i }),
     ).toBeVisible();
     await expect(page.getByText(/Frontend/i).first()).toBeVisible();
   });

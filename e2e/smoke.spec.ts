@@ -18,42 +18,35 @@ test.describe("homepage and navigation", () => {
     ).toBeVisible();
   });
 
-  test("desktop navigation opens the work index", async ({ page }) => {
+  test("desktop navigation scrolls to work", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "Work", exact: true })
+      .getByRole("button", { name: "Work", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/\/work\/?$/);
-    await expect(
-      page.getByRole("heading", { name: "Work", exact: true }),
-    ).toBeVisible();
+    await expect(page).not.toHaveURL(/#/);
+    await expect(page.locator("#work")).toBeInViewport();
   });
 
-  test("mobile navigation reaches about page", async ({ page }) => {
+  test("mobile navigation scrolls to about", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
 
     await page
       .getByRole("navigation", { name: "Primary" })
-      .getByRole("link", { name: "About", exact: true })
+      .getByRole("button", { name: "About", exact: true })
       .click();
 
-    await expect(page).toHaveURL(/\/about\/?$/);
-    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
+    await expect(page).not.toHaveURL(/#/);
+    await expect(page.locator("#about")).toBeInViewport();
   });
 
-  test("command menu opens from about page", async ({ page }) => {
-    await page.goto("/about");
-
-    const trigger = page
-      .getByRole("button", { name: /Open command menu/i })
-      .first();
-    await expect(trigger).toBeVisible();
-    await trigger.click();
+  test("command menu opens from work page", async ({ page }) => {
+    await page.goto("/work");
+    await page.keyboard.press("Control+K");
 
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
@@ -65,8 +58,12 @@ test.describe("homepage and navigation", () => {
 
   test("primary CTA navigates to contact", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "Contact Me" }).first().click();
-    await expect(page).toHaveURL(/#contact/);
+    await page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: /^Contact$/ })
+      .click();
+    await expect(page).not.toHaveURL(/#/);
+    await expect(page.locator("#contact")).toBeInViewport();
   });
 
   test("no horizontal overflow at 320px", async ({ page }) => {
@@ -84,7 +81,7 @@ test.describe("homepage and navigation", () => {
   });
 
   test("theme toggle remains available off landing", async ({ page }) => {
-    await page.goto("/about");
+    await page.goto("/missing-route-for-chrome");
     await expect(
       page.getByRole("button", { name: /Switch to (dark|light) theme/i }),
     ).toBeVisible();

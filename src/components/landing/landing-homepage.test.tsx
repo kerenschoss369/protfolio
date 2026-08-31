@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { CommandMenuHost } from "@/components/command-menu/CommandMenuHost";
 import { LandingAboutSection } from "@/components/landing/LandingAboutSection";
 import { LandingHeroSection } from "@/components/landing/LandingHeroSection";
+import { LandingRoot } from "@/components/landing/LandingRoot";
 import { LandingWorkSection } from "@/components/landing/LandingWorkSection";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -66,10 +67,34 @@ describe("landing homepage", () => {
     expect(
       screen.getByRole("img", { name: /Portrait of Keren Schoss/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Contact Me" })).toHaveAttribute(
-      "href",
-      "#contact",
+    expect(screen.getByRole("button", { name: /^Work$/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^About$/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^Contact$/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("scrolls to sections without following the hash", () => {
+    const work = document.createElement("section");
+    work.id = "work";
+    work.scrollIntoView = vi.fn();
+    document.body.append(work);
+
+    renderWithMotion(<LandingHeroSection />);
+    screen.getByRole("button", { name: /^Work$/ }).click();
+
+    expect(work.scrollIntoView).toHaveBeenCalled();
+    work.remove();
+  });
+
+  it("exposes a back to top control", () => {
+    renderWithMotion(
+      <LandingRoot>
+        <p>Content</p>
+      </LandingRoot>,
     );
+
+    expect(screen.getByLabelText("Back to top")).toBeInTheDocument();
   });
 
   it("lists selected projects in order", () => {
@@ -90,6 +115,9 @@ describe("landing homepage", () => {
     expect(
       screen.getByRole("heading", { name: "Frontend Developer" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "SOC Team Leader & IT" }),
+    ).toBeInTheDocument();
   });
 
   it("shows about section copy", () => {
@@ -99,9 +127,15 @@ describe("landing homepage", () => {
       screen.getByRole("heading", { name: /Between logic/i }),
     ).toBeInTheDocument();
     expect(
+      screen.getByText(/My work sits somewhere between logic and creativity/),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("img", {
         name: "Keren Schoss, frontend and full-stack developer",
       }),
     ).toBeInTheDocument();
+    const fontLink = screen.getByRole("link", { name: "here" });
+    expect(fontLink).toHaveAttribute("href", "/fonts/Keren-Schoss-Hand.ttf");
+    expect(fontLink).toHaveAttribute("download", "Keren-Schoss-Hand.ttf");
   });
 });

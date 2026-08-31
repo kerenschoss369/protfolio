@@ -1,8 +1,7 @@
 "use client";
 
 import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { CornerRightUp } from "lucide-react";
-import { useRef } from "react";
+import { Fragment, useRef, useSyncExternalStore } from "react";
 
 import { FadeIn } from "@/components/landing/FadeIn";
 import { LiveProjectButton } from "@/components/landing/LiveProjectButton";
@@ -18,6 +17,30 @@ import { RealtimeCardVisual } from "@/components/landing/visuals/RealtimeCardVis
 import { TapTapCardVisual } from "@/components/landing/visuals/TapTapCardVisual";
 import { ConfidentialityNotice } from "@/components/case-study/ConfidentialityNotice";
 import type { ProjectSlug } from "@/data/content-types";
+import { scroll as scrollConfig } from "@/lib/animation-config";
+import { cn } from "@/lib/cn";
+
+const STICKY_MEDIA = `(min-width: ${scrollConfig.stickyMinWidthPx}px)`;
+
+function subscribeStickyDesktop(onStoreChange: () => void) {
+  const media = window.matchMedia(STICKY_MEDIA);
+  media.addEventListener("change", onStoreChange);
+  return () => media.removeEventListener("change", onStoreChange);
+}
+
+function getStickyDesktopSnapshot() {
+  return window.matchMedia(STICKY_MEDIA).matches;
+}
+
+function useStickyProjectStack() {
+  const reducedMotion = useReducedMotion();
+  const desktop = useSyncExternalStore(
+    subscribeStickyDesktop,
+    getStickyDesktopSnapshot,
+    () => false,
+  );
+  return Boolean(!reducedMotion && desktop);
+}
 
 function ProjectVisual({ slug }: { slug: ProjectSlug }) {
   switch (slug) {
@@ -47,21 +70,21 @@ function StickyProjectCard({
   sticky: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const targetScale = 1 - (total - 1 - index) * 0.03;
+  const targetScale = 1 - (total - 1 - index) * 0.05;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
   const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
+  const stackPeek = 18;
 
   return (
     <div
       ref={ref}
-      className={
-        sticky
-          ? "relative mb-5 last:mb-0 md:mb-0 md:h-[85vh]"
-          : "relative mb-5 last:mb-0"
-      }
+      className={cn(
+        "relative mb-5 last:mb-0",
+        sticky && "sticky top-0 mb-0 flex h-[100svh] items-start pt-5",
+      )}
       style={{ zIndex: index + 1 }}
       data-sticky-stack={sticky ? "on" : "off"}
     >
@@ -70,11 +93,15 @@ function StickyProjectCard({
           sticky
             ? {
                 scale,
-                ["--stack-offset" as string]: `${index * 28}px`,
+                top: index * stackPeek,
+                transformOrigin: "top center",
               }
             : undefined
         }
-        className="border-foreground bg-background relative flex h-auto flex-col rounded-[var(--landing-radius-card)] border-2 p-4 sm:rounded-[var(--landing-radius-card-lg)] sm:p-8 md:p-10"
+        className={cn(
+          "landing-project-card border-foreground bg-background relative flex h-[36rem] w-full flex-col overflow-hidden rounded-[var(--landing-radius-card)] border-2 p-4 sm:h-[40rem] sm:rounded-[var(--landing-radius-card-lg)] sm:p-8 md:h-[42rem] md:p-10",
+          sticky && "h-[calc(100svh-5.5rem)]",
+        )}
       >
         <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1 space-y-1.5 sm:space-y-2">
@@ -91,8 +118,8 @@ function StickyProjectCard({
           <LiveProjectButton href={project.href} label="View Project ↗" />
         </div>
 
-        <div className="mt-5 grid flex-1 gap-5 sm:mt-8 sm:gap-8 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-10">
-          <div className="space-y-3 sm:space-y-5">
+        <div className="mt-5 grid min-h-0 flex-1 gap-5 overflow-hidden sm:mt-8 sm:gap-8 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-10">
+          <div className="min-h-0 space-y-3 overflow-hidden sm:space-y-5">
             <p className="text-accent text-base font-medium sm:text-xl">
               {project.statement}
             </p>
@@ -134,15 +161,15 @@ function StickyProjectCard({
             ) : null}
           </div>
 
-          <div className="min-h-[140px] sm:min-h-[220px] lg:min-h-0">
+          <div className="min-h-0 overflow-hidden sm:min-h-[220px] lg:min-h-0">
             <ProjectVisual slug={project.slug} />
           </div>
         </div>
 
-        <p className="border-border-subtle text-muted mt-4 border-t pt-3 text-xs leading-relaxed tracking-[0.12em] break-words uppercase sm:mt-6 sm:pt-4 sm:tracking-[0.2em]">
+        <p className="border-border-subtle text-muted mt-auto border-t pt-3 text-xs leading-relaxed tracking-[0.12em] break-words uppercase sm:pt-4 sm:tracking-[0.2em]">
           {project.technologies.join(" / ")}
         </p>
-      </m.article>
+        </m.article>
     </div>
   );
 }
@@ -150,81 +177,85 @@ function StickyProjectCard({
 function ExperienceBlock() {
   return (
     <section
-      className="px-5 pt-32 pb-24 sm:px-8 md:px-10 md:pt-48"
+      className="landing-experience px-5 pt-12 pb-24 sm:px-8 md:px-10 md:pt-16"
       aria-labelledby="experience-heading"
     >
       <FadeIn y={40}>
-        <p className="landing-kicker">02 — Experience</p>
-        <h2
-          id="experience-heading"
-          className="hero-heading mt-4 max-w-4xl leading-none font-black tracking-tight uppercase"
-          style={{ fontSize: "clamp(2.25rem, 8vw, 96px)" }}
-        >
-          Technical
-          <br />
-          experience
-        </h2>
+        <div id="experience" className="landing-section-anchor">
+          <p className="landing-kicker">02 — Experience</p>
+          <h2
+            id="experience-heading"
+            className="hero-heading landing-section-title mt-4 max-w-4xl leading-none font-black tracking-tight uppercase"
+          >
+            Technical
+            <br />
+            experience
+          </h2>
+        </div>
       </FadeIn>
 
       <ul className="mt-16 space-y-0 md:mt-24">
         {landingExperience.map((role, index) => (
-          <FadeIn key={role.id} delay={0.08 * index} y={28} as="li">
-            <div className="border-border-subtle border-t py-10 md:py-14">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-16">
-                <div>
-                  <p className="text-muted text-xs tracking-widest uppercase">
-                    {role.dates}
-                  </p>
-                  <h3 className="text-foreground mt-3 text-2xl font-bold md:text-3xl">
-                    {role.role}
-                  </h3>
-                  <p className="text-muted mt-2 text-sm md:text-base">
-                    {role.org}
-                  </p>
-                </div>
-                <div className="space-y-5">
-                  <p className="text-accent text-lg md:text-xl">
-                    {role.statement}
-                  </p>
-                  <ul className="flex flex-wrap gap-2">
-                    {role.areas.map((area) => (
-                      <li
-                        key={area}
-                        className="border-border-subtle text-muted rounded-full border px-3 py-1 text-xs tracking-widest uppercase"
-                      >
-                        {area}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-muted text-xs tracking-[0.18em] uppercase">
-                    {role.technologies.join(" / ")}
-                  </p>
-                  <ConfidentialityNotice note={role.confidentialityNote} />
+          <Fragment key={role.id}>
+            <FadeIn delay={0.08 * index} y={28} as="li">
+              <div className="border-border-subtle border-t py-10 md:py-14">
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-16">
+                  <div>
+                    <p className="text-muted text-xs tracking-widest uppercase">
+                      {role.dates}
+                    </p>
+                    <h3 className="text-foreground mt-3 text-2xl font-bold md:text-3xl">
+                      {role.role}
+                    </h3>
+                    <p className="text-muted mt-2 text-sm md:text-base">
+                      {role.org}
+                    </p>
+                  </div>
+                  <div className="space-y-5">
+                    <p className="text-accent text-lg md:text-xl">
+                      {role.statement}
+                    </p>
+                    {role.areas.length > 0 ? (
+                      <ul className="flex flex-wrap gap-2">
+                        {role.areas.map((area) => (
+                          <li
+                            key={area}
+                            className="border-border-subtle text-muted rounded-full border px-3 py-1 text-xs tracking-widest uppercase"
+                          >
+                            {area}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {role.technologies.length > 0 ? (
+                      <p className="text-muted text-xs tracking-[0.18em] uppercase">
+                        {role.technologies.join(" / ")}
+                      </p>
+                    ) : null}
+                    {role.confidentialityNote ? (
+                      <ConfidentialityNotice note={role.confidentialityNote} />
+                    ) : null}
+                  </div>
                 </div>
               </div>
-            </div>
-          </FadeIn>
+            </FadeIn>
+            {index === 0 && landingEducation ? (
+              <FadeIn delay={0.16} y={28} as="li">
+                <div className="border-border-subtle border-t py-10 md:py-14">
+                  <p className="text-muted text-sm md:text-base">
+                    Took 3 years to complete my
+                  </p>
+                  <h3 className="text-foreground mt-3 flex flex-wrap items-baseline gap-x-2 text-2xl font-bold md:text-3xl">
+                    Computer Science degree
+                    <span className="text-muted text-sm font-normal md:text-base">
+                      ({landingEducation.dates})
+                    </span>
+                  </h3>
+                </div>
+              </FadeIn>
+            ) : null}
+          </Fragment>
         ))}
-        {landingEducation ? (
-          <FadeIn delay={0.16} y={28} as="li">
-            <div className="border-border-subtle border-t py-8 md:py-10">
-              <p
-                className="text-foreground font-bold tracking-wide"
-                style={{ fontSize: "clamp(0.8rem, 3.4vw, 1.125rem)" }}
-              >
-                <span>Took a break to complete a Computer Science degree</span>{" "}
-                <span className="inline-flex flex-wrap items-center gap-1">
-                  ({landingEducation.dates}) to become a
-                  <CornerRightUp
-                    aria-hidden
-                    className="text-accent size-[1.2em] -translate-y-0.5 sm:size-[1.75em]"
-                    strokeWidth={2.5}
-                  />
-                </span>
-              </p>
-            </div>
-          </FadeIn>
-        ) : null}
       </ul>
     </section>
   );
@@ -232,28 +263,26 @@ function ExperienceBlock() {
 
 export function LandingWorkSection() {
   const total = landingProjects.length;
-  const reducedMotion = useReducedMotion();
-  const sticky = !reducedMotion;
+  const sticky = useStickyProjectStack();
 
   return (
-    <section id="work" aria-labelledby="work-heading" className="relative">
-      <div className="px-5 pt-24 sm:px-8 md:px-10 md:pt-32">
+    <section aria-labelledby="work-heading" className="landing-measure relative">
+      <div className="px-5 pt-10 sm:px-8 md:px-10 md:pt-32">
         <FadeIn y={40}>
-          <p className="landing-kicker">01 — Selected Projects</p>
-          <h2
-            id="work-heading"
-            className="hero-heading mt-4 leading-none font-black tracking-tight uppercase"
-            style={{ fontSize: "clamp(2.35rem, 9vw, 120px)" }}
-          >
-            Selected
-            <br />
-            Projects
-          </h2>
+          <div id="work" className="landing-section-anchor">
+            <p className="landing-kicker">01 — Projects</p>
+            <h2
+              id="work-heading"
+              className="hero-heading landing-section-title mt-4 leading-none font-black tracking-tight uppercase"
+            >
+              Projects
+            </h2>
+          </div>
         </FadeIn>
       </div>
 
       <div
-        className="relative mt-12 px-3 sm:px-6 md:mt-16 md:px-8"
+        className="landing-project-stack relative mt-12 px-3 sm:px-6 md:mt-16 md:px-8"
         data-sticky-stack={sticky ? "on" : "off"}
       >
         {landingProjects.map((project, index) => (
@@ -267,7 +296,6 @@ export function LandingWorkSection() {
         ))}
       </div>
 
-      <div className="h-24 md:h-40" aria-hidden />
       <ExperienceBlock />
     </section>
   );

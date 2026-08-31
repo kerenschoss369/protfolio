@@ -36,21 +36,22 @@ test.describe("visual redesign", () => {
     ).toBeVisible();
   });
 
-  test("about portrait and concise contact", async ({ page }) => {
-    await page.goto("/about");
+  test("homepage about portrait and contact", async ({ page }) => {
+    await page.goto("/");
     await expect(
-      page.getByRole("img", { name: /Portrait of Keren Schoss/i }),
+      page.getByRole("img", {
+        name: "Keren Schoss, frontend and full-stack developer",
+      }),
     ).toBeVisible();
 
-    await page.goto("/contact");
     await expect(
-      page.getByRole("heading", { name: "Contact", exact: true }),
+      page.getByRole("heading", { name: /Let'?s\s*Talk/i }),
     ).toBeVisible();
     await expect(
-      page.getByText(/precise, useful, and memorable/i),
+      page.getByText(/Have an opportunity, an interesting project/i),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: /Email Keren Schoss/i }),
+      page.getByRole("link", { name: /kerenschoss369@gmail\.com/i }),
     ).toBeVisible();
   });
 

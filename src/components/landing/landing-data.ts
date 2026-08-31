@@ -105,21 +105,66 @@ export type LandingExperience = {
   statement: string;
   areas: readonly string[];
   technologies: readonly string[];
-  confidentialityNote: string;
+  confidentialityNote?: string;
+};
+
+const landingExperiencePresentation: Record<
+  string,
+  {
+    statement: string;
+    showConfidentiality: boolean;
+    areas?: readonly string[];
+    showTechnologies?: boolean;
+  }
+> = {
+  "abra-elal": {
+    statement:
+      "Developing production features across EL AL's large-scale web platform, working through complex business logic, user flows, APIs, state management, and real-world edge cases from implementation to production.",
+    showConfidentiality: false,
+    showTechnologies: false,
+    areas: [
+      "Angular",
+      "HTML",
+      "TypeScript",
+      "RxJS",
+      "SCSS",
+      "NgRx",
+      "REST APIs",
+      "Nx monorepo",
+    ],
+  },
+  "idf-soc": {
+    statement:
+      "Began in IT and network administration, supporting 10,000+ users, then trained in SOC operations at MAMRAM before establishing and leading the first SOC team in the IDF Manpower Directorate.",
+    showConfidentiality: false,
+  },
 };
 
 export function getLandingExperience(): LandingExperience[] {
-  return experience.map((role) => ({
-    id: role.id,
-    role: role.role,
-    org: `${role.organization} — ${role.productContext}`,
-    dates: role.dates.display,
-    statement:
-      "Building and maintaining production experiences across EL AL's large-scale web platform.",
-    areas: role.workAreas.slice(0, 4),
-    technologies: role.technologies.slice(0, 6),
-    confidentialityNote: role.confidentialityNote,
-  }));
+  return experience.map((role) => {
+    const presentation = landingExperiencePresentation[role.id];
+    if (!presentation) {
+      throw new Error(`Missing landing presentation for experience: ${role.id}`);
+    }
+
+    return {
+      id: role.id,
+      role: role.role,
+      org: role.productContext
+        ? `${role.organization} — ${role.productContext}`
+        : role.organization,
+      dates: role.dates.display,
+      statement: presentation.statement,
+      areas: presentation.areas ?? role.workAreas.slice(0, 5),
+      technologies:
+        presentation.showTechnologies === false
+          ? []
+          : role.technologies.slice(0, 6),
+      confidentialityNote: presentation.showConfidentiality
+        ? role.confidentialityNote
+        : undefined,
+    };
+  });
 }
 
 export function getLandingEducationNote() {

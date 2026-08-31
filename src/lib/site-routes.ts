@@ -1,21 +1,16 @@
-import { getProjectSlugs } from "@/lib/project-utils";
+import { getPublicCaseStudySlugs } from "@/lib/project-utils";
 
 /**
  * Public indexable routes. Development-only routes must not appear here.
  */
-export const PUBLIC_STATIC_ROUTES = [
-  "/",
-  "/work",
-  "/about",
-  "/contact",
-] as const;
+export const PUBLIC_STATIC_ROUTES = ["/", "/work"] as const;
 
 export const DEVELOPMENT_ONLY_ROUTES = ["/design-system"] as const;
 
 export function getPublicSitemapPaths(): string[] {
   return [
     ...PUBLIC_STATIC_ROUTES,
-    ...getProjectSlugs().map((slug) => `/work/${slug}`),
+    ...getPublicCaseStudySlugs().map((slug) => `/work/${slug}`),
   ];
 }
 

@@ -67,13 +67,6 @@ test.describe("automated accessibility (axe)", () => {
     await expectNoSeriousAxeViolations(page);
   });
 
-  test("about and contact", async ({ page }) => {
-    await page.goto("/about");
-    await expectNoSeriousAxeViolations(page);
-    await page.goto("/contact");
-    await expectNoSeriousAxeViolations(page);
-  });
-
   test("not-found", async ({ page }) => {
     await page.goto("/this-route-does-not-exist");
     await expect(
@@ -84,18 +77,15 @@ test.describe("automated accessibility (axe)", () => {
 
   test("mobile navigation open state", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/about");
+    await page.goto("/this-route-does-not-exist");
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     await expect(page.getByRole("dialog", { name: "Menu" })).toBeVisible();
     await expectNoSeriousAxeViolations(page);
   });
 
   test("command menu open state", async ({ page }) => {
-    await page.goto("/about");
-    await page
-      .getByRole("button", { name: "Open command menu" })
-      .first()
-      .click();
+    await page.goto("/work");
+    await page.keyboard.press("Control+K");
     await expect(
       page.getByRole("dialog", { name: "Command menu" }),
     ).toBeVisible();
@@ -107,7 +97,7 @@ test.describe("automated accessibility (axe)", () => {
       colorScheme: "light",
       reducedMotion: "reduce",
     });
-    await page.goto("/about");
+    await page.goto("/this-route-does-not-exist");
     await page.evaluate(() => {
       document.documentElement.classList.remove("theme-transition");
       document.documentElement.setAttribute("data-theme", "light");
@@ -137,14 +127,14 @@ test.describe("keyboard and landmark smoke", () => {
   test("skip link targets focusable main landmark", async ({ page }) => {
     await page.goto("/");
     await page.keyboard.press("Tab");
-    const skip = page.getByRole("link", { name: "Skip to main content" });
+    const skip = page.getByRole("button", { name: "Skip to main content" });
     await expect(skip).toBeFocused();
     await skip.press("Enter");
     await expect(page.locator("#main-content")).toBeFocused();
   });
 
   test("one h1 per major route", async ({ page }) => {
-    for (const path of ["/", "/work", "/about", "/contact"]) {
+    for (const path of ["/", "/work"]) {
       await page.goto(path);
       await expect(page.locator("h1")).toHaveCount(1);
     }
@@ -152,11 +142,8 @@ test.describe("keyboard and landmark smoke", () => {
 
   test("keyboard-only journey to work and a case study", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/about");
-    await page
-      .getByRole("button", { name: "Open command menu" })
-      .first()
-      .click();
+    await page.goto("/work");
+    await page.keyboard.press("Control+K");
     const dialog = page.getByRole("dialog", { name: "Command menu" });
     await expect(dialog).toBeVisible();
     await page.getByLabel("Search commands").fill("clinical");

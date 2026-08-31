@@ -19,8 +19,8 @@ export async function GET() {
         flexDirection: "column",
         justifyContent: "space-between",
         padding: 72,
-        background: "#f5f2ec",
-        color: "#12141a",
+        background: "#0c0c0c",
+        color: "#e4e8eb",
       }}
     >
       <div
@@ -37,12 +37,12 @@ export async function GET() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            border: "1px solid #857f74",
+            border: "1px solid #2f3941",
             borderRadius: 8,
             fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
             fontSize: 22,
             letterSpacing: "0.08em",
-            color: "#555c66",
+            color: "#e4e8eb",
           }}
         >
           KS
@@ -53,7 +53,7 @@ export async function GET() {
             fontSize: 22,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: "#5a5751",
+            color: "#9eaab2",
           }}
         >
           Portfolio
@@ -75,7 +75,7 @@ export async function GET() {
         <div
           style={{
             fontSize: 32,
-            color: "#1b4fd8",
+            color: "#a8d8ff",
             fontWeight: 500,
           }}
         >
@@ -84,7 +84,7 @@ export async function GET() {
         <div
           style={{
             fontSize: 24,
-            color: "#5a5751",
+            color: "#9eaab2",
             maxWidth: 900,
             lineHeight: 1.35,
           }}

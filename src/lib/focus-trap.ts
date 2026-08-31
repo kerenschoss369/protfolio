@@ -84,7 +84,7 @@ export function inertBackgroundLandmarks(): () => void {
   const candidates = [
     document.getElementById("main-content"),
     document.querySelector("footer"),
-    document.querySelector('a[href="#main-content"]'),
+    document.querySelector("[data-skip-link]"),
   ].filter((element): element is HTMLElement => element instanceof HTMLElement);
 
   const restored: Array<{ element: HTMLElement; wasInert: boolean }> = [];

@@ -17,7 +17,7 @@ export type ProjectCategory =
   | "Go / Realtime AI / CLI"
   | "Unity Game Development"
   | "Linux and Security Practice"
-  | "Scientific Computing and Research";
+  | "Practical Physics and Big Data Development";
 
 export type ProjectStatus =
   "case-study" | "engineering-practice" | "educational-research";

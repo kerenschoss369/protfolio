@@ -1,23 +1,19 @@
-import {
-  AcademEasePreviewMotion,
-  ClinicalPreviewMotion,
-  TapTapPreviewMotion,
-  TerminalPreviewMotion,
-} from "@/components/motion/ProjectPreviewMotion";
+"use client";
+
+import { LiveProjectButton } from "@/components/landing/LiveProjectButton";
+import { AcademEaseCardVisual } from "@/components/landing/visuals/AcademEaseCardVisual";
+import { ClinicalCardVisual } from "@/components/landing/visuals/ClinicalCardVisual";
+import { RealtimeCardVisual } from "@/components/landing/visuals/RealtimeCardVisual";
+import { TapTapCardVisual } from "@/components/landing/visuals/TapTapCardVisual";
 import { ViewTransitionLink } from "@/components/motion/ViewTransitionLink";
-import {
-  DeviceMockup,
-  deviceVariantForSlug,
-} from "@/components/projects/DeviceMockup";
-import { ButtonLink } from "@/components/ui/ButtonLink";
-import { ProjectMeta } from "@/components/ui/ProjectMeta";
-import { Tag } from "@/components/ui/Tag";
-import { Text } from "@/components/ui/Text";
 import type { Project } from "@/data/content-types";
 import { CLINICAL_SAFETY_COMPACT } from "@/data/projects";
 import { cn } from "@/lib/cn";
-import { isConfiguredHttpUrl } from "@/lib/links";
-import { getCollaborationLabel, isTeamAttributed } from "@/lib/project-utils";
+import {
+  getCollaborationLabel,
+  hasPublicCaseStudyPage,
+  isTeamAttributed,
+} from "@/lib/project-utils";
 import { projectTitleTransitionName } from "@/lib/view-transitions";
 
 type WorkProjectCardProps = {
@@ -26,46 +22,18 @@ type WorkProjectCardProps = {
   index?: number;
 };
 
-function previewClassForSlug(slug: string) {
+function ProjectVisual({ slug }: { slug: string }) {
   switch (slug) {
     case "clinical-follow-up-detector":
-      return "project-preview-clinical";
-    case "academease":
-      return "project-preview-academease";
+      return <ClinicalCardVisual />;
     case "realtime-gpt-cli":
-      return "project-preview-terminal";
-    case "taptap-avengers":
-      return "project-preview-taptap";
-    case "overthewire-bandit":
-      return "project-preview-bandit";
-    case "atlas-research":
-      return "project-preview-atlas";
-    default:
-      return "";
-  }
-}
-
-function WorkPreview({ slug }: { slug: string }) {
-  switch (slug) {
-    case "clinical-follow-up-detector":
-      return <ClinicalPreviewMotion />;
+      return <RealtimeCardVisual />;
     case "academease":
-      return <AcademEasePreviewMotion />;
-    case "realtime-gpt-cli":
-      return <TerminalPreviewMotion />;
+      return <AcademEaseCardVisual />;
     case "taptap-avengers":
-      return <TapTapPreviewMotion />;
+      return <TapTapCardVisual />;
     default:
-      return (
-        <div
-          className="bg-surface-1 flex h-full min-h-[10rem] items-center justify-center p-6"
-          aria-hidden
-        >
-          <span className="text-steel font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase">
-            {slug}
-          </span>
-        </div>
-      );
+      return null;
   }
 }
 
@@ -76,160 +44,106 @@ export function WorkProjectCard({
 }: WorkProjectCardProps) {
   const number = String(index + 1).padStart(2, "0");
   const isFeatured = emphasis === "featured";
+  const visual = <ProjectVisual slug={project.slug} />;
+  const teamNote = isTeamAttributed(project.collaboration)
+    ? project.collaboration.summary
+    : undefined;
+  const hasPage = hasPublicCaseStudyPage(project);
+  const title = hasPage ? (
+    <ViewTransitionLink
+      href={`/work/${project.slug}`}
+      className="transition-opacity hover:opacity-80 focus-visible:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+      style={{
+        viewTransitionName: projectTitleTransitionName(project.slug),
+      }}
+    >
+      {project.title}
+    </ViewTransitionLink>
+  ) : (
+    project.title
+  );
+
+  if (!isFeatured) {
+    return (
+      <article className="border-border-subtle border-t py-10 md:py-14">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-16">
+          <div>
+            <p className="text-muted text-xs tracking-widest uppercase">
+              {project.category}
+            </p>
+            <h3 className="text-foreground mt-3 text-2xl font-bold md:text-3xl">
+              {title}
+            </h3>
+          </div>
+          <div className="space-y-5">
+            <p className="text-accent text-lg md:text-xl">
+              {project.shortDescription}
+            </p>
+            <p className="text-muted text-xs tracking-[0.18em] uppercase">
+              {getCollaborationLabel(project.collaboration)}
+            </p>
+            {hasPage ? (
+              <LiveProjectButton
+                href={`/work/${project.slug}`}
+                label="View Project ↗"
+                className="px-5 sm:px-8"
+              />
+            ) : null}
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article
       className={cn(
-        "border-border-subtle interactive-surface border-b py-10 lg:py-14",
-        previewClassForSlug(project.slug),
+        "landing-project-card border-foreground relative overflow-hidden rounded-[var(--landing-radius-card)] border-2 p-5 sm:rounded-[var(--landing-radius-card-lg)] sm:p-8 md:p-10",
       )}
     >
-      <div
-        className={cn(
-          isFeatured
-            ? "editorial-grid items-center gap-y-8"
-            : "grid gap-4 md:grid-cols-[auto_1fr_auto] md:items-end",
-        )}
-      >
-        {isFeatured ? (
-          <>
-            <div className="col-span-full space-y-5 lg:col-span-5">
-              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-                <span
-                  aria-hidden
-                  className="text-accent font-mono text-[length:var(--text-section)]"
-                >
-                  {number}
-                </span>
-                <ProjectMeta
-                  category={project.category}
-                  dates={project.dates.display}
-                  stack={project.technologyStack.slice(0, 4)}
-                />
-              </div>
-
-              <h3 className="font-serif text-[length:var(--text-project)] tracking-tight text-balance">
-                <ViewTransitionLink
-                  href={`/work/${project.slug}`}
-                  className="hover:text-accent focus-visible:outline-focus-ring focus-visible:text-accent rounded-sm transition-colors focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
-                  style={{
-                    viewTransitionName: projectTitleTransitionName(
-                      project.slug,
-                    ),
-                  }}
-                >
-                  {project.title}
-                </ViewTransitionLink>
-              </h3>
-
-              <Text className="max-w-[32rem] text-pretty">
-                {project.shortDescription}
-              </Text>
-
-              <div className="flex flex-wrap gap-2">
-                <Tag
-                  variant={
-                    isTeamAttributed(project.collaboration)
-                      ? "warning"
-                      : "steel"
-                  }
-                >
-                  {getCollaborationLabel(project.collaboration)}
-                </Tag>
-                {project.safetyNote ? (
-                  <Tag variant="warning">Safety notes</Tag>
-                ) : null}
-              </div>
-
-              {project.safetyNote ? (
-                <Text
-                  variant="small"
-                  className="text-warning max-w-[32rem] text-pretty"
-                >
-                  {CLINICAL_SAFETY_COMPACT}
-                </Text>
-              ) : null}
-
-              <div className="flex flex-wrap gap-3 pt-1">
-                <ButtonLink
-                  href={`/work/${project.slug}`}
-                  variant="secondary"
-                  size="md"
-                  className="group"
-                >
-                  View case study
-                  <span aria-hidden className="link-arrow ms-1">
-                    →
-                  </span>
-                </ButtonLink>
-                {isConfiguredHttpUrl(project.repositoryUrl) ? (
-                  <ButtonLink
-                    href={project.repositoryUrl}
-                    external
-                    variant="ghost"
-                    size="md"
-                  >
-                    Repository
-                  </ButtonLink>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="col-span-full lg:col-span-7">
-              <DeviceMockup
-                variant={deviceVariantForSlug(project.slug)}
-                caption={`Preview of ${project.title}`}
-              >
-                <WorkPreview slug={project.slug} />
-              </DeviceMockup>
-            </div>
-          </>
-        ) : (
-          <>
-            <span
-              aria-hidden
-              className="text-steel font-mono text-[length:var(--text-meta)]"
-            >
-              {number}
-            </span>
-            <div className="space-y-2">
-              <Text variant="meta" className="text-steel">
-                {project.category}
-              </Text>
-              <h3 className="font-serif text-[length:var(--text-body-lg)] tracking-tight">
-                <ViewTransitionLink
-                  href={`/work/${project.slug}`}
-                  className="hover:text-accent focus-visible:text-accent transition-colors"
-                  style={{
-                    viewTransitionName: projectTitleTransitionName(
-                      project.slug,
-                    ),
-                  }}
-                >
-                  {project.title}
-                </ViewTransitionLink>
-              </h3>
-              <Text
-                variant="small"
-                className="text-muted max-w-[36rem] text-pretty"
-              >
-                {project.shortDescription}
-              </Text>
-            </div>
-            <ButtonLink
-              href={`/work/${project.slug}`}
-              variant="ghost"
-              size="sm"
-              className="group"
-            >
-              View
-              <span aria-hidden className="link-arrow ms-1">
-                →
-              </span>
-            </ButtonLink>
-          </>
-        )}
+      <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 flex-1 space-y-1.5 sm:space-y-2">
+          <p className="font-mono text-3xl font-black tracking-tight text-[var(--landing-number)] sm:text-5xl md:text-6xl">
+            {number}
+          </p>
+          <p className="text-muted text-xs font-medium tracking-widest uppercase sm:text-sm">
+            {project.category}
+          </p>
+          <h3 className="text-foreground max-w-xl text-xl font-bold tracking-tight sm:text-3xl md:text-4xl">
+            {title}
+          </h3>
+        </div>
+        {hasPage ? (
+          <LiveProjectButton
+            href={`/work/${project.slug}`}
+            label="View Project ↗"
+          />
+        ) : null}
       </div>
+
+      <p className="text-accent mt-5 max-w-3xl text-base leading-relaxed sm:mt-6 sm:text-lg md:text-xl">
+        {project.shortDescription}
+      </p>
+
+      {teamNote ? (
+        <p className="text-muted mt-3 text-sm">{teamNote}</p>
+      ) : null}
+
+      {project.safetyNote ? (
+        <p className="text-muted mt-3 max-w-3xl text-sm text-pretty">
+          {CLINICAL_SAFETY_COMPACT}
+        </p>
+      ) : null}
+
+      {visual ? (
+        <div className="mt-6 min-h-[10rem] overflow-hidden sm:mt-8 sm:min-h-[14rem]">
+          {visual}
+        </div>
+      ) : null}
+
+      <p className="text-muted mt-6 text-xs tracking-[0.18em] uppercase">
+        {project.technologyStack.slice(0, 8).join(" / ")}
+      </p>
     </article>
   );
 }

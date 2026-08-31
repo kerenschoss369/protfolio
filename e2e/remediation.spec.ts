@@ -13,19 +13,22 @@ test.describe("remediation regressions", () => {
       page.getByText("Frontend & Full-Stack Developer").first(),
     ).toBeVisible();
     await expect(page.getByText(/2025–Present/)).toBeVisible();
-    await expect(page.getByText(/IDF|SOC Team Leader/i)).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "SOC Team Leader & IT" }),
+    ).toBeVisible();
+    await expect(page.getByText("IDF Manpower Directorate")).toBeVisible();
     await expect(page.getByText(/not HIPAA compliant/i).first()).toBeVisible();
     await expect(
       page.getByText(
-        /Professional work is described at a high level\. Source code and internal product details are proprietary\./i,
+        /Developing production features across EL AL's large-scale web platform/,
       ),
     ).toBeVisible();
     await expect(
-      page.getByRole("navigation", { name: "Primary" }).getByRole("link", {
+      page.getByRole("navigation", { name: "Primary" }).getByRole("button", {
         name: "Work",
         exact: true,
       }),
-    ).toHaveAttribute("href", "/work");
+    ).toBeVisible();
   });
 
   test("command menu works on major public routes", async ({
@@ -36,18 +39,22 @@ test.describe("remediation regressions", () => {
       "/",
       "/work",
       "/work/clinical-follow-up-detector",
-      "/about",
-      "/contact",
     ]) {
       await page.goto(path);
-      const trigger = page
-        .getByRole("button", { name: /Open command menu/i })
-        .first();
-      await expect(trigger, path).toBeVisible();
-      if (isMobile) {
-        await trigger.click();
-      } else {
+      const usesLandingChrome =
+        path === "/" || path === "/work" || /^\/work\/[^/]+/.test(path);
+      if (usesLandingChrome) {
         await page.keyboard.press("Control+K");
+      } else {
+        const trigger = page
+          .getByRole("button", { name: /Open command menu/i })
+          .first();
+        await expect(trigger, path).toBeVisible();
+        if (isMobile) {
+          await trigger.click();
+        } else {
+          await page.keyboard.press("Control+K");
+        }
       }
       const dialog = page.getByRole("dialog", { name: "Command menu" });
       await expect(dialog, path).toBeVisible();
@@ -74,8 +81,11 @@ test.describe("remediation regressions", () => {
   }) => {
     await page.goto("/work");
     await expect(
-      page.getByRole("link", { name: /OverTheWire Bandit/i }).first(),
+      page.getByRole("heading", { name: /OverTheWire Bandit/i }).first(),
     ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /OverTheWire Bandit/i }),
+    ).toHaveCount(0);
     await expect(
       page.getByRole("link", { name: /ATLAS/i }).first(),
     ).toBeVisible();
@@ -127,11 +137,11 @@ test.describe("no JavaScript", () => {
       page.getByText("Frontend & Full-Stack Developer").first(),
     ).toBeVisible();
     await expect(
-      page.getByRole("navigation", { name: "Primary" }).getByRole("link", {
+      page.getByRole("navigation", { name: "Primary" }).getByRole("button", {
         name: "Work",
         exact: true,
       }),
-    ).toHaveAttribute("href", "/work");
+    ).toBeVisible();
   });
 });
 
@@ -150,10 +160,12 @@ test.describe("mobile hero composition", () => {
 
       const overlap = await page.evaluate(() => {
         const tagline = document.querySelector("#hero p");
-        const cta = document.querySelector('#hero a[href="#contact"]');
+        const navContact = document.querySelector(
+          '#hero [data-section="contact"]',
+        );
         const portrait = document.querySelector(".hero-portrait img");
         const nav = document.querySelector('nav[aria-label="Primary"] a');
-        if (!tagline || !cta || !portrait || !nav) {
+        if (!tagline || !navContact || !portrait || !nav) {
           return { missing: true };
         }
 
@@ -171,14 +183,14 @@ test.describe("mobile hero composition", () => {
         return {
           missing: false,
           taglineOverlapsPortrait: intersects(tagline, portrait),
-          ctaOverlapsPortrait: intersects(cta, portrait),
+          navContactOverlapsPortrait: intersects(navContact, portrait),
           navHeight: nav.getBoundingClientRect().height,
         };
       });
 
       expect(overlap.missing).toBe(false);
       expect(overlap.taglineOverlapsPortrait).toBe(false);
-      expect(overlap.ctaOverlapsPortrait).toBe(false);
+      expect(overlap.navContactOverlapsPortrait).toBe(false);
       expect(overlap.navHeight ?? 0).toBeGreaterThanOrEqual(24);
     });
   }
@@ -189,7 +201,7 @@ test.describe("mobile hero composition", () => {
     await expect(
       page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "Contact Me" })).toBeVisible();
+    await expect(page.locator("#hero p").first()).toBeVisible();
   });
 
   test("200% zoom keeps homepage usable", async ({ page }) => {

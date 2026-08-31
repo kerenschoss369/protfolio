@@ -70,6 +70,12 @@ describe("command actions", () => {
     expect(labels).toContain("View all work");
     expect(labels).toContain("Open About");
     expect(labels).toContain("Open Contact");
+    expect(actions.find((action) => action.label === "Open About")?.href).toBe(
+      "/",
+    );
+    expect(
+      actions.find((action) => action.label === "Open Contact")?.href,
+    ).toBe("/");
   });
 
   it("includes configured external actions", () => {
@@ -184,10 +190,18 @@ describe("homepage content", () => {
     expect(screen.getByText(/real patient data/i)).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Professional work is described at a high level\. Source code and internal product details are proprietary\./i,
+        /Developing production features across EL AL's large-scale web platform/,
       ),
     ).toBeInTheDocument();
-    expect(screen.queryByText(/IDF|SOC Team Leader/i)).toBeNull();
+    expect(
+      screen.queryByText(
+        /Professional work is described at a high level\. Source code and internal product details are proprietary\./i,
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "SOC Team Leader & IT" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("IDF Manpower Directorate")).toBeInTheDocument();
   });
 
   it("renders hero identity with a distinct portrait", () => {
@@ -195,9 +209,6 @@ describe("homepage content", () => {
 
     expect(
       screen.getByRole("heading", { name: /Hi, i'm Keren/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Frontend & Full-Stack Developer"),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("img", { name: "Portrait of Keren Schoss" }),

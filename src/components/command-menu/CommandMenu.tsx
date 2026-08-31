@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 
 import {
@@ -23,6 +23,10 @@ import {
   lockBodyScroll,
   trapFocus,
 } from "@/lib/focus-trap";
+import {
+  rememberLandingSection,
+  scrollToElementId,
+} from "@/lib/scroll-to-section";
 
 type CommandMenuProps = {
   open: boolean;
@@ -43,6 +47,7 @@ function CommandMenuDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const dialogRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -82,9 +87,20 @@ function CommandMenuDialog({
         return;
       }
 
+      if (action.section) {
+        if (pathname === "/") {
+          scrollToElementId(action.section);
+          return;
+        }
+
+        rememberLandingSection(action.section);
+        router.push("/");
+        return;
+      }
+
       router.push(action.href);
     },
-    [onOpenChange, router],
+    [onOpenChange, pathname, router],
   );
 
   useEffect(() => {

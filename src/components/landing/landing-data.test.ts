@@ -19,9 +19,24 @@ describe("landing content derives from canonical sources", () => {
 
     expect(landingExperience[0]?.dates).toBe(experience[0]?.dates.display);
     expect(landingExperience[0]?.dates).toBe("2025–Present");
-    expect(landingExperience.some((role) => /IDF|SOC/i.test(role.role))).toBe(
-      false,
+    expect(landingExperience[0]?.statement).toMatch(
+      /Developing production features across EL AL's large-scale web platform/,
     );
+    expect(landingExperience[0]?.areas).toEqual([
+      "Angular",
+      "HTML",
+      "TypeScript",
+      "RxJS",
+      "SCSS",
+      "NgRx",
+      "REST APIs",
+      "Nx monorepo",
+    ]);
+    expect(landingExperience[0]?.technologies).toEqual([]);
+    expect(landingExperience[0]?.confidentialityNote).toBeUndefined();
+    expect(landingExperience[1]?.role).toBe("SOC Team Leader & IT");
+    expect(landingExperience[1]?.org).toBe("IDF Manpower Directorate");
+    expect(landingExperience[1]?.dates).toBe("2018 — 2020");
     expect(landingEducation?.dates).toBe("Graduated Oct 2024");
   });
 

@@ -802,7 +802,7 @@ const atlasResearch: EducationalResearchProject = {
     display: null,
     verification: "pending-verification",
   },
-  category: "Scientific Computing and Research",
+  category: "Practical Physics and Big Data Development",
   featured: false,
   program: "Alpha Research Program in the Sciences at Tel Aviv University",
   shortDescription:

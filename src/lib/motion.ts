@@ -127,11 +127,29 @@ export function getFinePointerMediaQuery(): string {
   return "(pointer: fine)";
 }
 
+/** Fine pointing devices that also have hover — desktop mouse/trackpad, not touch. */
+export function getCustomCursorMediaQuery(): string {
+  return "(hover: hover) and (pointer: fine)";
+}
+
 export function prefersFinePointer(
   media: Pick<MediaQueryList, "matches"> | null | undefined = typeof window ===
   "undefined"
     ? null
     : window.matchMedia(getFinePointerMediaQuery()),
+): boolean {
+  if (!media) {
+    return false;
+  }
+
+  return media.matches;
+}
+
+export function prefersCustomCursor(
+  media: Pick<MediaQueryList, "matches"> | null | undefined = typeof window ===
+  "undefined"
+    ? null
+    : window.matchMedia(getCustomCursorMediaQuery()),
 ): boolean {
   if (!media) {
     return false;

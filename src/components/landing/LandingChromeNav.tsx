@@ -1,14 +1,17 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import Link from "next/link";
-import { Command } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
-import { useCommandMenu } from "@/components/command-menu/CommandMenuHost";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { IconButton } from "@/components/ui/IconButton";
 import { getConfiguredExternalLinks } from "@/data/links";
-import { primaryNavItems } from "@/data/navigation";
+import { landingSectionNavItems } from "@/data/navigation";
 import { cn } from "@/lib/cn";
+import {
+  isUnmodifiedLeftClick,
+  rememberLandingSection,
+  scrollToElementId,
+} from "@/lib/scroll-to-section";
 
 type LandingChromeNavProps = {
   includeHome?: boolean;
@@ -19,50 +22,75 @@ export function LandingChromeNav({
   includeHome = false,
   className,
 }: LandingChromeNavProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const links = getConfiguredExternalLinks();
-  const { openCommandMenu } = useCommandMenu();
 
-  const items = includeHome
-    ? [{ href: "/", label: "Home" }, ...primaryNavItems]
-    : [...primaryNavItems];
+  function goToSection(event: MouseEvent<HTMLElement>, id: string) {
+    if (!isUnmodifiedLeftClick(event)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (!includeHome || pathname === "/") {
+      scrollToElementId(id);
+      return;
+    }
+
+    rememberLandingSection(id);
+    router.push("/");
+  }
 
   return (
-    <nav aria-label="Primary" className={cn("relative z-40", className)}>
-      <div className="flex items-center justify-between gap-2 px-4 pt-3 sm:px-6 sm:pt-4 md:px-10 md:pt-6">
-        <ul className="flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-1">
-          {items.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} className="landing-nav-link">
+    <nav aria-label="Primary" className={cn("relative z-40 w-full", className)}>
+      <ul className="landing-measure flex w-full items-center justify-between px-5 pt-6 sm:px-8 md:px-10 md:pt-8">
+        {includeHome ? (
+          <li>
+            <Link href="/" className="landing-nav-link">
+              Home
+            </Link>
+          </li>
+        ) : null}
+        {landingSectionNavItems.map((item) => (
+          <li key={item.id}>
+            {includeHome ? (
+              <Link
+                href="/"
+                className="landing-nav-link"
+                data-section={item.id}
+                onClick={(event) => goToSection(event, item.id)}
+              >
                 {item.label}
               </Link>
-            </li>
-          ))}
-          <li>
-            {links.cvPath ? (
-              <a
-                href={links.cvPath}
-                className="landing-nav-link"
-                download
-                aria-label="Download CV"
-              >
-                CV
-              </a>
             ) : (
-              <span className="landing-nav-link text-muted">CV</span>
+              <button
+                type="button"
+                className="landing-nav-link"
+                data-section={item.id}
+                onClick={() => scrollToElementId(item.id)}
+              >
+                {item.label}
+              </button>
             )}
           </li>
-        </ul>
-        <div className="flex shrink-0 items-center gap-1">
-          <ThemeToggle />
-          <IconButton
-            label="Open command menu"
-            onClick={openCommandMenu}
-            aria-keyshortcuts="Meta+K Control+K"
-          >
-            <Command size={18} aria-hidden />
-          </IconButton>
-        </div>
-      </div>
+        ))}
+        <li>
+          {links.cvPath ? (
+            <a
+              href={links.cvPath}
+              className="landing-nav-link landing-nav-cv"
+              download
+            >
+              Download CV
+            </a>
+          ) : (
+            <span className="landing-nav-link landing-nav-cv opacity-50">
+              Download CV
+            </span>
+          )}
+        </li>
+      </ul>
     </nav>
   );
 }

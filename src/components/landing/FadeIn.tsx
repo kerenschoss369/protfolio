@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useLayoutEffect, useRef, type ReactNode } from "react";
 
 import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import { cn } from "@/lib/cn";
 
-type FadeInTag = "div" | "nav" | "header" | "section" | "p" | "ul" | "li";
+type FadeInTag = "div" | "nav" | "header" | "section" | "p" | "ul" | "li" | "span";
 
 type FadeInProps = {
   children: ReactNode;
@@ -20,7 +20,7 @@ type FadeInProps = {
 
 /**
  * Progressive-enhancement fade. SSR and no-JS render at full opacity.
- * After hydration, only below-fold entries animate in.
+ * After hydration, entries fade in with delay / offset, including above-the-fold.
  */
 export function FadeIn({
   children,
@@ -37,30 +37,31 @@ export function FadeIn({
   const Tag = as;
   const a11y = ariaLabel ? { "aria-label": ariaLabel } : {};
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el || reducedMotion) {
       return;
     }
 
-    const markVisible = () => {
+    el.classList.add("fade-pending");
+    void el.offsetWidth;
+
+    const reveal = () => {
       el.classList.add("is-visible");
-      el.classList.remove("fade-pending");
     };
 
     const rect = el.getBoundingClientRect();
     const inView = rect.top < window.innerHeight && rect.bottom > 0;
     if (inView) {
-      markVisible();
-      return;
+      const frame = window.requestAnimationFrame(reveal);
+      return () => window.cancelAnimationFrame(frame);
     }
 
-    el.classList.add("fade-pending");
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry?.isIntersecting) {
-          markVisible();
+          reveal();
           observer.disconnect();
         }
       },

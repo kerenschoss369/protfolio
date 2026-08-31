@@ -5,7 +5,6 @@ const publicSlugs = [
   "academease",
   "realtime-gpt-cli",
   "taptap-avengers",
-  "overthewire-bandit",
   "atlas-research",
 ] as const;
 
@@ -28,6 +27,15 @@ test.describe("work case studies", () => {
     await expect(
       page.getByRole("heading", { name: "Page not found" }),
     ).toBeVisible();
+  });
+
+  test("engineering practice has no public case-study route", async ({
+    page,
+  }) => {
+    const response = await page.goto("/work/overthewire-bandit", {
+      waitUntil: "networkidle",
+    });
+    expect(response?.status()).toBe(404);
   });
 
   test("previous and next navigation works without wrapping", async ({
@@ -126,23 +134,10 @@ test.describe("work case studies", () => {
     ).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Live demo/i })).toHaveCount(0);
 
-    await page.goto("/work/overthewire-bandit");
-    await expect(
-      page.getByRole("link", { name: /View repository/i }),
-    ).toHaveCount(0);
-
     await page.goto("/work/atlas-research");
     await expect(
       page.getByRole("link", { name: /View repository/i }),
     ).toHaveCount(0);
   });
 
-  test("professional work has no repository link", async ({ page }) => {
-    await page.goto("/work");
-    await expect(
-      page
-        .locator("#professional-work")
-        .getByRole("link", { name: /repository/i }),
-    ).toHaveCount(0);
-  });
 });

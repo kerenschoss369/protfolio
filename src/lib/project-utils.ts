@@ -195,23 +195,32 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
 }
 
+export function hasPublicCaseStudyPage(project: Project): boolean {
+  return project.kind !== "engineering-practice";
+}
+
 export function getProjectSlugs(): ProjectSlug[] {
   return projects.map((project) => project.slug);
+}
+
+export function getPublicCaseStudySlugs(): ProjectSlug[] {
+  return projects.filter(hasPublicCaseStudyPage).map((project) => project.slug);
 }
 
 export function getAdjacentProjects(slug: string): {
   previous: Project | null;
   next: Project | null;
 } {
-  const index = projects.findIndex((project) => project.slug === slug);
+  const routable = projects.filter(hasPublicCaseStudyPage);
+  const index = routable.findIndex((project) => project.slug === slug);
 
   if (index === -1) {
     return { previous: null, next: null };
   }
 
   return {
-    previous: index > 0 ? (projects[index - 1] ?? null) : null,
-    next: index < projects.length - 1 ? (projects[index + 1] ?? null) : null,
+    previous: index > 0 ? (routable[index - 1] ?? null) : null,
+    next: index < routable.length - 1 ? (routable[index + 1] ?? null) : null,
   };
 }
 

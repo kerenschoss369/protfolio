@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { projects } from "@/data/projects";
 import { createPageMetadata, getSiteUrlOrNull } from "@/lib/metadata";
+import { getPublicCaseStudySlugs } from "@/lib/project-utils";
 import {
   DEVELOPMENT_ONLY_ROUTES,
   getPublicSitemapPaths,
@@ -17,18 +18,18 @@ describe("createPageMetadata", () => {
   it("omits canonical and metadataBase when siteUrl is unconfigured", () => {
     expect(getSiteUrlOrNull()).toBeNull();
     const metadata = createPageMetadata({
-      title: "About",
-      path: "/about",
+      title: "Work",
+      path: "/work",
     });
 
-    expect(metadata.title).toBe("About — Keren Schoss");
+    expect(metadata.title).toBe("Work — Keren Schoss");
     expect(metadata.alternates?.canonical).toBeUndefined();
     expect(metadata.metadataBase).toBeUndefined();
     expect(metadata.openGraph?.url).toBeUndefined();
   });
 
   it("never invents example.com or localhost canonicals", () => {
-    const metadata = createPageMetadata({ path: "/about" });
+    const metadata = createPageMetadata({ path: "/work" });
     const serialized = JSON.stringify(metadata);
     expect(serialized).not.toMatch(/example\.com/i);
     expect(serialized).not.toMatch(/localhost/i);
@@ -42,18 +43,16 @@ describe("site routes", () => {
       expect.arrayContaining([
         "/",
         "/work",
-        "/about",
-        "/contact",
         "/work/clinical-follow-up-detector",
         "/work/academease",
         "/work/realtime-gpt-cli",
         "/work/taptap-avengers",
-        "/work/overthewire-bandit",
         "/work/atlas-research",
       ]),
     );
+    expect(paths).not.toContain("/work/overthewire-bandit");
     expect(paths).toContain("/work");
-    expect(paths).toHaveLength(4 + projects.length);
+    expect(paths).toHaveLength(2 + getPublicCaseStudySlugs().length);
   });
 
   it("excludes development-only routes", () => {

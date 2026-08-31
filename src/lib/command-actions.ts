@@ -1,6 +1,7 @@
 import { getConfiguredExternalLinks } from "@/data/links";
 import { projects } from "@/data/projects";
 import { primaryNavItems } from "@/data/navigation";
+import { hasPublicCaseStudyPage } from "@/lib/project-utils";
 
 export type CommandActionKind = "route" | "external" | "download";
 
@@ -11,6 +12,7 @@ export type CommandAction = {
   group: "Projects" | "Navigate" | "Actions";
   kind: CommandActionKind;
   href?: string;
+  section?: string;
 };
 
 export function buildCommandActions(): CommandAction[] {
@@ -18,6 +20,10 @@ export function buildCommandActions(): CommandAction[] {
   const actions: CommandAction[] = [];
 
   for (const project of projects) {
+    if (!hasPublicCaseStudyPage(project)) {
+      continue;
+    }
+
     const isFeatured = project.featured;
     const label = isFeatured
       ? `View ${project.title}`
@@ -51,17 +57,18 @@ export function buildCommandActions(): CommandAction[] {
   });
 
   for (const item of primaryNavItems) {
-    if (item.href === "/work") {
+    if (!("section" in item) || !item.section) {
       continue;
     }
 
     actions.push({
-      id: `nav-${item.href}`,
+      id: `nav-${item.section}`,
       label: `Open ${item.label}`,
-      keywords: [item.label, item.href.replace("/", "")],
+      keywords: [item.label, item.section],
       group: "Navigate",
       kind: "route",
-      href: item.href,
+      href: "/",
+      section: item.section,
     });
   }
 

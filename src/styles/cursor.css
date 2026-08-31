@@ -1,0 +1,114 @@
+/* Global custom arrow cursor — desktop / fine-pointer only. */
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-custom-cursor],
+  html[data-custom-cursor] * {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 160ms var(--ease-standard);
+}
+
+.custom-cursor.is-visible {
+  opacity: 1;
+}
+
+.custom-cursor-glow,
+.custom-cursor-arrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.custom-cursor-glow {
+  z-index: 0;
+}
+
+.custom-cursor-arrow {
+  z-index: 1;
+}
+
+.custom-cursor-glow-orb {
+  width: var(--cursor-glow-size, 42px);
+  height: var(--cursor-glow-size, 42px);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: var(--cursor-glow-opacity, 0.35);
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(
+        in srgb,
+        var(--cursor-glow-lavender, #c9b8ff) 58%,
+        var(--cursor-glow-ice, #a8d8ff)
+      )
+      0%,
+    color-mix(in srgb, var(--cursor-glow-lavender, #c9b8ff) 28%, transparent)
+      38%,
+    color-mix(in srgb, var(--cursor-glow-ice, #a8d8ff) 14%, transparent) 62%,
+    transparent 80%
+  );
+  filter: blur(6px);
+  transition:
+    opacity 180ms var(--ease-standard),
+    transform 180ms var(--ease-standard);
+}
+
+.custom-cursor.is-interactive .custom-cursor-glow-orb {
+  opacity: var(--cursor-glow-opacity-hover, 0.5);
+  transform: translate(-50%, -50%) scale(1.31);
+}
+
+.custom-cursor.is-pressed .custom-cursor-glow-orb {
+  opacity: 0.46;
+  transform: translate(-50%, -50%) scale(0.88);
+}
+
+.custom-cursor-arrow svg {
+  display: block;
+  overflow: visible;
+  transform-origin: var(--cursor-hotspot-x, 0.5px) var(--cursor-hotspot-y, 0.5px);
+  transition: transform 80ms var(--ease-standard);
+}
+
+.custom-cursor.is-interactive .custom-cursor-arrow svg {
+  transform: scale(1.05);
+}
+
+.custom-cursor.is-pressed .custom-cursor-arrow svg {
+  transform: scale(0.92);
+}
+
+.custom-cursor.is-about-invert .custom-cursor-glow,
+.custom-cursor.is-about-invert .custom-cursor-arrow {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor,
+  .custom-cursor-glow-orb,
+  .custom-cursor-arrow svg {
+    transition: none;
+  }
+
+  .custom-cursor.is-interactive .custom-cursor-glow-orb,
+  .custom-cursor.is-pressed .custom-cursor-glow-orb {
+    opacity: var(--cursor-glow-opacity, 0.35);
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .custom-cursor.is-interactive .custom-cursor-arrow svg,
+  .custom-cursor.is-pressed .custom-cursor-arrow svg {
+    transform: none;
+  }
+}

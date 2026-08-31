@@ -65,4 +65,34 @@ export const experience: ProfessionalWork[] = [
     repositoryUrl: null,
     liveUrl: null,
   },
+  {
+    id: "idf-soc",
+    kind: "professional-work",
+    role: "SOC Team Leader & IT",
+    organization: "IDF Manpower Directorate",
+    productContext: "",
+    dates: {
+      display: "2018 — 2020",
+      verification: "pending-verification",
+    },
+    collaboration: {
+      type: "professional",
+      summary:
+        "Military service leading IT operations and the directorate's first SOC team.",
+    },
+    technologies: [],
+    responsibilities: [
+      "Led the directorate's first SOC team",
+      "Administered network and IT operations",
+      "Oversaw cybersecurity monitoring and response",
+    ],
+    workAreas: ["SOC", "Cybersecurity", "Networking", "IT", "Leadership"],
+    confidentialityNotice: {
+      id: "professional-proprietary",
+      statement: PROFESSIONAL_CONFIDENTIALITY_NOTE,
+    },
+    confidentialityNote: PROFESSIONAL_CONFIDENTIALITY_NOTE,
+    repositoryUrl: null,
+    liveUrl: null,
+  },
 ];

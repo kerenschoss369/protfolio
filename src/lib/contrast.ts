@@ -62,26 +62,26 @@ export function meetsWcagAa(
 /** Solid palette samples used for automated contrast checks. */
 export const themeContrastPairs = {
   dark: {
-    background: "#121417",
-    foreground: "#f1eee7",
-    muted: "#a9a399",
-    accent: "#6b8aff",
-    accentContrast: "#0c0e12",
-    success: "#4caf7a",
-    warning: "#d6a33a",
-    danger: "#ef6b76",
-    focusRing: "#6b8aff",
-    steel: "#9aa3ae",
+    background: "#0c0c0c",
+    foreground: "#e4e8eb",
+    muted: "#9eaab2",
+    accent: "#a8d8ff",
+    accentContrast: "#0c0c0c",
+    success: "#7dba98",
+    warning: "#d2b36a",
+    danger: "#e08a92",
+    focusRing: "#a8d8ff",
+    steel: "#a5c1d4",
   },
 } as const;
 
 /** Immersive landing palette — solid colors, no opacity hacks. */
 export const landingContrastPairs = {
   background: "#0c0c0c",
-  foreground: "#d7e2ea",
-  muted: "#a9b9c6",
-  kicker: "#9aadb8",
-  number: "#8a9cab",
-  accent: "#bbccd7",
-  headingStop: "#8b929c",
+  foreground: "#e4e8eb",
+  muted: "#9eaab2",
+  kicker: "#9eaab2",
+  number: "#a5c1d4",
+  accent: "#a8d8ff",
+  headingStop: "#a5c1d4",
 } as const;

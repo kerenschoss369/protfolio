@@ -5,6 +5,7 @@ import { useEffect, useId, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 
+import { HomeSectionLink } from "@/components/navigation/HomeSectionLink";
 import { IconButton } from "@/components/ui/IconButton";
 import { primaryNavItems } from "@/data/navigation";
 import { portfolio } from "@/data/portfolio";
@@ -139,24 +140,38 @@ export function MobileNav({
           </Link>
 
           {primaryNavItems.map((item) => {
+            const section = "section" in item ? item.section : undefined;
             const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+              !section &&
+              (pathname === item.href || pathname.startsWith(`${item.href}/`));
+            const className = cn(
+              "inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-body-lg)]",
+              active
+                ? "bg-surface-2 text-foreground"
+                : "text-muted hover:bg-surface-1 hover:text-foreground",
+            );
 
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "inline-flex min-h-[var(--touch-target)] items-center rounded-[var(--radius-md)] px-3 text-[length:var(--text-body-lg)]",
-                  active
-                    ? "bg-surface-2 text-foreground"
-                    : "text-muted hover:bg-surface-1 hover:text-foreground",
+              <span key={item.label}>
+                {section ? (
+                  <HomeSectionLink
+                    section={section}
+                    className={className}
+                    onNavigate={() => onOpenChange(false)}
+                  >
+                    {item.label}
+                  </HomeSectionLink>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={className}
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => onOpenChange(false)}
+                  >
+                    {item.label}
+                  </Link>
                 )}
-                aria-current={active ? "page" : undefined}
-                onClick={() => onOpenChange(false)}
-              >
-                {item.label}
-              </Link>
+              </span>
             );
           })}
 

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   motionBudget,
+  prefersCustomCursor,
   prefersFinePointer,
   prefersReducedMotion,
   runViewTransition,
@@ -30,6 +31,12 @@ describe("motion utilities", () => {
     expect(prefersFinePointer({ matches: true })).toBe(true);
     expect(prefersFinePointer({ matches: false })).toBe(false);
     expect(prefersFinePointer(null)).toBe(false);
+  });
+
+  it("detects custom-cursor media from a snapshot", () => {
+    expect(prefersCustomCursor({ matches: true })).toBe(true);
+    expect(prefersCustomCursor({ matches: false })).toBe(false);
+    expect(prefersCustomCursor(null)).toBe(false);
   });
 
   it("feature-detects View Transitions without throwing", () => {

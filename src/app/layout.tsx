@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { createPageMetadata } from "@/lib/metadata";
 import { buildPersonJsonLd, buildWebsiteJsonLd } from "@/lib/structured-data";
 import "@/styles/globals.css";
+import "@/styles/cursor.css";
 
 const sans = Geist({
   variable: "--font-sans-family",

@@ -2,7 +2,11 @@ import { notFound } from "next/navigation";
 
 import { CaseStudyArticle } from "@/components/case-study/CaseStudyArticle";
 import { createPageMetadata } from "@/lib/metadata";
-import { getProjectBySlug, getProjectSlugs } from "@/lib/project-utils";
+import {
+  getProjectBySlug,
+  getPublicCaseStudySlugs,
+  hasPublicCaseStudyPage,
+} from "@/lib/project-utils";
 
 type WorkProjectPageProps = {
   params: Promise<{
@@ -14,14 +18,14 @@ type WorkProjectPageProps = {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return getProjectSlugs().map((slug) => ({ slug }));
+  return getPublicCaseStudySlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: WorkProjectPageProps) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
 
-  if (!project) {
+  if (!project || !hasPublicCaseStudyPage(project)) {
     notFound();
   }
 
@@ -41,7 +45,7 @@ export default async function WorkProjectPage({
   const { slug } = await params;
   const project = getProjectBySlug(slug);
 
-  if (!project) {
+  if (!project || !hasPublicCaseStudyPage(project)) {
     notFound();
   }
 

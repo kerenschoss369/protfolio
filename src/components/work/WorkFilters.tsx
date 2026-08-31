@@ -1,10 +1,8 @@
 "use client";
 
 import { LayoutGroup, m } from "motion/react";
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
-import { Tag } from "@/components/ui/Tag";
-import { Text } from "@/components/ui/Text";
 import { WorkProjectCard } from "@/components/work/WorkProjectCard";
 import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import type { Project } from "@/data/content-types";
@@ -27,60 +25,21 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
   const filtered = filterProjects(projects, activeFilter);
   const featured = filtered.filter((project) => project.featured);
   const additional = filtered.filter((project) => !project.featured);
-  const buttonRefs = useRef<Map<WorkFilterId, HTMLButtonElement>>(new Map());
-  const [indicator, setIndicator] = useState({
-    left: 0,
-    width: 0,
-    ready: false,
-  });
-
-  function updateIndicator(id: WorkFilterId) {
-    const button = buttonRefs.current.get(id);
-    const parent = button?.parentElement;
-    if (!button || !parent) {
-      return;
-    }
-    const parentRect = parent.getBoundingClientRect();
-    const buttonRect = button.getBoundingClientRect();
-    setIndicator({
-      left: buttonRect.left - parentRect.left,
-      width: buttonRect.width,
-      ready: true,
-    });
-  }
-
-  function selectFilter(id: WorkFilterId) {
-    setActiveFilter(id);
-    requestAnimationFrame(() => updateIndicator(id));
-  }
 
   return (
-    <div className="space-y-10">
-      <div className="space-y-3">
+    <div className="space-y-12 md:space-y-16">
+      <div className="space-y-4">
         <p
           id={labelId}
-          className="text-muted font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase"
+          className="text-muted text-xs tracking-widest uppercase"
         >
           Filter projects
         </p>
         <div
           role="group"
           aria-labelledby={labelId}
-          className="relative flex flex-wrap gap-2"
-          ref={(node) => {
-            if (node && !indicator.ready) {
-              requestAnimationFrame(() => updateIndicator(activeFilter));
-            }
-          }}
+          className="flex flex-wrap gap-2"
         >
-          {!reducedMotion && indicator.ready ? (
-            <m.span
-              aria-hidden
-              className="border-accent bg-accent-muted pointer-events-none absolute top-0 left-0 h-[var(--touch-target)] rounded-[var(--radius-md)] border"
-              animate={{ x: indicator.left, width: indicator.width }}
-              transition={springs.layout}
-            />
-          ) : null}
           {WORK_FILTERS.map((filter) => {
             const selected = activeFilter === filter.id;
             const count =
@@ -92,25 +51,18 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
               <button
                 key={filter.id}
                 type="button"
-                ref={(node) => {
-                  if (node) {
-                    buttonRefs.current.set(filter.id, node);
-                  } else {
-                    buttonRefs.current.delete(filter.id);
-                  }
-                }}
                 aria-pressed={selected}
-                onClick={() => selectFilter(filter.id)}
+                onClick={() => setActiveFilter(filter.id)}
                 className={cn(
-                  "pressable relative z-[1] inline-flex min-h-[var(--touch-target)] items-center gap-2 rounded-[var(--radius-md)] border px-3 font-mono text-[length:var(--text-meta)] tracking-[var(--tracking-meta)] uppercase",
-                  "focus-visible:outline-focus-ring focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]",
+                  "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-1 text-xs tracking-widest uppercase transition-colors",
+                  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]",
                   selected
-                    ? "text-accent border-transparent"
-                    : "border-border-subtle text-muted hover:border-border-strong hover:text-foreground",
+                    ? "border-foreground text-foreground"
+                    : "border-border-subtle text-muted hover:border-foreground hover:text-foreground",
                 )}
               >
                 <span>{filter.label}</span>
-                <span className="text-steel" aria-hidden>
+                <span className="text-[var(--landing-number)]" aria-hidden>
                   {count}
                 </span>
                 <span className="sr-only">
@@ -134,29 +86,23 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
       </p>
 
       {filtered.length === 0 ? (
-        <div className="border-border-subtle rounded-[var(--radius-md)] border px-4 py-8">
-          <Text className="text-pretty">
+        <div className="border-border-subtle rounded-[var(--landing-radius-card)] border px-5 py-10">
+          <p className="text-foreground text-pretty">
             No projects match this filter. Try another category or choose All.
-          </Text>
+          </p>
         </div>
       ) : (
         <LayoutGroup>
-          <div className="space-y-12">
+          <div className="space-y-14 md:space-y-20">
             {featured.length > 0 ? (
-              <section
-                aria-labelledby="featured-work-heading"
-                className="space-y-6"
-              >
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <h2
-                    id="featured-work-heading"
-                    className="font-sans text-[length:var(--text-section)] font-medium tracking-tight"
-                  >
-                    Featured work
-                  </h2>
-                  <Tag variant="steel">{featured.length} projects</Tag>
-                </div>
-                <ul className="space-y-0">
+              <section aria-labelledby="featured-work-heading" className="space-y-6">
+                <h2
+                  id="featured-work-heading"
+                  className="landing-case-section-title"
+                >
+                  Featured work
+                </h2>
+                <ul className="space-y-5">
                   {featured.map((project, index) =>
                     reducedMotion ? (
                       <li key={project.slug}>
@@ -189,17 +135,14 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
             {additional.length > 0 ? (
               <section
                 aria-labelledby="additional-work-heading"
-                className="space-y-6"
+                className="space-y-2"
               >
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <h2
-                    id="additional-work-heading"
-                    className="font-sans text-[length:var(--text-section)] font-medium tracking-tight"
-                  >
-                    Additional engineering practice
-                  </h2>
-                  <Tag variant="steel">{additional.length} entries</Tag>
-                </div>
+                <h2
+                  id="additional-work-heading"
+                  className="landing-case-section-title"
+                >
+                  Additional engineering practice
+                </h2>
                 <ul className="space-y-0">
                   {additional.map((project, index) =>
                     reducedMotion ? (

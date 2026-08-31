@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/ui/Container";
+import { HomeSectionLink } from "@/components/navigation/HomeSectionLink";
 import { getConfiguredExternalLinks } from "@/data/links";
 import { portfolio } from "@/data/portfolio";
 
@@ -40,12 +41,12 @@ export function SiteFooter() {
             </Link>
           </li>
           <li>
-            <Link
-              href="/contact"
+            <HomeSectionLink
+              section="contact"
               className="text-muted hover:text-foreground inline-flex min-h-11 items-center"
             >
               Contact
-            </Link>
+            </HomeSectionLink>
           </li>
           {links.githubUrl ? (
             <li>

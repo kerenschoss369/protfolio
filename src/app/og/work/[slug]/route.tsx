@@ -2,14 +2,18 @@ import { ImageResponse } from "next/og";
 import { notFound } from "next/navigation";
 
 import { portfolio } from "@/data/portfolio";
-import { getProjectBySlug, getProjectSlugs } from "@/lib/project-utils";
+import {
+  getProjectBySlug,
+  getPublicCaseStudySlugs,
+  hasPublicCaseStudyPage,
+} from "@/lib/project-utils";
 
 type RouteProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
-  return getProjectSlugs().map((slug) => ({ slug }));
+  return getPublicCaseStudySlugs().map((slug) => ({ slug }));
 }
 
 /**
@@ -19,7 +23,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
 
-  if (!project) {
+  if (!project || !hasPublicCaseStudyPage(project)) {
     notFound();
   }
 
@@ -32,8 +36,8 @@ export async function GET(_request: Request, { params }: RouteProps) {
         flexDirection: "column",
         justifyContent: "space-between",
         padding: 72,
-        background: "#121417",
-        color: "#f1eee7",
+        background: "#0c0c0c",
+        color: "#e4e8eb",
       }}
     >
       <div
@@ -53,7 +57,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
             fontSize: 20,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: "#9aa3ae",
+            color: "#9eaab2",
           }}
         >
           <span
@@ -63,7 +67,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid #3a3f48",
+              border: "1px solid #2f3941",
               borderRadius: 6,
             }}
           >
@@ -77,7 +81,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
             fontSize: 18,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "#6b8aff",
+            color: "#a8d8ff",
             maxWidth: 420,
             textAlign: "right",
           }}
@@ -101,7 +105,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
         <div
           style={{
             fontSize: 26,
-            color: "#a9a399",
+            color: "#9eaab2",
             maxWidth: 960,
             lineHeight: 1.35,
           }}
