@@ -171,8 +171,9 @@ test.describe("mobile hero composition", () => {
           '#hero [data-section="contact"]',
         );
         const portrait = document.querySelector(".hero-portrait");
+        const portraitImage = document.querySelector(".hero-portrait-img");
         const nav = document.querySelector('nav[aria-label="Primary"] a');
-        if (!tagline || !navContact || !portrait || !nav) {
+        if (!tagline || !navContact || !portrait || !portraitImage || !nav) {
           return { missing: true };
         }
 
@@ -192,6 +193,16 @@ test.describe("mobile hero composition", () => {
           taglineOverlapsPortrait: intersects(tagline, portrait),
           navContactOverlapsPortrait: intersects(navContact, portrait),
           navHeight: nav.getBoundingClientRect().height,
+          portraitWidth: Number.parseFloat(
+            window.getComputedStyle(portrait).width,
+          ),
+          expectedPortraitWidth: Math.min(
+            window.innerWidth * 0.92,
+            Number.parseFloat(
+              window.getComputedStyle(document.documentElement).fontSize,
+            ) * 26,
+          ),
+          portraitImageFilter: window.getComputedStyle(portraitImage).filter,
         };
       });
 
@@ -199,6 +210,11 @@ test.describe("mobile hero composition", () => {
       expect(overlap.taglineOverlapsPortrait).toBe(false);
       expect(overlap.navContactOverlapsPortrait).toBe(false);
       expect(overlap.navHeight ?? 0).toBeGreaterThanOrEqual(24);
+      expect(overlap.portraitWidth).toBeCloseTo(
+        overlap.expectedPortraitWidth ?? 0,
+        1,
+      );
+      expect(overlap.portraitImageFilter).toContain("20px");
     });
   }
 

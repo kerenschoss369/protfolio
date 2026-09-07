@@ -400,7 +400,6 @@ html:has(.landing-root) #top {
     flex: 1 1 0%;
     align-items: center;
     justify-content: center;
-    width: min(86vw, 20rem);
     min-height: 0;
     margin-top: 0;
     overflow: hidden;
@@ -424,6 +423,10 @@ html:has(.landing-root) #top {
     max-height: 100%;
     object-fit: contain;
     object-position: center bottom;
+    filter: drop-shadow(
+        0 0 20px color-mix(in srgb, var(--landing-accent) 94%, transparent)
+      )
+      drop-shadow(0 22px 40px #0000006b);
   }
 
   .hero-copy {
@@ -460,7 +463,6 @@ html:has(.landing-root) #top {
 
   .hero-portrait {
     flex: 0 0 auto;
-    width: min(48vw, 14rem);
   }
 
   .hero-portrait-img {
