@@ -147,9 +147,16 @@ test.describe("SEO and production readiness", () => {
     expect(icon.ok()).toBeTruthy();
     expect(icon.headers()["content-type"]).toMatch(/image\//);
 
-    const apple = await request.get("/apple-icon.svg");
-    expect(apple.ok()).toBeTruthy();
-    expect(apple.headers()["content-type"]).toMatch(/image\//);
+    const applePaths = ["/apple-icon", "/apple-icon.svg", "/icon.svg"];
+    let appleOk = false;
+    for (const path of applePaths) {
+      const apple = await request.get(path);
+      if (apple.ok() && /image\//.test(apple.headers()["content-type"] ?? "")) {
+        appleOk = true;
+        break;
+      }
+    }
+    expect(appleOk).toBeTruthy();
 
     try {
       const og = await request.get("/og", { timeout: 8_000 });

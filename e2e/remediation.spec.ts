@@ -20,7 +20,9 @@ test.describe("remediation regressions", () => {
     await expect(
       page.getByRole("heading", { name: "SOC Team Leader & IT" }),
     ).toBeVisible();
-    await expect(page.getByText("IDF Manpower Directorate")).toBeVisible();
+    await expect(
+      page.getByText("IDF Manpower Directorate", { exact: true }),
+    ).toBeVisible();
     await expect(page.getByText(/not HIPAA compliant/i).first()).toBeVisible();
     await expect(
       page.getByText(
@@ -129,7 +131,7 @@ test.describe("no JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   test("homepage copy and routes remain readable", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await expect(
       page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
@@ -167,7 +169,7 @@ test.describe("mobile hero composition", () => {
         const navContact = document.querySelector(
           '#hero [data-section="contact"]',
         );
-        const portrait = document.querySelector(".hero-portrait-img");
+        const portrait = document.querySelector(".hero-portrait");
         const nav = document.querySelector('nav[aria-label="Primary"] a');
         if (!tagline || !navContact || !portrait || !nav) {
           return { missing: true };
