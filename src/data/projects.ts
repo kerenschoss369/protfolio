@@ -871,6 +871,10 @@ const atlasResearch: EducationalResearchProject = {
   },
   safetyNote: null,
   confidentialityNote: null,
+  embeddedPdf: {
+    src: "/projects/atlas-research/atlas-research.pdf",
+    title: "ATLAS research paper",
+  },
 };
 
 /**

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 
 import {
@@ -24,7 +24,6 @@ export function HomeSectionLink({
   onNavigate,
 }: HomeSectionLinkProps) {
   const pathname = usePathname();
-  const router = useRouter();
 
   function onClick(event: MouseEvent<HTMLAnchorElement>) {
     onNavigate?.();
@@ -33,15 +32,13 @@ export function HomeSectionLink({
       return;
     }
 
-    event.preventDefault();
-
     if (pathname === "/") {
+      event.preventDefault();
       scrollToElementId(section);
       return;
     }
 
     rememberLandingSection(section);
-    router.push("/");
   }
 
   return (

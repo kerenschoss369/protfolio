@@ -290,6 +290,10 @@ export type EducationalResearchProject = ProjectBase & {
   status: "educational-research";
   featured: false;
   program: string;
+  embeddedPdf?: {
+    src: string;
+    title: string;
+  };
 };
 
 export type ClinicalFollowUpDetectorProject = PublicCaseStudyProject & {

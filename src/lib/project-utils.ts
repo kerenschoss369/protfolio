@@ -199,6 +199,10 @@ export function hasPublicCaseStudyPage(project: Project): boolean {
   return project.kind !== "engineering-practice";
 }
 
+export function hasProductCaseStudyLayout(project: Project): boolean {
+  return project.kind === "public-case-study";
+}
+
 export function getProjectSlugs(): ProjectSlug[] {
   return projects.map((project) => project.slug);
 }

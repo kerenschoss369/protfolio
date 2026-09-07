@@ -101,7 +101,11 @@ export function LandingContactSection() {
         </FadeIn>
 
         {links.email ? (
-          <FadeIn delay={0.3} y={20} className="mt-8 sm:mt-14">
+          <FadeIn
+            delay={0.3}
+            y={20}
+            className="landing-contact-email mt-8 sm:mt-14"
+          >
             <m.a
               href={`mailto:${links.email}`}
               className="group text-foreground relative inline-flex max-w-full items-start gap-2 font-medium tracking-tight sm:items-center sm:gap-3"

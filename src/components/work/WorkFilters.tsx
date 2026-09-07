@@ -141,7 +141,7 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                   id="additional-work-heading"
                   className="landing-case-section-title"
                 >
-                  Additional engineering practice
+                  Additional Projects & Experience
                 </h2>
                 <ul className="space-y-0">
                   {additional.map((project, index) =>

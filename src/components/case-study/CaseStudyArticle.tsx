@@ -6,6 +6,7 @@ import { CaseStudySection } from "@/components/case-study/CaseStudySection";
 import { ConfidentialityNotice } from "@/components/case-study/ConfidentialityNotice";
 import { ContributionPanel } from "@/components/case-study/ContributionPanel";
 import { DecisionList } from "@/components/case-study/DecisionList";
+import { EmbeddedPdfViewer } from "@/components/case-study/EmbeddedPdfViewer";
 import { getProjectVisual } from "@/components/case-study/getProjectVisual";
 import { LimitationPanel } from "@/components/case-study/LimitationPanel";
 import { ProjectNavigation } from "@/components/case-study/ProjectNavigation";
@@ -25,7 +26,10 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Container } from "@/components/ui/Container";
 import type { Project } from "@/data/content-types";
 import { isClinicalFollowUpDetector } from "@/lib/content-validation";
-import { getAdjacentProjects } from "@/lib/project-utils";
+import {
+  getAdjacentProjects,
+  hasProductCaseStudyLayout,
+} from "@/lib/project-utils";
 import {
   buildBreadcrumbJsonLd,
   buildProjectJsonLd,
@@ -49,6 +53,7 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
   const primaryLimitation = project.limitations[0];
   const remainingChallenges = project.challenges.slice(1);
   const remainingLimitations = project.limitations.slice(1);
+  const showProductLayout = hasProductCaseStudyLayout(project);
 
   return (
     <LandingRoot variant="case">
@@ -67,15 +72,24 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
         <Container className="space-y-14 lg:space-y-20">
           <CaseStudyHero project={project} />
 
-          <DeviceMockup
-            variant={deviceVariantForSlug(project.slug)}
-            caption={`Conceptual product preview for ${project.title}`}
-            className="mx-auto max-w-5xl"
-          >
-            <EmbeddedVisualProvider>
-              {getProjectVisual(project.slug)}
-            </EmbeddedVisualProvider>
-          </DeviceMockup>
+          {"embeddedPdf" in project && project.embeddedPdf ? (
+            <EmbeddedPdfViewer
+              src={project.embeddedPdf.src}
+              title={project.embeddedPdf.title}
+            />
+          ) : null}
+
+          {showProductLayout ? (
+            <DeviceMockup
+              variant={deviceVariantForSlug(project.slug)}
+              caption={`Conceptual product preview for ${project.title}`}
+              className="mx-auto max-w-5xl"
+            >
+              <EmbeddedVisualProvider>
+                {getProjectVisual(project.slug)}
+              </EmbeddedVisualProvider>
+            </DeviceMockup>
+          ) : null}
 
           {project.safetyNote ? (
             <SafetyNoticePanel
@@ -90,147 +104,153 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
             <ConfidentialityNotice note={project.confidentialityNote} />
           ) : null}
 
-          <div className="editorial-grid gap-y-10">
-            <CaseStudySection
-              id="problem"
-              title="Problem"
-              className="col-span-full lg:col-span-6"
-            >
-              <p className="text-foreground max-w-[36rem] text-base leading-relaxed text-pretty sm:text-lg">
-                {project.problem}
-              </p>
-            </CaseStudySection>
-
-            <CaseStudySection
-              id="solution"
-              title="Solution"
-              className="col-span-full lg:col-span-6"
-            >
-              <p className="text-foreground max-w-[36rem] text-base leading-relaxed text-pretty sm:text-lg">
-                {project.solution}
-              </p>
-            </CaseStudySection>
-          </div>
-
-          <CaseStudySection id="contribution" title="Contribution">
-            <ContributionPanel contribution={project.contribution} />
-          </CaseStudySection>
-
-          {(project.architectureHighlights.length > 0 ||
-            project.architecture) && (
-            <CaseStudySection id="architecture" title="Architecture">
-              <ArchitectureOverview
-                architecture={project.architecture}
-                highlights={project.architectureHighlights}
-              />
-            </CaseStudySection>
-          )}
-
-          {topDecisions.length > 0 ? (
-            <CaseStudySection id="decisions" title="Key engineering decisions">
-              <DecisionList items={topDecisions} />
-            </CaseStudySection>
-          ) : null}
-
-          {hasInteractiveDemo(project.slug) ? (
-            <CaseStudySection
-              id="interactive-demo"
-              title="Interactive demonstration"
-              lead="Deterministic local simulation — not a live product session."
-            >
-              <ProjectDemoSection slug={project.slug} />
-            </CaseStudySection>
-          ) : null}
-
-          {(primaryChallenge || primaryLimitation) && (
-            <div className="editorial-grid gap-y-10">
-              {primaryChallenge ? (
+          {showProductLayout ? (
+            <>
+              <div className="editorial-grid gap-y-10">
                 <CaseStudySection
-                  id="challenge"
-                  title="Challenge"
+                  id="problem"
+                  title="Problem"
                   className="col-span-full lg:col-span-6"
                 >
-                  <DecisionList items={[primaryChallenge]} />
+                  <p className="text-foreground max-w-[36rem] text-base leading-relaxed text-pretty sm:text-lg">
+                    {project.problem}
+                  </p>
                 </CaseStudySection>
-              ) : null}
-              {primaryLimitation ? (
+
                 <CaseStudySection
-                  id="limitation"
-                  title="Limitation"
+                  id="solution"
+                  title="Solution"
                   className="col-span-full lg:col-span-6"
                 >
-                  <LimitationPanel limitations={[primaryLimitation]} />
+                  <p className="text-foreground max-w-[36rem] text-base leading-relaxed text-pretty sm:text-lg">
+                    {project.solution}
+                  </p>
+                </CaseStudySection>
+              </div>
+
+              <CaseStudySection id="contribution" title="Contribution">
+                <ContributionPanel contribution={project.contribution} />
+              </CaseStudySection>
+
+              {(project.architectureHighlights.length > 0 ||
+                project.architecture) && (
+                <CaseStudySection id="architecture" title="Architecture">
+                  <ArchitectureOverview
+                    architecture={project.architecture}
+                    highlights={project.architectureHighlights}
+                  />
+                </CaseStudySection>
+              )}
+
+              {topDecisions.length > 0 ? (
+                <CaseStudySection id="decisions" title="Key engineering decisions">
+                  <DecisionList items={topDecisions} />
                 </CaseStudySection>
               ) : null}
-            </div>
-          )}
 
-          <TechnicalDetails>
-            {project.technologyStack.length > 0 ? (
-              <CaseStudySection id="technology" title="Technology stack">
-                <TechnologyList project={project} />
-              </CaseStudySection>
-            ) : null}
+              {hasInteractiveDemo(project.slug) ? (
+                <CaseStudySection
+                  id="interactive-demo"
+                  title="Interactive demonstration"
+                  lead="Deterministic local simulation — not a live product session."
+                >
+                  <ProjectDemoSection slug={project.slug} />
+                </CaseStudySection>
+              ) : null}
 
-            {project.highlights.length > 0 ? (
-              <CaseStudySection id="highlights" title="What the product covers">
-                <DecisionList items={project.highlights} />
-              </CaseStudySection>
-            ) : null}
-
-            {project.demonstrates.length > 0 ? (
-              <CaseStudySection
-                id="demonstrates"
-                title="What this demonstrates"
-              >
-                <ul className="space-y-2">
-                  {project.demonstrates.map((item) => (
-                    <li
-                      key={item}
-                      className="text-foreground text-sm text-pretty"
+              {(primaryChallenge || primaryLimitation) && (
+                <div className="editorial-grid gap-y-10">
+                  {primaryChallenge ? (
+                    <CaseStudySection
+                      id="challenge"
+                      title="Challenge"
+                      className="col-span-full lg:col-span-6"
                     >
-                      — {item}
-                    </li>
-                  ))}
-                </ul>
-              </CaseStudySection>
-            ) : null}
+                      <DecisionList items={[primaryChallenge]} />
+                    </CaseStudySection>
+                  ) : null}
+                  {primaryLimitation ? (
+                    <CaseStudySection
+                      id="limitation"
+                      title="Limitation"
+                      className="col-span-full lg:col-span-6"
+                    >
+                      <LimitationPanel limitations={[primaryLimitation]} />
+                    </CaseStudySection>
+                  ) : null}
+                </div>
+              )}
+            </>
+          ) : null}
 
-            {remainingDecisions.length > 0 ? (
-              <CaseStudySection
-                id="more-decisions"
-                title="Additional engineering decisions"
-              >
-                <DecisionList items={remainingDecisions} />
-              </CaseStudySection>
-            ) : null}
+          {showProductLayout ? (
+            <TechnicalDetails>
+              {project.technologyStack.length > 0 ? (
+                <CaseStudySection id="technology" title="Technology stack">
+                  <TechnologyList project={project} />
+                </CaseStudySection>
+              ) : null}
 
-            {remainingChallenges.length > 0 ? (
-              <CaseStudySection
-                id="more-challenges"
-                title="Additional challenges"
-              >
-                <DecisionList items={remainingChallenges} />
-              </CaseStudySection>
-            ) : null}
+              {project.highlights.length > 0 ? (
+                <CaseStudySection id="highlights" title="What the product covers">
+                  <DecisionList items={project.highlights} />
+                </CaseStudySection>
+              ) : null}
 
-            {remainingLimitations.length > 0 ? (
-              <CaseStudySection
-                id="more-limitations"
-                title="Additional limitations"
-              >
-                <LimitationPanel limitations={remainingLimitations} />
-              </CaseStudySection>
-            ) : null}
+              {project.demonstrates.length > 0 ? (
+                <CaseStudySection
+                  id="demonstrates"
+                  title="What this demonstrates"
+                >
+                  <ul className="space-y-2">
+                    {project.demonstrates.map((item) => (
+                      <li
+                        key={item}
+                        className="text-foreground text-sm text-pretty"
+                      >
+                        — {item}
+                      </li>
+                    ))}
+                  </ul>
+                </CaseStudySection>
+              ) : null}
 
-            {"program" in project && project.program ? (
-              <CaseStudySection id="program" title="Program context">
-                <p className="text-foreground text-base leading-relaxed text-pretty">
-                  {project.program}
-                </p>
-              </CaseStudySection>
-            ) : null}
-          </TechnicalDetails>
+              {remainingDecisions.length > 0 ? (
+                <CaseStudySection
+                  id="more-decisions"
+                  title="Additional engineering decisions"
+                >
+                  <DecisionList items={remainingDecisions} />
+                </CaseStudySection>
+              ) : null}
+
+              {remainingChallenges.length > 0 ? (
+                <CaseStudySection
+                  id="more-challenges"
+                  title="Additional challenges"
+                >
+                  <DecisionList items={remainingChallenges} />
+                </CaseStudySection>
+              ) : null}
+
+              {remainingLimitations.length > 0 ? (
+                <CaseStudySection
+                  id="more-limitations"
+                  title="Additional limitations"
+                >
+                  <LimitationPanel limitations={remainingLimitations} />
+                </CaseStudySection>
+              ) : null}
+
+              {"program" in project && project.program ? (
+                <CaseStudySection id="program" title="Program context">
+                  <p className="text-foreground text-base leading-relaxed text-pretty">
+                    {project.program}
+                  </p>
+                </CaseStudySection>
+              ) : null}
+            </TechnicalDetails>
+          ) : null}
 
           <ProjectNavigation previous={previous} next={next} />
 

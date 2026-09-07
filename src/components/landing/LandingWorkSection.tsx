@@ -270,7 +270,7 @@ export function LandingWorkSection() {
       <div className="px-5 pt-10 sm:px-8 md:px-10 md:pt-32">
         <FadeIn y={40}>
           <div id="work" className="landing-section-anchor">
-            <p className="landing-kicker">01 — Projects</p>
+            <p className="landing-kicker">01 — Work</p>
             <h2
               id="work-heading"
               className="hero-heading landing-section-title mt-4 leading-none font-black tracking-tight uppercase"

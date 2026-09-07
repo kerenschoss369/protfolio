@@ -339,6 +339,10 @@ html:has(.landing-root) #top {
   .landing-experience {
     padding-top: 6rem;
   }
+
+  .landing-measure .landing-contact-email {
+    margin-top: 0;
+  }
 }
 
 .hero-title-line {
@@ -714,4 +718,19 @@ html:has(.landing-root) #top {
     transform: none;
     transition: opacity var(--duration-fast) var(--ease-standard);
   }
+}
+
+.pdf-reader {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  width: 100%;
+}
+
+.pdf-reader-frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 48rem);
+  border: 0;
+  background: var(--landing-surface);
 }

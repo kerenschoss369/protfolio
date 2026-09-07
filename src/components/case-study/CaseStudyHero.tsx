@@ -1,8 +1,7 @@
-import Link from "next/link";
-
 import { CaseStudyMetadata } from "@/components/case-study/CaseStudyMetadata";
 import { ProjectLinkActions } from "@/components/case-study/ProjectLinkActions";
 import type { Project } from "@/data/content-types";
+import { hasProductCaseStudyLayout } from "@/lib/project-utils";
 import { projectTitleTransitionName } from "@/lib/view-transitions";
 import type { ReactNode } from "react";
 
@@ -12,18 +11,20 @@ type CaseStudyHeroProps = {
 };
 
 export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
+  const showMeta = hasProductCaseStudyLayout(project);
+
   return (
-    <header className="space-y-8 md:space-y-10">
+    <header className="relative z-20 space-y-8 md:space-y-10">
       <p>
-        <Link
+        <a
           href="/work"
-          className="text-muted inline-flex min-h-11 items-center text-xs tracking-[0.16em] uppercase transition-opacity hover:opacity-100 focus-visible:opacity-100 sm:text-sm"
+          className="landing-nav-link relative z-30 inline-flex items-center"
         >
-          <span aria-hidden className="me-2 inline-block -scale-x-100">
-            →
+          <span aria-hidden className="me-2">
+            ←
           </span>
           All work
-        </Link>
+        </a>
       </p>
 
       <div
@@ -38,8 +39,12 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
             visual ? "col-span-full space-y-6 lg:col-span-5" : "space-y-6"
           }
         >
-          <p className="landing-case-kicker">Case study</p>
-          <CaseStudyMetadata project={project} />
+          {showMeta ? (
+            <>
+              <p className="landing-case-kicker">Case study</p>
+              <CaseStudyMetadata project={project} />
+            </>
+          ) : null}
           <h1
             className="hero-heading landing-case-title text-balance"
             style={{
