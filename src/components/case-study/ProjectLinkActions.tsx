@@ -27,7 +27,7 @@ export function ProjectLinkActions({
       {hasRepository ? (
         <LiveProjectButton
           href={repositoryUrl}
-          label="View repository ↗"
+          label="View repository"
           external
         />
       ) : null}

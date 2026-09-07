@@ -115,7 +115,7 @@ function StickyProjectCard({
               {project.title}
             </h3>
           </div>
-          <LiveProjectButton href={project.href} label="View Project ↗" />
+          <LiveProjectButton href={project.href} label="View Project" />
         </div>
 
         <div className="mt-5 grid min-h-0 flex-1 gap-5 overflow-hidden sm:mt-8 sm:gap-8 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] lg:gap-10">

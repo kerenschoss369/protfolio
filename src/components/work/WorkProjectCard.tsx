@@ -85,7 +85,7 @@ export function WorkProjectCard({
             {hasPage ? (
               <LiveProjectButton
                 href={`/work/${project.slug}`}
-                label="View Project ↗"
+                label="View Project"
                 className="px-5 sm:px-8"
               />
             ) : null}
@@ -116,7 +116,7 @@ export function WorkProjectCard({
         {hasPage ? (
           <LiveProjectButton
             href={`/work/${project.slug}`}
-            label="View Project ↗"
+            label="View Project"
           />
         ) : null}
       </div>
