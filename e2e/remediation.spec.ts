@@ -10,7 +10,11 @@ test.describe("remediation regressions", () => {
       page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
-      page.getByText("Frontend & Full-Stack Developer").first(),
+      page
+        .getByText(
+          /I build polished digital products through frontend engineering/i,
+        )
+        .first(),
     ).toBeVisible();
     await expect(page.getByText(/2025–Present/)).toBeVisible();
     await expect(
@@ -130,7 +134,11 @@ test.describe("no JavaScript", () => {
       page.getByRole("heading", { name: /Hi, i'm Keren/i }),
     ).toBeVisible();
     await expect(
-      page.getByText("Frontend & Full-Stack Developer").first(),
+      page
+        .getByText(
+          /I build polished digital products through frontend engineering/i,
+        )
+        .first(),
     ).toBeVisible();
     await expect(
       page.getByRole("navigation", { name: "Primary" }).getByRole("button", {
@@ -155,11 +163,11 @@ test.describe("mobile hero composition", () => {
       await page.goto("/");
 
       const overlap = await page.evaluate(() => {
-        const tagline = document.querySelector("#hero p");
+        const tagline = document.querySelector(".hero-statement");
         const navContact = document.querySelector(
           '#hero [data-section="contact"]',
         );
-        const portrait = document.querySelector(".hero-portrait img");
+        const portrait = document.querySelector(".hero-portrait-img");
         const nav = document.querySelector('nav[aria-label="Primary"] a');
         if (!tagline || !navContact || !portrait || !nav) {
           return { missing: true };

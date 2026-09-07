@@ -103,7 +103,10 @@ test.describe("SEO and production readiness", () => {
       page.getByRole("main").getByRole("link", { name: /GitHub/i }),
     ).toHaveAttribute("href", "https://github.com/kerenschoss369");
     await expect(
-      page.getByRole("main").getByRole("link", { name: /Download CV/i }),
+      page
+        .getByRole("main")
+        .getByRole("link", { name: /Download CV/i })
+        .last(),
     ).toHaveAttribute("href", "/cv/keren-schoss-cv.pdf");
     await expect(page.locator('a[href="#"]')).toHaveCount(0);
     await expect(page.locator('a[href*="example.com"]')).toHaveCount(0);
@@ -140,11 +143,11 @@ test.describe("SEO and production readiness", () => {
   });
 
   test("favicon and open graph image routes respond", async ({ request }) => {
-    const icon = await request.get("/icon");
+    const icon = await request.get("/icon.svg");
     expect(icon.ok()).toBeTruthy();
     expect(icon.headers()["content-type"]).toMatch(/image\//);
 
-    const apple = await request.get("/apple-icon");
+    const apple = await request.get("/apple-icon.svg");
     expect(apple.ok()).toBeTruthy();
     expect(apple.headers()["content-type"]).toMatch(/image\//);
 

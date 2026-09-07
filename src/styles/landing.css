@@ -159,12 +159,8 @@ html:has(.landing-root) #top {
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
-  -webkit-text-fill-color: color-mix(
-    in srgb,
-    var(--landing-muted) 72%,
-    #000000
-  );
-  color: color-mix(in srgb, var(--landing-muted) 72%, #000000);
+  -webkit-text-fill-color: var(--landing-muted);
+  color: var(--landing-muted);
   font-weight: 300;
 }
 
@@ -407,7 +403,7 @@ html:has(.landing-root) #top {
     width: min(86vw, 20rem);
     min-height: 0;
     margin-top: 0;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .hero-portrait-magnet,
