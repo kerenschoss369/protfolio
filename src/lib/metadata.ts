@@ -4,7 +4,7 @@ import { portfolio } from "@/data/portfolio";
 import { externalLinks } from "@/data/links";
 import { isConfiguredUrl } from "@/lib/links";
 
-const defaultTitle = `${portfolio.name} — ${portfolio.title}`;
+const defaultTitle = portfolio.name;
 const defaultDescription = portfolio.heroStatement;
 
 function configuredSiteUrl(): string | undefined {

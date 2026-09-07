@@ -30,6 +30,7 @@ describe("createPageMetadata", () => {
 
   it("never invents example.com or localhost canonicals", () => {
     const metadata = createPageMetadata({ path: "/work" });
+    expect(metadata.title).toBe("Keren Schoss");
     const serialized = JSON.stringify(metadata);
     expect(serialized).not.toMatch(/example\.com/i);
     expect(serialized).not.toMatch(/localhost/i);

@@ -43,9 +43,7 @@ test.describe("SEO and production readiness", () => {
 
   test("pages expose unique titles and Person JSON-LD", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(
-      "Keren Schoss — Frontend & Full-Stack Developer",
-    );
+    await expect(page).toHaveTitle("Keren Schoss");
 
     const scripts = page.locator('script[type="application/ld+json"]');
     await expect(scripts.first()).toBeAttached();
