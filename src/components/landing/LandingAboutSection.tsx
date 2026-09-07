@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ContactButton } from "@/components/landing/ContactButton";
 import { FadeIn } from "@/components/landing/FadeIn";
 import { InvertCursor } from "@/components/landing/InvertCursor";
+import { LandingExperienceSection } from "@/components/landing/LandingExperienceSection";
 import { Magnet } from "@/components/landing/Magnet";
 import { kerenHand } from "@/lib/landing-fonts";
 import { cn } from "@/lib/cn";
@@ -18,15 +19,16 @@ export function LandingAboutSection() {
 
   return (
     <section
-      className="about-invert-scope landing-measure relative flex flex-col justify-center px-5 py-16 sm:px-8 sm:py-20 md:px-10 md:py-24"
+      className="landing-measure relative flex flex-col justify-center px-5 py-16 sm:px-8 sm:py-20 md:px-10 md:py-24"
       aria-labelledby="about-heading"
-      data-about-invert=""
     >
-      <InvertCursor color="#ffffff" size={150} />
-      <div className="relative z-[1]">
+      <div className="about-invert-scope relative z-[1]" data-about-invert="">
+        <InvertCursor color="#ffffff" size={150} />
         <FadeIn delay={0} y={40} className="mb-8 sm:mb-12 md:mb-16">
           <div id="about" className="landing-section-anchor">
-            <p className="landing-kicker mb-3 sm:mb-4">03 — About me</p>
+            <p className="landing-kicker mb-3 sm:mb-4">
+              02 — About me &amp; professional experience
+            </p>
             <h2
               id="about-heading"
               className="hero-heading landing-section-title leading-[0.95] font-black tracking-tight uppercase"
@@ -126,6 +128,8 @@ export function LandingAboutSection() {
           </FadeIn>
         </div>
       </div>
+
+      <LandingExperienceSection />
     </section>
   );
 }

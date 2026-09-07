@@ -70,7 +70,7 @@ export function LandingContactSection() {
       <div className="relative z-[1]">
         <div id="contact" className="landing-section-anchor">
           <FadeIn delay={0} y={20}>
-            <p className="landing-kicker">04 — Contact</p>
+            <p className="landing-kicker">03 — Contact</p>
           </FadeIn>
 
           <FadeIn delay={0.1} y={50}>

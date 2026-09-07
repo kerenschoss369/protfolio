@@ -383,6 +383,7 @@ html:has(.landing-root) #top {
     order: 1;
     flex: 0 0 auto;
     padding-top: 3.25rem;
+    margin-bottom: clamp(1.5rem, 4dvh, 2.5rem);
   }
 
   .hero-heading-text {
@@ -400,9 +401,9 @@ html:has(.landing-root) #top {
     flex: 1 1 0%;
     align-items: center;
     justify-content: center;
-    min-height: 0;
+    min-height: clamp(10rem, 32dvh, 13rem);
     margin-top: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .hero-portrait-magnet,
@@ -432,7 +433,7 @@ html:has(.landing-root) #top {
   .hero-copy {
     order: 3;
     flex: 0 0 auto;
-    margin-top: 0;
+    margin-top: clamp(1.5rem, 4dvh, 2.5rem);
     padding-bottom: max(6.5rem, calc(env(safe-area-inset-bottom) + 5rem));
     text-align: center;
   }
@@ -455,16 +456,6 @@ html:has(.landing-root) #top {
 
   .hero-statement {
     font-size: clamp(0.8rem, 3.4vw, 1.05rem);
-  }
-
-  .hero-portrait {
-    flex: 0 0 auto;
-  }
-
-  .hero-portrait-img {
-    width: 100%;
-    height: auto;
-    max-height: none;
   }
 }
 

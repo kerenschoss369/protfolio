@@ -112,22 +112,36 @@ describe("landing homepage", () => {
     expect(
       screen.getByRole("heading", { name: "TapTap Avengers" }),
     ).toBeInTheDocument();
+  });
+
+  it("combines the about and professional experience content", () => {
+    renderWithMotion(<LandingAboutSection />);
+
+    expect(
+      screen.getByText("02 — About me & professional experience"),
+    ).toBeInTheDocument();
+    const aboutHeading = screen.getByRole("heading", {
+      name: /Between logic/i,
+    });
+    expect(aboutHeading).toBeInTheDocument();
+    const technicalExperienceHeading = screen.getByRole("heading", {
+      name: /Technical.*experience/i,
+    });
+    expect(aboutHeading.closest("[data-about-invert]")).not.toBeNull();
+    expect(
+      technicalExperienceHeading.closest("[data-about-invert]"),
+    ).toBeNull();
+    const aboutCopy = screen.getByText(
+      /My work sits somewhere between logic and creativity/,
+    );
+    expect(aboutCopy.compareDocumentPosition(technicalExperienceHeading)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
     expect(
       screen.getByRole("heading", { name: "Frontend Developer" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "SOC Team Leader & IT" }),
-    ).toBeInTheDocument();
-  });
-
-  it("shows about section copy", () => {
-    renderWithMotion(<LandingAboutSection />);
-
-    expect(
-      screen.getByRole("heading", { name: /Between logic/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/My work sits somewhere between logic and creativity/),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("img", {

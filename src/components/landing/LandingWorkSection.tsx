@@ -1,13 +1,11 @@
 "use client";
 
 import { m, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { Fragment, useRef, useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore } from "react";
 
 import { FadeIn } from "@/components/landing/FadeIn";
 import { LiveProjectButton } from "@/components/landing/LiveProjectButton";
 import {
-  landingEducation,
-  landingExperience,
   landingProjects,
   type LandingProject,
 } from "@/components/landing/landing-data";
@@ -15,7 +13,6 @@ import { AcademEaseCardVisual } from "@/components/landing/visuals/AcademEaseCar
 import { ClinicalCardVisual } from "@/components/landing/visuals/ClinicalCardVisual";
 import { RealtimeCardVisual } from "@/components/landing/visuals/RealtimeCardVisual";
 import { TapTapCardVisual } from "@/components/landing/visuals/TapTapCardVisual";
-import { ConfidentialityNotice } from "@/components/case-study/ConfidentialityNotice";
 import type { ProjectSlug } from "@/data/content-types";
 import { scroll as scrollConfig } from "@/lib/animation-config";
 import { cn } from "@/lib/cn";
@@ -174,93 +171,6 @@ function StickyProjectCard({
   );
 }
 
-function ExperienceBlock() {
-  return (
-    <section
-      className="landing-experience px-5 pt-12 pb-24 sm:px-8 md:px-10 md:pt-16"
-      aria-labelledby="experience-heading"
-    >
-      <FadeIn y={40}>
-        <div id="experience" className="landing-section-anchor">
-          <p className="landing-kicker">02 — Experience</p>
-          <h2
-            id="experience-heading"
-            className="hero-heading landing-section-title mt-4 max-w-4xl leading-none font-black tracking-tight uppercase"
-          >
-            Technical
-            <br />
-            experience
-          </h2>
-        </div>
-      </FadeIn>
-
-      <ul className="mt-16 space-y-0 md:mt-24">
-        {landingExperience.map((role, index) => (
-          <Fragment key={role.id}>
-            <FadeIn delay={0.08 * index} y={28} as="li">
-              <div className="border-border-subtle border-t py-10 md:py-14">
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:gap-16">
-                  <div>
-                    <p className="text-muted text-xs tracking-widest uppercase">
-                      {role.dates}
-                    </p>
-                    <h3 className="text-foreground mt-3 text-2xl font-bold md:text-3xl">
-                      {role.role}
-                    </h3>
-                    <p className="text-muted mt-2 text-sm md:text-base">
-                      {role.org}
-                    </p>
-                  </div>
-                  <div className="space-y-5">
-                    <p className="text-accent text-lg md:text-xl">
-                      {role.statement}
-                    </p>
-                    {role.areas.length > 0 ? (
-                      <ul className="flex flex-wrap gap-2">
-                        {role.areas.map((area) => (
-                          <li
-                            key={area}
-                            className="border-border-subtle text-muted rounded-full border px-3 py-1 text-xs tracking-widest uppercase"
-                          >
-                            {area}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                    {role.technologies.length > 0 ? (
-                      <p className="text-muted text-xs tracking-[0.18em] uppercase">
-                        {role.technologies.join(" / ")}
-                      </p>
-                    ) : null}
-                    {role.confidentialityNote ? (
-                      <ConfidentialityNotice note={role.confidentialityNote} />
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-            {index === 0 && landingEducation ? (
-              <FadeIn delay={0.16} y={28} as="li">
-                <div className="border-border-subtle border-t py-10 md:py-14">
-                  <p className="text-muted text-sm md:text-base">
-                    Took 3 years to complete my
-                  </p>
-                  <h3 className="text-foreground mt-3 flex flex-wrap items-baseline gap-x-2 text-2xl font-bold md:text-3xl">
-                    Computer Science degree
-                    <span className="text-muted text-sm font-normal md:text-base">
-                      ({landingEducation.dates})
-                    </span>
-                  </h3>
-                </div>
-              </FadeIn>
-            ) : null}
-          </Fragment>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 export function LandingWorkSection() {
   const total = landingProjects.length;
   const sticky = useStickyProjectStack();
@@ -298,8 +208,6 @@ export function LandingWorkSection() {
           />
         ))}
       </div>
-
-      <ExperienceBlock />
     </section>
   );
 }
