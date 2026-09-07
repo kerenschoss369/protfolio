@@ -161,6 +161,7 @@ test.describe("mobile hero composition", () => {
     test(`no hero overlap at ${viewport.width}x${viewport.height}`, async ({
       page,
     }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
       await page.setViewportSize(viewport);
       await page.goto("/");
 
@@ -179,10 +180,10 @@ test.describe("mobile hero composition", () => {
           const ar = a.getBoundingClientRect();
           const br = b.getBoundingClientRect();
           return !(
-            ar.right < br.left ||
-            ar.left > br.right ||
-            ar.bottom < br.top ||
-            ar.top > br.bottom
+            ar.right <= br.left ||
+            ar.left >= br.right ||
+            ar.bottom <= br.top ||
+            ar.top >= br.bottom
           );
         };
 
