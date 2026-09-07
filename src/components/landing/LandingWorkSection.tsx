@@ -169,7 +169,7 @@ function StickyProjectCard({
         <p className="border-border-subtle text-muted mt-auto border-t pt-3 text-xs leading-relaxed tracking-[0.12em] break-words uppercase sm:pt-4 sm:tracking-[0.2em]">
           {project.technologies.join(" / ")}
         </p>
-        </m.article>
+      </m.article>
     </div>
   );
 }
@@ -266,7 +266,10 @@ export function LandingWorkSection() {
   const sticky = useStickyProjectStack();
 
   return (
-    <section aria-labelledby="work-heading" className="landing-measure relative">
+    <section
+      aria-labelledby="work-heading"
+      className="landing-measure relative"
+    >
       <div className="px-5 pt-10 sm:px-8 md:px-10 md:pt-32">
         <FadeIn y={40}>
           <div id="work" className="landing-section-anchor">

@@ -180,9 +180,7 @@ test.describe("motion refinements", () => {
     await expect(page.locator("#main-content")).toBeVisible();
   });
 
-  test("homepage about and contact remain readable", async ({
-    page,
-  }) => {
+  test("homepage about and contact remain readable", async ({ page }) => {
     await page.goto("/");
     await expect(
       page.getByRole("heading", { name: /Between logic/i }),

@@ -108,9 +108,9 @@ describe("case-study route data", () => {
     expect(
       hasPublicCaseStudyPage(getProjectBySlug("overthewire-bandit")!),
     ).toBe(false);
-    expect(
-      hasPublicCaseStudyPage(getProjectBySlug("atlas-research")!),
-    ).toBe(true);
+    expect(hasPublicCaseStudyPage(getProjectBySlug("atlas-research")!)).toBe(
+      true,
+    );
   });
 
   it("omits unconfigured live demos and keeps null repository links hidden", () => {

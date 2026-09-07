@@ -38,7 +38,12 @@ export function consumeLandingSection(): string | null {
 export function isUnmodifiedLeftClick(
   event: Pick<
     MouseEvent,
-    "button" | "metaKey" | "ctrlKey" | "shiftKey" | "altKey" | "defaultPrevented"
+    | "button"
+    | "metaKey"
+    | "ctrlKey"
+    | "shiftKey"
+    | "altKey"
+    | "defaultPrevented"
   >,
 ): boolean {
   return (

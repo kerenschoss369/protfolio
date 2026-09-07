@@ -1,10 +1,4 @@
-function BrandLogo({
-  path,
-  label,
-}: {
-  path: string;
-  label: string;
-}) {
+function BrandLogo({ path, label }: { path: string; label: string }) {
   return (
     <svg
       viewBox="0 0 24 24"

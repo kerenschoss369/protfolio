@@ -46,7 +46,7 @@ export default function NotFound() {
             </ButtonLink>
             <HomeSectionLink
               section="contact"
-              className="pressable inline-flex min-h-[var(--touch-target)] items-center justify-center rounded-[var(--radius-md)] bg-transparent px-4 text-[length:var(--text-body)] font-medium text-foreground hover:bg-surface-1 active:bg-surface-2 focus-visible:outline-focus-ring focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
+              className="pressable text-foreground hover:bg-surface-1 active:bg-surface-2 focus-visible:outline-focus-ring inline-flex min-h-[var(--touch-target)] items-center justify-center rounded-[var(--radius-md)] bg-transparent px-4 text-[length:var(--text-body)] font-medium focus-visible:outline focus-visible:outline-[length:var(--focus-ring-width)] focus-visible:outline-offset-[var(--focus-ring-offset)]"
             >
               Contact
             </HomeSectionLink>

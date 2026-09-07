@@ -105,8 +105,6 @@ describe("visual redesign — case study", () => {
         /Individual educational research within a university program/i,
       ),
     ).not.toBeInTheDocument();
-    expect(
-      screen.getByTitle("ATLAS research paper"),
-    ).toBeInTheDocument();
+    expect(screen.getByTitle("ATLAS research paper")).toBeInTheDocument();
   });
 });

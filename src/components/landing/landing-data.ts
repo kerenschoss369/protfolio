@@ -144,7 +144,9 @@ export function getLandingExperience(): LandingExperience[] {
   return experience.map((role) => {
     const presentation = landingExperiencePresentation[role.id];
     if (!presentation) {
-      throw new Error(`Missing landing presentation for experience: ${role.id}`);
+      throw new Error(
+        `Missing landing presentation for experience: ${role.id}`,
+      );
     }
 
     return {

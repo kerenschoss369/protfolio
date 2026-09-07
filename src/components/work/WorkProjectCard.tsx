@@ -125,9 +125,7 @@ export function WorkProjectCard({
         {project.shortDescription}
       </p>
 
-      {teamNote ? (
-        <p className="text-muted mt-3 text-sm">{teamNote}</p>
-      ) : null}
+      {teamNote ? <p className="text-muted mt-3 text-sm">{teamNote}</p> : null}
 
       {project.safetyNote ? (
         <p className="text-muted mt-3 max-w-3xl text-sm text-pretty">

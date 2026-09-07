@@ -159,7 +159,11 @@ html:has(.landing-root) #top {
   background: none;
   -webkit-background-clip: unset;
   background-clip: unset;
-  -webkit-text-fill-color: color-mix(in srgb, var(--landing-muted) 72%, #000000);
+  -webkit-text-fill-color: color-mix(
+    in srgb,
+    var(--landing-muted) 72%,
+    #000000
+  );
   color: color-mix(in srgb, var(--landing-muted) 72%, #000000);
   font-weight: 300;
 }
@@ -310,9 +314,7 @@ html:has(.landing-root) #top {
   }
 
   .hero-heading-text {
-    font-size: calc(
-      clamp(2.1rem, calc((100vw - 2rem) / 8.2), 17.5vw) * 0.875
-    );
+    font-size: calc(clamp(2.1rem, calc((100vw - 2rem) / 8.2), 17.5vw) * 0.875);
   }
 
   .about-invert-scope p.about-hand-copy {
@@ -368,8 +370,9 @@ html:has(.landing-root) #top {
 .hero-portrait-img {
   position: relative;
   z-index: 1;
-  filter:
-    drop-shadow(0 0 64px color-mix(in srgb, var(--landing-accent) 94%, transparent))
+  filter: drop-shadow(
+      0 0 64px color-mix(in srgb, var(--landing-accent) 94%, transparent)
+    )
     drop-shadow(0 22px 40px #0000006b);
 }
 
@@ -554,11 +557,11 @@ html:has(.landing-root) #top {
   background:
     linear-gradient(var(--landing-surface), var(--landing-surface)) padding-box,
     linear-gradient(
-      180deg,
-      var(--landing-heading-start) 0%,
-      var(--landing-accent) 100%
-    )
-    border-box;
+        180deg,
+        var(--landing-heading-start) 0%,
+        var(--landing-accent) 100%
+      )
+      border-box;
 }
 
 .about-pic-wrap {

@@ -77,7 +77,8 @@
 .custom-cursor-arrow svg {
   display: block;
   overflow: visible;
-  transform-origin: var(--cursor-hotspot-x, 0.5px) var(--cursor-hotspot-y, 0.5px);
+  transform-origin: var(--cursor-hotspot-x, 0.5px)
+    var(--cursor-hotspot-y, 0.5px);
   transition: transform 80ms var(--ease-standard);
 }
 

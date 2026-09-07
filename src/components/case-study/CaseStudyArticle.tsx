@@ -143,7 +143,10 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
               )}
 
               {topDecisions.length > 0 ? (
-                <CaseStudySection id="decisions" title="Key engineering decisions">
+                <CaseStudySection
+                  id="decisions"
+                  title="Key engineering decisions"
+                >
                   <DecisionList items={topDecisions} />
                 </CaseStudySection>
               ) : null}
@@ -192,7 +195,10 @@ export function CaseStudyArticle({ project }: CaseStudyArticleProps) {
               ) : null}
 
               {project.highlights.length > 0 ? (
-                <CaseStudySection id="highlights" title="What the product covers">
+                <CaseStudySection
+                  id="highlights"
+                  title="What the product covers"
+                >
                   <DecisionList items={project.highlights} />
                 </CaseStudySection>
               ) : null}

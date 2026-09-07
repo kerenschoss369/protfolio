@@ -139,5 +139,4 @@ test.describe("work case studies", () => {
       page.getByRole("link", { name: /View repository/i }),
     ).toHaveCount(0);
   });
-
 });

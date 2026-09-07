@@ -35,11 +35,7 @@ test.describe("remediation regressions", () => {
     page,
     isMobile,
   }) => {
-    for (const path of [
-      "/",
-      "/work",
-      "/work/clinical-follow-up-detector",
-    ]) {
+    for (const path of ["/", "/work", "/work/clinical-follow-up-detector"]) {
       await page.goto(path);
       const usesLandingChrome =
         path === "/" || path === "/work" || /^\/work\/[^/]+/.test(path);

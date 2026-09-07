@@ -95,7 +95,10 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
         <LayoutGroup>
           <div className="space-y-14 md:space-y-20">
             {featured.length > 0 ? (
-              <section aria-labelledby="featured-work-heading" className="space-y-6">
+              <section
+                aria-labelledby="featured-work-heading"
+                className="space-y-6"
+              >
                 <h2
                   id="featured-work-heading"
                   className="landing-case-section-title"

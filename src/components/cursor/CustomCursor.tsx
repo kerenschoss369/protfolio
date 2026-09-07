@@ -159,8 +159,8 @@ export function CustomCursor() {
       root.classList.add("is-visible");
       const overAbout = Boolean(
         !reducedMotion &&
-          event.target instanceof Element &&
-          event.target.closest("[data-about-invert]"),
+        event.target instanceof Element &&
+        event.target.closest("[data-about-invert]"),
       );
       root.classList.toggle("is-about-invert", overAbout);
       setInteractive(isInteractiveTarget(event.target));

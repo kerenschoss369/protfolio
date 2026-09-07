@@ -43,7 +43,7 @@ export function LandingAboutSection() {
             <p
               className={cn(
                 kerenHand.className,
-                "about-hand-copy text-foreground max-w-none leading-[1.35] text-pretty text-[1.55rem] md:text-[clamp(1.2rem,3.8vw,2.25rem)]",
+                "about-hand-copy text-foreground max-w-none text-[1.55rem] leading-[1.35] text-pretty md:text-[clamp(1.2rem,3.8vw,2.25rem)]",
               )}
             >
               {ABOUT_COPY}
@@ -52,7 +52,7 @@ export function LandingAboutSection() {
             <p
               className={cn(
                 kerenHand.className,
-                "about-hand-copy about-hand-ps max-w-none leading-snug sm:max-w-[90%] lg:max-w-none text-[1.45rem] md:text-[clamp(1.15rem,3.6vw,2rem)]",
+                "about-hand-copy about-hand-ps max-w-none text-[1.45rem] leading-snug sm:max-w-[90%] md:text-[clamp(1.15rem,3.6vw,2rem)] lg:max-w-none",
               )}
             >
               P.S. this is my own handwriting converted into a font that you can
@@ -67,10 +67,7 @@ export function LandingAboutSection() {
             </p>
 
             <FadeIn delay={0.2} y={20}>
-              <ContactButton
-                label="Let's talk"
-                magnetic={false}
-              />
+              <ContactButton label="Let's talk" magnetic={false} />
             </FadeIn>
           </div>
 
@@ -80,55 +77,51 @@ export function LandingAboutSection() {
             className="about-pic-wrap relative mx-auto w-full max-w-[14rem] sm:max-w-[18rem] lg:mx-0 lg:w-full lg:max-w-none lg:justify-self-end"
           >
             <Magnet className="w-full" padding={100} strength={8}>
-            <button
-              type="button"
-              className={cn(
-                "about-pic-frame group relative aspect-square w-full overflow-hidden rounded-full border-2 shadow-[0_24px_48px_rgba(0,0,0,0.45)]",
-                wink && "is-wink",
-              )}
-              aria-pressed={wink}
-              aria-label="Playful portrait of Keren Schoss"
-              onClick={() => setWink((current) => !current)}
-            >
-              <Image
-                src="/images/aboutme.webp"
-                alt="Keren Schoss, frontend and full-stack developer"
-                width={640}
-                height={640}
-                className="about-pic-default h-full w-full object-cover object-top transition-opacity duration-200"
-                sizes="(max-width: 640px) 14rem, (max-width: 1024px) 18rem, 18rem"
-              />
-              <Image
-                src="/images/aboutme_blink.webp"
-                alt=""
-                aria-hidden
-                width={640}
-                height={640}
-                unoptimized
-                className="about-pic-blink pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-opacity duration-200"
-                sizes="(max-width: 640px) 14rem, (max-width: 1024px) 18rem, 18rem"
-              />
-            </button>
-            <svg
-              className="about-pic-hint"
-              viewBox="0 0 100 100"
-              aria-hidden
-            >
-              <path
-                id="about-pic-hint-arc"
-                d="M 8.7 77.5 A 50 50 0 0 0 91.3 77.5"
-                fill="none"
-              />
-              <text className="about-hand-copy">
-                <textPath
-                  href="#about-pic-hint-arc"
-                  startOffset="50%"
-                  textAnchor="middle"
-                >
-                  Hover if you&apos;re curious
-                </textPath>
-              </text>
-            </svg>
+              <button
+                type="button"
+                className={cn(
+                  "about-pic-frame group relative aspect-square w-full overflow-hidden rounded-full border-2 shadow-[0_24px_48px_rgba(0,0,0,0.45)]",
+                  wink && "is-wink",
+                )}
+                aria-pressed={wink}
+                aria-label="Playful portrait of Keren Schoss"
+                onClick={() => setWink((current) => !current)}
+              >
+                <Image
+                  src="/images/aboutme.webp"
+                  alt="Keren Schoss, frontend and full-stack developer"
+                  width={640}
+                  height={640}
+                  className="about-pic-default h-full w-full object-cover object-top transition-opacity duration-200"
+                  sizes="(max-width: 640px) 14rem, (max-width: 1024px) 18rem, 18rem"
+                />
+                <Image
+                  src="/images/aboutme_blink.webp"
+                  alt=""
+                  aria-hidden
+                  width={640}
+                  height={640}
+                  unoptimized
+                  className="about-pic-blink pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-opacity duration-200"
+                  sizes="(max-width: 640px) 14rem, (max-width: 1024px) 18rem, 18rem"
+                />
+              </button>
+              <svg className="about-pic-hint" viewBox="0 0 100 100" aria-hidden>
+                <path
+                  id="about-pic-hint-arc"
+                  d="M 8.7 77.5 A 50 50 0 0 0 91.3 77.5"
+                  fill="none"
+                />
+                <text className="about-hand-copy">
+                  <textPath
+                    href="#about-pic-hint-arc"
+                    startOffset="50%"
+                    textAnchor="middle"
+                  >
+                    Hover if you&apos;re curious
+                  </textPath>
+                </text>
+              </svg>
             </Magnet>
           </FadeIn>
         </div>

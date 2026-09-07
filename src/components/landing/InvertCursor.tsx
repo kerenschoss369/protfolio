@@ -51,7 +51,7 @@ export function InvertCursor({
       pending = { x: event.clientX, y: event.clientY };
       const overPicture = Boolean(
         event.target instanceof Element &&
-          event.target.closest(".about-pic-frame"),
+        event.target.closest(".about-pic-frame"),
       );
       dot.style.opacity = overPicture ? "0" : "1";
       if (raf === 0) {

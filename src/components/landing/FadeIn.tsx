@@ -5,7 +5,8 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
 import { useReducedMotionPreference } from "@/hooks/useReducedMotionPreference";
 import { cn } from "@/lib/cn";
 
-type FadeInTag = "div" | "nav" | "header" | "section" | "p" | "ul" | "li" | "span";
+type FadeInTag =
+  "div" | "nav" | "header" | "section" | "p" | "ul" | "li" | "span";
 
 type FadeInProps = {
   children: ReactNode;
