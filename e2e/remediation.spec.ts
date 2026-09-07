@@ -166,6 +166,7 @@ test.describe("mobile hero composition", () => {
       await page.goto("/");
 
       const overlap = await page.evaluate(() => {
+        const hero = document.querySelector("#hero");
         const tagline = document.querySelector(".hero-statement");
         const navContact = document.querySelector(
           '#hero [data-section="contact"]',
@@ -173,7 +174,14 @@ test.describe("mobile hero composition", () => {
         const portrait = document.querySelector(".hero-portrait");
         const portraitImage = document.querySelector(".hero-portrait-img");
         const nav = document.querySelector('nav[aria-label="Primary"] a');
-        if (!tagline || !navContact || !portrait || !portraitImage || !nav) {
+        if (
+          !hero ||
+          !tagline ||
+          !navContact ||
+          !portrait ||
+          !portraitImage ||
+          !nav
+        ) {
           return { missing: true };
         }
 
@@ -193,6 +201,8 @@ test.describe("mobile hero composition", () => {
           taglineOverlapsPortrait: intersects(tagline, portrait),
           navContactOverlapsPortrait: intersects(navContact, portrait),
           navHeight: nav.getBoundingClientRect().height,
+          heroHeight: hero.getBoundingClientRect().height,
+          viewportHeight: window.innerHeight,
           portraitWidth: Number.parseFloat(
             window.getComputedStyle(portrait).width,
           ),
@@ -210,6 +220,9 @@ test.describe("mobile hero composition", () => {
       expect(overlap.taglineOverlapsPortrait).toBe(false);
       expect(overlap.navContactOverlapsPortrait).toBe(false);
       expect(overlap.navHeight ?? 0).toBeGreaterThanOrEqual(24);
+      expect(overlap.heroHeight ?? 0).toBeGreaterThanOrEqual(
+        (overlap.viewportHeight ?? 0) - 1,
+      );
       expect(overlap.portraitWidth).toBeCloseTo(
         overlap.expectedPortraitWidth ?? 0,
         1,

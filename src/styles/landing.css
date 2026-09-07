@@ -374,8 +374,8 @@ html:has(.landing-root) #top {
 
 @media (max-width: 47.999rem) {
   .hero-shell {
-    min-height: 100dvh;
     min-height: 100svh;
+    min-height: 100dvh;
     overflow-x: clip;
   }
 
@@ -449,10 +449,6 @@ html:has(.landing-root) #top {
 }
 
 @media (max-width: 47.999rem) and (max-height: 720px) {
-  .hero-shell {
-    min-height: auto;
-  }
-
   .hero-heading-text {
     font-size: clamp(1.85rem, 11vh, 2.6rem);
   }
