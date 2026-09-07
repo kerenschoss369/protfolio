@@ -110,7 +110,7 @@ describe("CustomCursor", () => {
     render(
       <>
         <CustomCursor />
-        <a href="/work">Work</a>
+        <a href="#work">Work</a>
       </>,
     );
 

@@ -1,9 +1,11 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
 import { CaseStudyMetadata } from "@/components/case-study/CaseStudyMetadata";
 import { ProjectLinkActions } from "@/components/case-study/ProjectLinkActions";
 import type { Project } from "@/data/content-types";
 import { hasProductCaseStudyLayout } from "@/lib/project-utils";
 import { projectTitleTransitionName } from "@/lib/view-transitions";
-import type { ReactNode } from "react";
 
 type CaseStudyHeroProps = {
   project: Project;
@@ -16,7 +18,7 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
   return (
     <header className="relative z-20 space-y-8 md:space-y-10">
       <p>
-        <a
+        <Link
           href="/work"
           className="landing-nav-link relative z-30 inline-flex items-center"
         >
@@ -24,7 +26,7 @@ export function CaseStudyHero({ project, visual }: CaseStudyHeroProps) {
             ←
           </span>
           All work
-        </a>
+        </Link>
       </p>
 
       <div
